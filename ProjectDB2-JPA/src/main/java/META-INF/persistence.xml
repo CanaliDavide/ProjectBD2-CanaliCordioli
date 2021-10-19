@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
 	<persistence-unit name="ProjectDB2-JPA">
+		<class>en.polimi.db2.entities.Alert</class>
+		<class>en.polimi.db2.entities.OptionalData</class>
+		<class>en.polimi.db2.entities.OrderData</class>
+		<class>en.polimi.db2.entities.OrderOption</class>
+		<class>en.polimi.db2.entities.PackageData</class>
+		<class>en.polimi.db2.entities.PackageService</class>
+		<class>en.polimi.db2.entities.Service</class>
+		<class>en.polimi.db2.entities.UserData</class>
+		<class>en.polimi.db2.entities.Validityperiod</class>
 	</persistence-unit>
 </persistence>
