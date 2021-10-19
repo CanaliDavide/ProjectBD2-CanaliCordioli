@@ -11,8 +11,11 @@ import java.util.List;
  */
 @Entity
 @Table(name="user_data")
-@NamedQuery(name="UserData.findAll", query="SELECT u FROM UserData u")
-@NamedQuery(name = "UserData.checkCredentials", query = "SELECT u FROM UserData u WHERE u.username = ?1 AND u.password = ?2")
+@NamedQueries({
+	@NamedQuery(name = "UserData.findAll", query = "SELECT u FROM UserData u"),
+	@NamedQuery(name = "UserData.checkCredentials", query = "SELECT u FROM UserData u WHERE u.username = ?1 AND u.password = ?2")
+	})
+
 public class UserData implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -20,9 +23,9 @@ public class UserData implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
-	private Object isEmployee;
+	private boolean isEmployee;
 
-	private Object isInsolvent;
+	private boolean isInsolvent;
 
 	private String mail;
 
@@ -40,6 +43,14 @@ public class UserData implements Serializable {
 
 	public UserData() {
 	}
+	
+	public UserData(String username, String password, String mail, boolean isEmployee, boolean isInsolvent) {
+		this.username = username;
+		this.password = password;
+		this.mail = mail;
+		this.isEmployee = isEmployee;
+		this.isInsolvent = isInsolvent;
+	}
 
 	public int getId() {
 		return this.id;
@@ -53,7 +64,7 @@ public class UserData implements Serializable {
 		return this.isEmployee;
 	}
 
-	public void setIsEmployee(Object isEmployee) {
+	public void setIsEmployee(boolean isEmployee) {
 		this.isEmployee = isEmployee;
 	}
 
@@ -61,7 +72,7 @@ public class UserData implements Serializable {
 		return this.isInsolvent;
 	}
 
-	public void setIsInsolvent(Object isInsolvent) {
+	public void setIsInsolvent(boolean isInsolvent) {
 		this.isInsolvent = isInsolvent;
 	}
 
@@ -132,5 +143,9 @@ public class UserData implements Serializable {
 
 		return orderData;
 	}
+	
+    public String toString() {
+        return "User id: " + getId() + " name: " + getUsername() + " password: " + getPassword();
+    }
 
 }

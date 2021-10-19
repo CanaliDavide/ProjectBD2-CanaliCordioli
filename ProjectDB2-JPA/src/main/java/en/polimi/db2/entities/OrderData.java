@@ -26,7 +26,7 @@ public class OrderData implements Serializable {
 
 	private Timestamp dateTime;
 
-	private Object isValid;
+	private boolean isValid;
 
 	private int numberOfInvalid;
 
@@ -95,7 +95,7 @@ public class OrderData implements Serializable {
 		return this.isValid;
 	}
 
-	public void setIsValid(Object isValid) {
+	public void setIsValid(boolean isValid) {
 		this.isValid = isValid;
 	}
 
