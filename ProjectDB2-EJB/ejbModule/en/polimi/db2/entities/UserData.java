@@ -11,11 +11,7 @@ import java.util.List;
  */
 @Entity
 @Table(name="user_data")
-@NamedQueries({
-	@NamedQuery(name = "UserData.findAll", query = "SELECT u FROM UserData u"),
-	@NamedQuery(name = "UserData.checkCredentials", query = "SELECT u FROM UserData u WHERE u.username = ?1 AND u.password = ?2")
-	})
-
+@NamedQuery(name="UserData.findAll", query="SELECT u FROM UserData u")
 public class UserData implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -60,7 +56,7 @@ public class UserData implements Serializable {
 		this.id = id;
 	}
 
-	public Object getIsEmployee() {
+	public boolean getIsEmployee() {
 		return this.isEmployee;
 	}
 
@@ -68,7 +64,7 @@ public class UserData implements Serializable {
 		this.isEmployee = isEmployee;
 	}
 
-	public Object getIsInsolvent() {
+	public boolean getIsInsolvent() {
 		return this.isInsolvent;
 	}
 
@@ -143,9 +139,5 @@ public class UserData implements Serializable {
 
 		return orderData;
 	}
-	
-    public String toString() {
-        return "User id: " + getId() + " name: " + getUsername() + " password: " + getPassword();
-    }
 
 }

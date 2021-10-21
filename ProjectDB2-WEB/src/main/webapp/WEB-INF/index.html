@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+	<style type="text/css"></style>
+	<link href="./CSS/CssDefault.css" type="text/css" rel="stylesheet"/>
+	
+</head>
+<body>
+	<header>Telco Service</header>
+
+	<section>
+		<section id="left">
+			<h2>Login</h2>			
+			<form action="" method="post" id="AccessForm">
+  				<label for="emailLogIn">email:</label><br>
+  				<input type="email" id="emailLogIn" name="emailLogIn" required><br> 
+  				<label for="passwordLogIn">password:</label><br>
+  				<input type="password" id="passwordLogIn" name="passwordLogIn"  minlength="3" required><br>
+			</form>		
+			<button type="submit" form="AccessForm" value="Submit">Login</button>
+			<button>Continue as Guest</button>
+		</section>	
+			<br>
+		<section id="right">
+			<h2>Need a new account?</h2>			
+			<form action="" method="post" id="RegistrationForm">
+  				<label for="useremail">email:</label><br>
+  				<input type="email" id="useremail" name="useremail" required>	<br>
+  				<label for="userpswd1">password:</label><br>
+	  			<input type="password" id="userpswd1" name="userpswd1"  minlength="3" required><br>
+	  			<label for="userpswd2">ripeti password:</label><br>
+	  			<input type="password" id="userpswd2" name="userpswd2"  minlength="3" required> <br>
+  				<label for="username">username:</label><br>
+  				<input type="text" id="username" name="username" required>	   	<br>							
+  			</form>
+  			<button  type="submit" form="RegistrationForm" value="Submit">Register</button>	
+		</section>	
+	</section>
+</body>
+</html>

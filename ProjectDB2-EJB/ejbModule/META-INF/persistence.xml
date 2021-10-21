@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.2"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
+	<persistence-unit name="ProjectDB2-EJB">
+		<jta-data-source>DataTest</jta-data-source>
+		<class>en.polimi.db2.entities.Alert</class>
+		<class>en.polimi.db2.entities.OptionalData</class>
+		<class>en.polimi.db2.entities.OrderData</class>
+		<class>en.polimi.db2.entities.OrderOption</class>
+		<class>en.polimi.db2.entities.PackageData</class>
+		<class>en.polimi.db2.entities.PackageService</class>
+		<class>en.polimi.db2.entities.Service</class>
+		<class>en.polimi.db2.entities.UserData</class>
+		<class>en.polimi.db2.entities.Validityperiod</class>
+
+		<properties>
+
+			<!-- enable this property to see SQL and other logging -->
+			<property name="javax.persistence.jdbc.driver"
+				value="com.mysql.cj.jdbc.Driver" />
+			<property name="javax.persistence.jdbc.url"
+				value="jdbc:mysql://localhost:3306/telcodb" />
+			<property name="javax.persistence.jdbc.user"
+				value="root" />
+			<property name="javax.persistence.jdbc.password"
+				value="polimidb2" />
+
+			<property name="eclipselink.logging.level" value="FINE" />
+
+
+		</properties>
+
+	</persistence-unit>
+</persistence>

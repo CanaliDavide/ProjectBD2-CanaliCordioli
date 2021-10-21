@@ -32,19 +32,6 @@ public class OrderData implements Serializable {
 
 	private float totalCost;
 
-	//bi-directional many-to-many association to OptionalData
-	@ManyToMany
-	@JoinTable(
-		name="order_option"
-		, joinColumns={
-			@JoinColumn(name="idOrder")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="idOptional")
-			}
-		)
-	private List<OptionalData> optionalData;
-
 	//bi-directional many-to-one association to PackageData
 	@ManyToOne
 	@JoinColumn(name="idPackage")
@@ -91,7 +78,7 @@ public class OrderData implements Serializable {
 		this.dateTime = dateTime;
 	}
 
-	public Object getIsValid() {
+	public boolean getIsValid() {
 		return this.isValid;
 	}
 
@@ -113,14 +100,6 @@ public class OrderData implements Serializable {
 
 	public void setTotalCost(float totalCost) {
 		this.totalCost = totalCost;
-	}
-
-	public List<OptionalData> getOptionalData() {
-		return this.optionalData;
-	}
-
-	public void setOptionalData(List<OptionalData> optionalData) {
-		this.optionalData = optionalData;
 	}
 
 	public PackageData getPackageData() {

@@ -23,10 +23,6 @@ public class OptionalData implements Serializable {
 
 	private String name;
 
-	//bi-directional many-to-many association to OrderData
-	@ManyToMany(mappedBy="optionalData")
-	private List<OrderData> orderData;
-
 	//bi-directional many-to-one association to OrderOption
 	@OneToMany(mappedBy="optionalData")
 	private List<OrderOption> orderOptions;
@@ -56,14 +52,6 @@ public class OptionalData implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public List<OrderData> getOrderData() {
-		return this.orderData;
-	}
-
-	public void setOrderData(List<OrderData> orderData) {
-		this.orderData = orderData;
 	}
 
 	public List<OrderOption> getOrderOptions() {
