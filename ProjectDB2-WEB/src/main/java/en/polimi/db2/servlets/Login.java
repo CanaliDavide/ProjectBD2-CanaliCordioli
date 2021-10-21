@@ -12,6 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+
 import en.polimi.db2.services.UserService;
 
 import javax.annotation.Resource;
@@ -30,29 +35,46 @@ public class Login extends HttpServlet {
 	@EJB
 	private UserService userService;
 
+	private TemplateEngine templateEngine;
+    
+    
+    public void init() throws ServletException{	
+    	ServletContext context = getServletContext();
+    	TemplateEngine tempEngine = new TemplateEngine();
+		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);
+		templateResolver.setTemplateMode(TemplateMode.HTML);
+        tempEngine.setTemplateResolver(templateResolver);
+        templateResolver.setSuffix(".html");
+        this.templateEngine = tempEngine;
+    }
+	
+	
 	public Login() {
 		super();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		final String DB_URL = "jdbc:mysql://localhost:3306/telcodb";
-		final String USER = "root";
-		final String PASS = "polimidb2";
-		String result = "Connection worked";
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			DriverManager.getConnection(DB_URL, USER, PASS);
-		} catch (Exception e) {
-			result = "Connection failed";
-			e.printStackTrace();
-		}
+	
+		// do stuff
 		
-		userService.createUser("prova", "Canali", "prova", false, false);
+		String path = "index.html";
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		templateEngine.process(path, ctx, response.getWriter());
 		
-		response.setContentType("text/plain");
-		PrintWriter out = response.getWriter();
-		out.println(result);
-		out.close();
+	}
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+	
+		String name = request.getParameter("username");
+		String email = request.getParameter("useremail");
+		String password1 = request.getParameter("userpswd1");
+		String password2 = request.getParameter("userpswd2");
+		
+		userService.createUser(name, password2, email, true, false);
+		
+		
 	}
 }
