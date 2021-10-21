@@ -56,7 +56,7 @@ public class Login extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 	
-		// do stuff
+		// do stuff, teooo
 		
 		String path = "index.html";
 		ServletContext servletContext = getServletContext();
