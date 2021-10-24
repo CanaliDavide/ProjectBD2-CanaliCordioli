@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>BuyService</title>
+	<style type="text/css"></style>
+	<link href="./CSS/CssDefault.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+	<span id="right" th:if="${isLogged}" th:text="user.username">Matteo</span>
+	<span id ="right" th:unless="${isLogged}"><a href="">SingIn</a></span>
+	<header>Buy Service</header>
+	<section class="content">
+		<h2>Choose your configuration</h2>
+		<form  action="" method="post" id="SetUpPackage">
+			<label>select package</label><br>
+			<select>
+				<option value="" disabled selected hidden>Choose package</option>
+				<option th:each="package :${packages}" th:value="${package.id}" th:text="${package.name}">
+					pkThymeleaf
+				</option>>
+			</select>
+
+			<fieldset>
+				<legend th:remove="all-but-first">ValidityPeriod</legend> <!-- Non sono sicuro di poterlo mettere qua, forse andrebbe nel fieldset ma farebbe casino con il legend! Da provare-->
+				<span th:each="validity : ${ValidityPeriod}">
+					<input type="radio" name="ValidityPeriod" th:value="${validity.id}">
+					<label th:text="${validity.month}">6months</label>
+				</span>
+				<input type="radio" name="ValidityPeriod"><label>12months</label>
+				<input type="radio" name="ValidityPeriod"><label>18months</label>
+			</fieldset>	
+
+			<fieldset>
+				<legend th:remove="all-but-first">Optional</legend> <!-- Non sono sicuro di poterlo mettere qua, forse andrebbe nel fieldset ma farebbe casino con il legend! Da provare-->
+				<span th:each="optional : ${Optionals}">
+					<input type="checkbox" name="optionals" th:value="${optional.id}"><!--Puo essere un problema leggerle poi nella servlet! Da provare! -->
+					<label th:text="${optional.name}">SMS1</label>
+				</span>
+				<input type="checkbox" name=""><label>SMS</label>
+				<input type="checkbox" name=""><label>MinCall</label>
+				<input type="checkbox" name=""><label>GBs</label>
+			</fieldset>	
+			<label>start date subscription</label><br>
+			<input type="date" name="">
+		</form><br>
+		<button type="submit" form="SetUpPackage" value="Submit">Confirm</button>
+	</section>
+</body>
+</html>

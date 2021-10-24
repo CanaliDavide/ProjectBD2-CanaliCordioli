@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Confirmation</title>
+	<style type="text/css"></style>
+	<link href="./CSS/CssDefault.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+	<span id="right" th:if="${isLogged}" th:text="user.username">Matteo</span>
+	<span id ="right" th:unless="${isLogged}"><a href="">SingIn</a></span>
+	<header>Confirm</header>
+	<section class="content">
+		<h2>Confirm your order</h2>
+		<p th:text="${package.name}">My package</p>
+		<p th:text="${validity.month}">My validity period</p>
+		<p>Optional product:</p>
+		<ul th:remove="all-but-first">											
+			<li th:each="option : ${order.options}">
+				<p th:text="${option.name}">option 1</p>
+			</li>
+			<li>option 2</li>
+		</ul>
+		<p>Total cost: <span th:text="${order.cost}">500</span>$</p>
+		<button th:if="${isLogged}">Buy</button>
+		<button th:unless="${isLogged}">You need to be singed in to purchase</button>
+	</section>
+</body>
+</html>

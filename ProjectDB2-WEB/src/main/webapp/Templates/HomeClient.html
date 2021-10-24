@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HomeClient</title>
+	<style type="text/css"></style>
+	<link href="./CSS/CssDefault.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+	<span id="right" th:if="${isLogged}" th:text="user.username">Matteo</span>
+	<span id ="right" th:unless="${isLogged}"><a href="">SingIn</a></span>
+	<header>Home Client</header>
+	<section class="content">
+		<h2>Service Packages</h2>
+		<table>
+			<tr>
+				<th>Package Name</th>
+				<th>SMS</th>
+				<th>Minutes</th>
+				<th>GBs</th>
+				<th>Fee SMS</th>
+				<th>Fee Minutes</th>
+				<th>Fee GBs</th>
+			</tr>
+			<tr th:each="package : ${pakages}">
+				<td th:text="${pakage.name}">ciao</td>
+				<td th:text="${pakage.SMS}">sono</td>
+				<td th:text="${pakage.Minutes}">matteo</td>
+				<td th:text="${pakage.gbs}">matteo</td>
+				<td th:text="${pakage.feesms}">cordioli</td>
+				<td th:text="${pakage.feeminutes}">cordioli</td>
+				<td th:text="${pakage.feegbs}">cordioli</td>
+			</tr>
+		</table>
+		<br>
+		<button>GoBuyPackage</button>
+	</section>
+	<section class="content" th:if="${isInsolvent}">
+		<h2>List of rejected orders</h2>
+		<a th:each="order : ${rejectedOrders}" th:href="@{/LoadConfirm(idOrder=${order.id})}" href="">
+			<span th:text="${order.name}">Name order</span> - cost <span th:text="${order.cost}">500$</span>
+		</a>
+	</section>
+</body>
+</html>
