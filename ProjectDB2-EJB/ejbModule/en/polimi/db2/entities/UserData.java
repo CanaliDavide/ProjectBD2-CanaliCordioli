@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name="user_data")
 @NamedQueries({
 	@NamedQuery(name="UserData.findAll", query="SELECT u FROM UserData u"),
-	@NamedQuery(name = "User.checkCredentials", query = "SELECT r FROM UserData r  WHERE r.username = ?1 and r.password = ?2")
+	@NamedQuery(name = "User.checkCredentials", query = "SELECT r FROM UserData r  WHERE r.mail = ?1 and r.password = ?2")
 	})
 
 public class UserData implements Serializable {

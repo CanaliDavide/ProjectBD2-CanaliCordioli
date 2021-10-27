@@ -1,6 +1,5 @@
 package en.polimi.db2.services;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -48,10 +47,10 @@ public class UserSrv {
 		return query.getResultList();
 	}
 	
-	public UserData checkCredentials(String usrn, String pwd) throws CredentialsException, NonUniqueResultException {
+	public UserData checkCredentials(String mail, String pwd) throws CredentialsException, NonUniqueResultException {
 		List<UserData> uList = null;
 		try {
-			uList = em.createNamedQuery("User.checkCredentials", UserData.class).setParameter(1, usrn).setParameter(2, pwd)
+			uList = em.createNamedQuery("User.checkCredentials", UserData.class).setParameter(1, mail).setParameter(2, pwd)
 					.getResultList();
 		} catch (PersistenceException e) {
 			throw new CredentialsException("Could not verify credentals");

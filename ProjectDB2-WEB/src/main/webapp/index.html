@@ -10,9 +10,9 @@
 	<header>Telco Service</header>
 
 	<section>
-		<section id="left">
-			<h2>Login</h2>			
-			<form action="" method="post" id="AccessForm">
+		<section class="boxCenter">
+			<h2>Login<span th:if="${logInError}">Error during login</span></h2>			
+			<form action="Login" method="post" id="AccessForm">
   				<label for="emailLogIn">email:</label><br>
   				<input type="email" id="emailLogIn" name="emailLogIn" required><br> 
   				<label for="passwordLogIn">password:</label><br>
@@ -22,14 +22,14 @@
 			<button>Continue as Guest</button>
 		</section>	
 			<br>
-		<section id="right">
-			<h2>Need a new account?</h2>			
-			<form action="Login" method="post" id="RegistrationForm">
+		<section class="boxCenter">
+			<h2>Need a new account?<span th:if="${newUserCreated}">new user created!</span></h2>			
+			<form action="CreateUser" method="post" id="RegistrationForm">
   				<label for="useremail">email:</label><br>
   				<input type="email" id="useremail" name="useremail" required>	<br>
   				<label for="userpswd1">password:</label><br>
 	  			<input type="password" id="userpswd1" name="userpswd1"  minlength="3" required><br>
-	  			<label for="userpswd2">password again:</label><br>
+	  			<label for="userpswd2">ripeti password:</label><br>
 	  			<input type="password" id="userpswd2" name="userpswd2"  minlength="3" required> <br>
   				<label for="username">username:</label><br>
   				<input type="text" id="username" name="username" required>	   	<br>							
