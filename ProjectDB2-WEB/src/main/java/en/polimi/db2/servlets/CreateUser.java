@@ -50,6 +50,7 @@ public class CreateUser extends HttpServlet {
 				//TODO: inventarsi qualcosa
 				System.out.println("Error creation user!");
 			}
+			
 			HttpSession session=request.getSession(true);  
 	        session.setAttribute("newUserCreated", true);
 	        response.sendRedirect("Login");
