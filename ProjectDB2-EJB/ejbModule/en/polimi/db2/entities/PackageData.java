@@ -32,6 +32,12 @@ public class PackageData implements Serializable {
 	public PackageData() {
 	}
 
+	public PackageData(String name, List<OrderData> orderData, List<PackageService> packageServices) {
+		this.name = name;
+		this.orderData = orderData;
+		this.packageServices = packageServices;
+	}
+
 	public int getId() {
 		return this.id;
 	}

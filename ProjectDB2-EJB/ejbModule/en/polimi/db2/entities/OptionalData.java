@@ -30,6 +30,11 @@ public class OptionalData implements Serializable {
 	public OptionalData() {
 	}
 
+	public OptionalData(float feeMonthly, String name) {
+		this.feeMonthly = feeMonthly;
+		this.name = name;
+	}
+
 	public int getId() {
 		return this.id;
 	}

@@ -1,14 +1,19 @@
 package en.polimi.db2.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
 import en.polimi.db2.entities.UserData;
+import en.polimi.db2.exceptions.CredentialsException;
 
 @Stateless
 @LocalBean
@@ -19,7 +24,6 @@ public class UserService {
 	public UserService() {
 	}
 
-	public void nothing() {}
 	public UserData createUser(String username, String password, String mail, boolean isEmployee, boolean isInsolvent) {
 		UserData user = new UserData(username, password, mail, isEmployee, isInsolvent);
 		em.persist(user);
@@ -43,4 +47,21 @@ public class UserService {
 		TypedQuery<UserData> query = em.createNamedQuery("UserData.findAll", UserData.class);
 		return query.getResultList();
 	}
+	
+	public UserData checkCredentials(String usrn, String pwd) throws CredentialsException, NonUniqueResultException {
+		List<UserData> uList = null;
+		try {
+			uList = em.createNamedQuery("User.checkCredentials", UserData.class).setParameter(1, usrn).setParameter(2, pwd)
+					.getResultList();
+		} catch (PersistenceException e) {
+			throw new CredentialsException("Could not verify credentals");
+		}
+		if (uList.isEmpty())
+			return null;
+		else if (uList.size() == 1)
+			return uList.get(0);
+		throw new NonUniqueResultException("More than one user registered with same credentials");
+
+	}
+
 }
