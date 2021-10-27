@@ -18,11 +18,11 @@ import en.polimi.db2.entities.Validityperiod;
 
 @Stateless
 @LocalBean
-public class OrderService {
+public class OrderSrv {
 	@PersistenceContext(unitName = "ProjectDB2-EJB")
 	protected EntityManager em;
 	
-	public OrderService() {}
+	public OrderSrv() {}
 	
 	public OrderData createOrder(Date dataActivation, Timestamp dateTime, int numberOfInvalid,
 			float totalCost, PackageData packageData, UserData userData, Validityperiod validityperiod,

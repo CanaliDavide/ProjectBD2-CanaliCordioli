@@ -29,14 +29,19 @@ public class PackageData implements Serializable {
 	@OneToMany(mappedBy="packageData")
 	private List<PackageService> packageServices;
 
+	//bi-directional many-to-many association to Service
+	@ManyToMany(mappedBy="packageData")
+	private List<Service> services;
+
 	public PackageData() {
 	}
-
+	
 	public PackageData(String name, List<OrderData> orderData, List<PackageService> packageServices) {
 		this.name = name;
 		this.orderData = orderData;
 		this.packageServices = packageServices;
 	}
+
 
 	public int getId() {
 		return this.id;
@@ -96,6 +101,14 @@ public class PackageData implements Serializable {
 		packageService.setPackageData(null);
 
 		return packageService;
+	}
+
+	public List<Service> getServices() {
+		return this.services;
+	}
+
+	public void setServices(List<Service> services) {
+		this.services = services;
 	}
 
 }

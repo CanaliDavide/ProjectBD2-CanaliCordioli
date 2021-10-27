@@ -14,9 +14,8 @@ import javax.persistence.*;
 public class OrderOption implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+	@EmbeddedId
+	private OrderOptionPK id;
 
 	//bi-directional many-to-one association to OptionalData
 	@ManyToOne
@@ -31,11 +30,11 @@ public class OrderOption implements Serializable {
 	public OrderOption() {
 	}
 
-	public int getId() {
+	public OrderOptionPK getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(OrderOptionPK id) {
 		this.id = id;
 	}
 

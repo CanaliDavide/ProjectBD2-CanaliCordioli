@@ -14,9 +14,8 @@ import javax.persistence.*;
 public class PackageService implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int id;
+	@EmbeddedId
+	private PackageServicePK id;
 
 	//bi-directional many-to-one association to PackageData
 	@ManyToOne
@@ -31,11 +30,11 @@ public class PackageService implements Serializable {
 	public PackageService() {
 	}
 
-	public int getId() {
+	public PackageServicePK getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(PackageServicePK id) {
 		this.id = id;
 	}
 

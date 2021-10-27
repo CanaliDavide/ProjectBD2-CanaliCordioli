@@ -17,7 +17,7 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import en.polimi.db2.services.UserService;
+import en.polimi.db2.services.UserSrv;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -33,7 +33,7 @@ public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
-	private UserService userService;
+	private UserSrv userService;
 
 	private TemplateEngine templateEngine;
     

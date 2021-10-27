@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.util.List;
 
+
 /**
  * The persistent class for the user_data database table.
  * 
@@ -50,6 +51,8 @@ public class UserData implements Serializable {
 		this.isEmployee = isEmployee;
 		this.isInsolvent = isInsolvent;
 	}
+
+
 
 	public int getId() {
 		return this.id;

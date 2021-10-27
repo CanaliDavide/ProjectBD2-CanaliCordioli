@@ -17,11 +17,11 @@ import en.polimi.db2.exceptions.CredentialsException;
 
 @Stateless
 @LocalBean
-public class UserService {
+public class UserSrv {
 	@PersistenceContext(unitName = "ProjectDB2-EJB")
 	protected EntityManager em;
 
-	public UserService() {
+	public UserSrv() {
 	}
 
 	public UserData createUser(String username, String password, String mail, boolean isEmployee, boolean isInsolvent) {

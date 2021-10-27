@@ -36,6 +36,19 @@ public class Service implements Serializable {
 	@OneToMany(mappedBy="service")
 	private List<PackageService> packageServices;
 
+	//bi-directional many-to-many association to PackageData
+	@ManyToMany
+	@JoinTable(
+		name="package_service"
+		, joinColumns={
+			@JoinColumn(name="idService")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="idPackage")
+			}
+		)
+	private List<PackageData> packageData;
+
 	public Service() {
 	}
 
@@ -123,6 +136,14 @@ public class Service implements Serializable {
 		packageService.setService(null);
 
 		return packageService;
+	}
+
+	public List<PackageData> getPackageData() {
+		return this.packageData;
+	}
+
+	public void setPackageData(List<PackageData> packageData) {
+		this.packageData = packageData;
 	}
 
 }

@@ -11,16 +11,17 @@ import javax.persistence.TypedQuery;
 
 import en.polimi.db2.entities.OrderData;
 import en.polimi.db2.entities.PackageData;
+import en.polimi.db2.entities.PackageService;
 
 @Stateless
 @LocalBean
-public class PackageService {
+public class PackageSrv {
 	@PersistenceContext(unitName = "ProjectDB2-EJB")
 	protected EntityManager em;
 	
-	public PackageService() {}
+	public PackageSrv() {}
 	
-	public PackageData createPackage(String name, List<OrderData> orderData, List<en.polimi.db2.entities.PackageService> packageServices) {
+	public PackageData createPackage(String name, List<OrderData> orderData, List<PackageService> packageServices) {
 		PackageData newPackage = new PackageData(name, orderData, packageServices);
 		em.persist(newPackage);
 		return newPackage;

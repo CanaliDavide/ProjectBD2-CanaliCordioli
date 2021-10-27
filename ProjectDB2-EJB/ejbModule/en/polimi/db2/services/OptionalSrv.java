@@ -9,11 +9,11 @@ import en.polimi.db2.entities.OptionalData;
 
 @Stateless
 @LocalBean
-public class OptionalService {
+public class OptionalSrv {
 	@PersistenceContext(unitName = "ProjectDB2-EJB")
 	protected EntityManager em;
 	
-	public OptionalService() {}
+	public OptionalSrv() {}
 
 	public OptionalData createOptional(float feeMonthly, String name) {
 		OptionalData optional = new OptionalData(feeMonthly, name);
