@@ -8,21 +8,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import en.polimi.db2.entities.OptionalData;
-import en.polimi.db2.entities.PackageData;
+import en.polimi.db2.entities.Validityperiod;
 
 @Stateless
 @LocalBean
-public class OptionalSrv {
+public class PeriodSrv {
 	@PersistenceContext(unitName = "ProjectDB2-EJB")
 	protected EntityManager em;
 	
-	public OptionalSrv() {}
-
-	public OptionalData createOptional(float feeMonthly, String name) {
-		OptionalData optional = new OptionalData(feeMonthly, name);
-		em.persist(optional);
-		return optional;
+	public List<Validityperiod> findAllPeriode() {
+		TypedQuery<Validityperiod> query = em.createNamedQuery("Validityperiod.findAll", Validityperiod.class);
+		return query.getResultList();
 	}
-	
 }

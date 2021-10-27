@@ -15,8 +15,12 @@ import javax.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
+import en.polimi.db2.entities.OptionalData;
 import en.polimi.db2.entities.PackageData;
+import en.polimi.db2.entities.Validityperiod;
+import en.polimi.db2.services.OptionalSrv;
 import en.polimi.db2.services.PackageSrv;
+import en.polimi.db2.services.PeriodSrv;
 import en.polimi.db2.services.UserSrv;
 import en.polimi.db2.utils.Utility;
 
@@ -32,6 +36,12 @@ public class BuyService extends HttpServlet {
     
 	@EJB
 	private PackageSrv packageService;
+	
+	@EJB
+	private PeriodSrv periodService;
+	
+	@EJB
+	private OptionalSrv optionalService;
 	
 	private TemplateEngine templateEngine;
     
@@ -53,6 +63,7 @@ public class BuyService extends HttpServlet {
 		HttpSession session=request.getSession(false);
 		Integer idUser=-1;
 		boolean isLogged=false;
+		String numId=request.getParameter("idPack");//controllare che questo esista
 		String username="";
 		if(session==null) {
 			//errore e dice che devi riloggare
@@ -74,6 +85,24 @@ public class BuyService extends HttpServlet {
 		
 		List<PackageData> packages=packageService.findAllPackage();
 		
+		List<Validityperiod> validityPeriod= periodService.findAllPeriode();
+		int idPack=-1;
+		if(Utility.getInstance().checkString(numId)) {
+			try {
+				idPack=Integer.parseInt(numId);
+			}catch(Exception e ) {
+				//errore
+			}
+			if(packageService.findPackageWithId(idPack)==null) {
+				//errore
+				return;
+			}
+		}
+		else {
+			idPack=packages.get(0).getId();
+		}
+		
+		List<OptionalData> optionals = packageService.findPackageWithId(idPack).getOptionalData();
 		
 		String path = "Templates/BuyService.html";
 		ServletContext servletContext = getServletContext();
@@ -81,6 +110,9 @@ public class BuyService extends HttpServlet {
 		ctx.setVariable("isLogged", isLogged);
 		ctx.setVariable("name", username);
 		ctx.setVariable("packages", packages);
+		ctx.setVariable("validityPeriod", validityPeriod);
+		ctx.setVariable("optionals", optionals);
+		ctx.setVariable("idSelected", idPack);
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 

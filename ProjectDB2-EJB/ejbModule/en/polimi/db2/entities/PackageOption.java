@@ -10,7 +10,9 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="package_option")
+@NamedQueries({
 @NamedQuery(name="PackageOption.findAll", query="SELECT p FROM PackageOption p")
+})
 public class PackageOption implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -37,4 +37,8 @@ public class PackageSrv {
 		return query.getResultList();
 	}
 	
+	public PackageData findPackageWithId(int id) {
+		return em.find(PackageData.class, id);
+	}
+	
 }
