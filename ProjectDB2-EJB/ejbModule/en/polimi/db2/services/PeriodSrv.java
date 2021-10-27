@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import en.polimi.db2.entities.PackageData;
 import en.polimi.db2.entities.Validityperiod;
 
 @Stateless
@@ -19,5 +20,9 @@ public class PeriodSrv {
 	public List<Validityperiod> findAllPeriode() {
 		TypedQuery<Validityperiod> query = em.createNamedQuery("Validityperiod.findAll", Validityperiod.class);
 		return query.getResultList();
+	}
+	
+	public Validityperiod findValidityWithId(int id) {
+		return em.find(Validityperiod.class, id);
 	}
 }

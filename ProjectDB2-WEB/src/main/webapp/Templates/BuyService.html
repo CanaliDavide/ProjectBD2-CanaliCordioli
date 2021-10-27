@@ -15,9 +15,9 @@
 	<header>Buy Service</header>
 	<section class="content">
 		<h2>Choose your configuration</h2>
-		<form action="" method="post" id="SetUpPackage">
+		<form action="Confirmation" method="post" id="SetUpPackage">
 			<label>select package</label><br> 
-			<select id="packSelection">
+			<select id="packSelection" name="packSelection">
 				<option th:each="package :${packages}"
 					th:value="${package.getId()}" th:text="${package.getName()}"
 					th:selected="${idSelected}==${package.getId()} ? true : false">
@@ -28,7 +28,7 @@
 				<legend>ValidityPeriod</legend>
 				<!-- Non sono sicuro di poterlo mettere qua, forse andrebbe nel fieldset ma farebbe casino con il legend! Da provare-->
 				<span th:each="validity : ${validityPeriod}"> <input
-					type="radio" name="ValidityPeriod" th:value="${validity.getId()}">
+					type="radio" name="ValidityPeriod" th:value="${validity.getId()}" required>
 					<label><span th:text="${validity.getMonth()}">6</span>months</label>
 				</span>
 			</fieldset>

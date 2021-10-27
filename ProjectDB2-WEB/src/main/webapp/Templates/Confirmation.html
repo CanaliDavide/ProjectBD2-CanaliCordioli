@@ -11,8 +11,8 @@
 	<header>Confirm</header>
 	<section class="content">
 		<h2>Confirm your order</h2>
-		<p th:text="${package.name}">My package</p>
-		<p th:text="${validity.month}">My validity period</p>
+		<p th:text="${namePack}">My package</p>
+		<p><span th:text="${validityString}"></span> months</p>
 		<p>Optional product:</p>
 		<ul th:remove="all-but-first">											
 			<li th:each="option : ${order.options}">
@@ -20,7 +20,7 @@
 			</li>
 			<li>option 2</li>
 		</ul>
-		<p>Total cost: <span th:text="${order.cost}">500</span>$</p>
+		<p>Total cost: <span th:text="${cost}">500</span>$</p>
 		<button th:if="${isLogged}">Buy</button>
 		<button th:unless="${isLogged}">You need to be singed in to purchase</button>
 	</section>

@@ -1,6 +1,5 @@
 package en.polimi.db2.services;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.ejb.LocalBean;
@@ -39,6 +38,11 @@ public class PackageSrv {
 	
 	public PackageData findPackageWithId(int id) {
 		return em.find(PackageData.class, id);
+	}
+	
+	public Float totalCostForPackage(int idPack, int idValidity) {
+		TypedQuery<Float> query = em.createQuery("select (sum(feeMonthly)+feeMonth)*month from package_option join optional_data on idOptional = id, validityperiod AS vp WHERE idPackage = ?1 and vp.id = ?2", Float.class);
+		return query.setParameter(1, idPack).setParameter(2, idValidity).getSingleResult();
 	}
 	
 }
