@@ -6,7 +6,7 @@
 	<link href="./CSS/CssDefault.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
-	<span id="right" th:if="${isLogged}" th:text="user.username">Matteo</span>
+	<span id="right" th:if="${isLogged}" th:text="${name}">Matteo</span>
 	<span id ="right" th:unless="${isLogged}"><a href="">SingIn</a></span>
 	<header>Buy Service</header>
 	<section class="content">
@@ -15,7 +15,7 @@
 			<label>select package</label><br>
 			<select>
 				<option value="" disabled selected hidden>Choose package</option>
-				<option th:each="package :${packages}" th:value="${package.id}" th:text="${package.name}">
+				<option th:each="package :${packages}" th:value="${package.getId()}" th:text="${package.getName()}">
 					pkThymeleaf
 				</option>>
 			</select>

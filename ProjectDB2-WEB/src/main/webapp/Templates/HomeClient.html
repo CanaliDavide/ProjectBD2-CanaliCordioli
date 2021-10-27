@@ -6,14 +6,15 @@
 	<link href="./CSS/CssDefault.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
-	<span id="right" th:if="${isLogged}" th:text="user.username">Matteo</span>
+	<span id="right" th:if="${isLogged}" th:text="${name}">Matteo</span>
 	<span id ="right" th:unless="${isLogged}"><a href="">SingIn</a></span>
 	<header>Home Client</header>
 	<section class="content">
 		<h2>Service Packages</h2>
-		<table>
+			<section class="insider" th:each="package : ${packages}">
+			<h3 th:text="${package.getName()}">Titolo</h3>
+			<table>
 			<tr>
-				<th>Package Name</th>
 				<th>SMS</th>
 				<th>Minutes</th>
 				<th>GBs</th>
@@ -21,18 +22,20 @@
 				<th>Fee Minutes</th>
 				<th>Fee GBs</th>
 			</tr>
-			<tr th:each="package : ${pakages}">
-				<td th:text="${pakage.name}">ciao</td>
-				<td th:text="${pakage.SMS}">sono</td>
-				<td th:text="${pakage.Minutes}">matteo</td>
-				<td th:text="${pakage.gbs}">matteo</td>
-				<td th:text="${pakage.feesms}">cordioli</td>
-				<td th:text="${pakage.feeminutes}">cordioli</td>
-				<td th:text="${pakage.feegbs}">cordioli</td>
+			<tr th:each="service : ${package.getServices()}">
+				<td th:text="${service.getSms()}">sono</td>
+				<td th:text="${service.getMinutes()}">matteo</td>
+				<td th:text="${service.getGiga()}">matteo</td>
+				<td th:text="${service.getFeeSms()}">cordioli</td>
+				<td th:text="${service.getFeeMinutes()}">cordioli</td>
+				<td th:text="${service.getFeeGiga()}">cordioli</td>
 			</tr>
 		</table>
+		</section>
 		<br>
-		<button>GoBuyPackage</button>
+		<form action="BuyService" method="get">
+		<button type="submit">GoBuyPackage</button>
+		</form>
 	</section>
 	<section class="content" th:if="${isInsolvent}">
 		<h2>List of rejected orders</h2>

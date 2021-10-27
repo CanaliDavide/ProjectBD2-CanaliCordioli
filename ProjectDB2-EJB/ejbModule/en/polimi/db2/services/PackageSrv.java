@@ -32,7 +32,7 @@ public class PackageSrv {
 		return newPackage;
 	}
 	
-	public Collection<PackageData> findAllPackage() {
+	public List<PackageData> findAllPackage() {
 		TypedQuery<PackageData> query = em.createNamedQuery("PackageData.findAll", PackageData.class);
 		return query.getResultList();
 	}
