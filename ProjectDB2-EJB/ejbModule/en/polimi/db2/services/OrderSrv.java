@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import en.polimi.db2.entities.OptionalData;
 import en.polimi.db2.entities.OrderData;
 import en.polimi.db2.entities.OrderOption;
 import en.polimi.db2.entities.PackageData;
@@ -24,11 +25,12 @@ public class OrderSrv {
 	
 	public OrderSrv() {}
 	
-	public OrderData createOrder(Date dataActivation, Timestamp dateTime, int numberOfInvalid,
-			float totalCost, PackageData packageData, UserData userData, Validityperiod validityperiod,
+	public OrderData createOrder(Date dataActivation, Timestamp dateTime, boolean isValid, int numberOfInvalid, float totalCost,
+			List<OptionalData> optionalData, PackageData packageData, UserData userData, Validityperiod validityperiod,
 			List<OrderOption> orderOptions) {
-		OrderData order = new OrderData(dataActivation, dateTime, numberOfInvalid,
-				totalCost, packageData, userData, validityperiod, orderOptions);
+		OrderData order = new OrderData(dataActivation, dateTime, isValid, numberOfInvalid, totalCost,
+				optionalData, packageData, userData, validityperiod,
+				orderOptions);
 		em.persist(order);
 		return order;
 	}

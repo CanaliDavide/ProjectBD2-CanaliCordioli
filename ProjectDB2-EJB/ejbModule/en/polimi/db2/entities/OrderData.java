@@ -67,19 +67,24 @@ public class OrderData implements Serializable {
 	public OrderData() {
 	}
 	
-	public OrderData(Date dataActivation, Timestamp dateTime, int numberOfInvalid,
-			float totalCost, PackageData packageData, UserData userData, Validityperiod validityperiod,
+	
+
+	public OrderData(Date dataActivation, Timestamp dateTime, boolean isValid, int numberOfInvalid, float totalCost,
+			List<OptionalData> optionalData, PackageData packageData, UserData userData, Validityperiod validityperiod,
 			List<OrderOption> orderOptions) {
 		this.dataActivation = dataActivation;
 		this.dateTime = dateTime;
-		this.isValid = false;
+		this.isValid = isValid;
 		this.numberOfInvalid = numberOfInvalid;
 		this.totalCost = totalCost;
+		this.optionalData = optionalData;
 		this.packageData = packageData;
 		this.userData = userData;
 		this.validityperiod = validityperiod;
 		this.orderOptions = orderOptions;
 	}
+
+
 
 	public int getId() {
 		return this.id;

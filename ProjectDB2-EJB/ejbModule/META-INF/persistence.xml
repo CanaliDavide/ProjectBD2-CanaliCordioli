@@ -11,6 +11,8 @@
 		<class>en.polimi.db2.entities.OrderOption</class>
 		<class>en.polimi.db2.entities.OrderOptionPK</class>
 		<class>en.polimi.db2.entities.PackageData</class>
+		<class>en.polimi.db2.entities.PackageOption</class>
+		<class>en.polimi.db2.entities.PackageOptionPK</class>
 		<class>en.polimi.db2.entities.PackageService</class>
 		<class>en.polimi.db2.entities.PackageServicePK</class>
 		<class>en.polimi.db2.entities.Service</class>

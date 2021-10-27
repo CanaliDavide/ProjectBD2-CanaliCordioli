@@ -9,9 +9,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import en.polimi.db2.entities.OptionalData;
 import en.polimi.db2.entities.OrderData;
 import en.polimi.db2.entities.PackageData;
+import en.polimi.db2.entities.PackageOption;
 import en.polimi.db2.entities.PackageService;
+import en.polimi.db2.entities.Service;
 
 @Stateless
 @LocalBean
@@ -21,8 +24,10 @@ public class PackageSrv {
 	
 	public PackageSrv() {}
 	
-	public PackageData createPackage(String name, List<OrderData> orderData, List<PackageService> packageServices) {
-		PackageData newPackage = new PackageData(name, orderData, packageServices);
+	public PackageData createPackage(String name, List<OrderData> orderData, List<OptionalData> optionalData,
+			List<PackageService> packageServices, List<Service> services, List<PackageOption> packageOptions) {
+		PackageData newPackage = new PackageData(name, orderData, optionalData,
+				packageServices, services, packageOptions);
 		em.persist(newPackage);
 		return newPackage;
 	}

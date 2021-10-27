@@ -31,6 +31,14 @@ public class OptionalData implements Serializable {
 	@OneToMany(mappedBy="optionalData")
 	private List<OrderOption> orderOptions;
 
+	//bi-directional many-to-many association to PackageData
+	@ManyToMany(mappedBy="optionalData")
+	private List<PackageData> packageData;
+
+	//bi-directional many-to-one association to PackageOption
+	@OneToMany(mappedBy="optionalData")
+	private List<PackageOption> packageOptions;
+
 	public OptionalData() {
 	}
 	
@@ -38,6 +46,8 @@ public class OptionalData implements Serializable {
 		this.feeMonthly = feeMonthly;
 		this.name = name;
 	}
+
+
 
 	public int getId() {
 		return this.id;
@@ -91,6 +101,36 @@ public class OptionalData implements Serializable {
 		orderOption.setOptionalData(null);
 
 		return orderOption;
+	}
+
+	public List<PackageData> getPackageData() {
+		return this.packageData;
+	}
+
+	public void setPackageData1(List<PackageData> packageData) {
+		this.packageData = packageData;
+	}
+
+	public List<PackageOption> getPackageOptions() {
+		return this.packageOptions;
+	}
+
+	public void setPackageOptions(List<PackageOption> packageOptions) {
+		this.packageOptions = packageOptions;
+	}
+
+	public PackageOption addPackageOption(PackageOption packageOption) {
+		getPackageOptions().add(packageOption);
+		packageOption.setOptionalData(this);
+
+		return packageOption;
+	}
+
+	public PackageOption removePackageOption(PackageOption packageOption) {
+		getPackageOptions().remove(packageOption);
+		packageOption.setOptionalData(null);
+
+		return packageOption;
 	}
 
 }

@@ -25,6 +25,19 @@ public class PackageData implements Serializable {
 	@OneToMany(mappedBy="packageData")
 	private List<OrderData> orderData;
 
+	//bi-directional many-to-many association to OptionalData
+	@ManyToMany
+	@JoinTable(
+		name="package_option"
+		, joinColumns={
+			@JoinColumn(name="idPackage")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="idOptional")
+			}
+		)
+	private List<OptionalData> optionalData;
+
 	//bi-directional many-to-one association to PackageService
 	@OneToMany(mappedBy="packageData")
 	private List<PackageService> packageServices;
@@ -33,15 +46,22 @@ public class PackageData implements Serializable {
 	@ManyToMany(mappedBy="packageData")
 	private List<Service> services;
 
+	//bi-directional many-to-one association to PackageOption
+	@OneToMany(mappedBy="packageData")
+	private List<PackageOption> packageOptions;
+
 	public PackageData() {
 	}
-	
-	public PackageData(String name, List<OrderData> orderData, List<PackageService> packageServices) {
+
+	public PackageData(String name, List<OrderData> orderData, List<OptionalData> optionalData,
+			List<PackageService> packageServices, List<Service> services, List<PackageOption> packageOptions) {
 		this.name = name;
 		this.orderData = orderData;
+		this.optionalData = optionalData;
 		this.packageServices = packageServices;
+		this.services = services;
+		this.packageOptions = packageOptions;
 	}
-
 
 	public int getId() {
 		return this.id;
@@ -81,6 +101,14 @@ public class PackageData implements Serializable {
 		return orderData;
 	}
 
+	public List<OptionalData> getOptionalData() {
+		return this.optionalData;
+	}
+
+	public void setOptionalData1(List<OptionalData> optionalData) {
+		this.optionalData = optionalData;
+	}
+
 	public List<PackageService> getPackageServices() {
 		return this.packageServices;
 	}
@@ -109,6 +137,28 @@ public class PackageData implements Serializable {
 
 	public void setServices(List<Service> services) {
 		this.services = services;
+	}
+
+	public List<PackageOption> getPackageOptions() {
+		return this.packageOptions;
+	}
+
+	public void setPackageOptions(List<PackageOption> packageOptions) {
+		this.packageOptions = packageOptions;
+	}
+
+	public PackageOption addPackageOption(PackageOption packageOption) {
+		getPackageOptions().add(packageOption);
+		packageOption.setPackageData(this);
+
+		return packageOption;
+	}
+
+	public PackageOption removePackageOption(PackageOption packageOption) {
+		getPackageOptions().remove(packageOption);
+		packageOption.setPackageData(null);
+
+		return packageOption;
 	}
 
 }
