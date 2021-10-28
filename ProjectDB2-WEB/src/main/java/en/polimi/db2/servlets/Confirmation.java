@@ -1,6 +1,8 @@
 package en.polimi.db2.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
@@ -75,10 +77,14 @@ public class Confirmation extends HttpServlet {
 		System.out.println("pack selection:" + packSelection+ "-----validity id:"+validity);
 		Integer idPack=-1;
 		Integer idValidity =-1;
+		List<Integer> idOptional = new ArrayList<Integer>();
 		if(ins.checkString(packSelection)&& ins.checkString(validity)) {
 			try {
 				idPack=Integer.parseInt(packSelection);
 				idValidity=Integer.parseInt(validity);
+				for(int i=0; i<options.length;i++) {
+					idOptional.add(Integer.parseInt(options[i]));
+				}
 			}catch (Exception e) {
 				//qualche merda
 			}
@@ -94,7 +100,7 @@ public class Confirmation extends HttpServlet {
 		
 		validityString=periodService.findValidityWithId(idValidity).getMonth();
 		
-		Float cost = packageService.totalCostForPackage(idPack, idValidity);
+		Float cost = packageService.totalCostForPackage(idPack, idValidity,idOptional);
 		
 		String path = "Templates/Confirmation.html";
 		ServletContext servletContext = getServletContext();
