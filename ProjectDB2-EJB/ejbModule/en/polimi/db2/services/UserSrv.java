@@ -24,7 +24,7 @@ public class UserSrv {
 	}
 
 	public UserData createUser(String username, String password, String mail, boolean isEmployee, boolean isInsolvent) {
-		UserData user = new UserData(username, password, mail, isEmployee, isInsolvent);
+		UserData user = new UserData(mail, password,username , isEmployee, isInsolvent);
 		em.persist(user);
 		return user;
 	}
