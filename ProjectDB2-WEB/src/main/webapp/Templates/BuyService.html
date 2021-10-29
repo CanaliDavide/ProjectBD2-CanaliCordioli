@@ -15,7 +15,7 @@
 	<header>Buy Service</header>
 	<section class="content">
 		<h2>Choose your configuration</h2>
-		<form action="Confirmation" method="post" id="SetUpPackage">
+		<form action="Confirmation" method="get" id="SetUpPackage">
 			<label>select package</label><br> 
 			<select id="packSelection" name="packSelection">
 				<option th:each="package :${packages}"

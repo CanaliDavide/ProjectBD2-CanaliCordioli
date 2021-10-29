@@ -44,6 +44,7 @@ public class Confirmation extends HttpServlet {
     }
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		Utility ins=Utility.getInstance();
 		HttpSession session=request.getSession(false);
 		Integer idUser=-1;
@@ -59,7 +60,8 @@ public class Confirmation extends HttpServlet {
 			}
 			catch(Exception e) {
 				//errore e dice che devi riloggare
-				return;
+				System.out.print("error relog necessary");
+				//return;
 			}
 		}
 		if(idUser!=-1) {
@@ -100,7 +102,7 @@ public class Confirmation extends HttpServlet {
 		
 		validityString=periodService.findValidityWithId(idValidity).getMonth();
 		
-		Float cost = packageService.totalCostForPackage(idPack, idValidity,idOptional);
+		Double cost = packageService.totalCostForPackage(idPack, idValidity,idOptional);
 		
 		String path = "Templates/Confirmation.html";
 		ServletContext servletContext = getServletContext();

@@ -40,8 +40,9 @@ public class PackageSrv {
 		return em.find(PackageData.class, id);
 	}
 	
-	public Float totalCostForPackage(int idPack, int idValidity, List<Integer> idOptionals) {
-		TypedQuery<Float> query = em.createQuery("select (sum(feeMonthly)+feeMonth)*month from package_option join optional_data on idOptional = id, validityperiod AS vp WHERE idPackage = ?1 and vp.id = ?2 and idOptional in ?3", Float.class);
+	public Double totalCostForPackage(int idPack, int idValidity, List<Integer> idOptionals) {
+		TypedQuery<Double> query = em.createQuery("select (sum(od.feeMonthly)+vp.feeMonth)*vp.month from PackageOption po join OptionalData od on po.id.idOptional = od.id, Validityperiod vp"
+				+ " where po.id.idPackage = ?1 and vp.id = ?2 and od.id in ?3", Double.class);
 		return query.setParameter(1, idPack).setParameter(2, idValidity).setParameter(3, idOptionals).getSingleResult();
 	}
 	
