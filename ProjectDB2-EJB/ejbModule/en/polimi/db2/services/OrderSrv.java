@@ -26,11 +26,9 @@ public class OrderSrv {
 	public OrderSrv() {}
 	
 	public OrderData createOrder(Date dataActivation, Timestamp dateTime, boolean isValid, int numberOfInvalid, float totalCost,
-			List<OptionalData> optionalData, PackageData packageData, UserData userData, Validityperiod validityperiod,
-			List<OrderOption> orderOptions) {
+			List<OptionalData> optionalData, PackageData packageData, UserData userData, Validityperiod validityperiod) {
 		OrderData order = new OrderData(dataActivation, dateTime, isValid, numberOfInvalid, totalCost,
-				optionalData, packageData, userData, validityperiod,
-				orderOptions);
+				optionalData, packageData, userData, validityperiod);
 		em.persist(order);
 		return order;
 	}

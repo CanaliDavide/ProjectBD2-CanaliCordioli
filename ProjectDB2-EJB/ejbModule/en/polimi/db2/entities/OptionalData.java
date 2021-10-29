@@ -12,7 +12,8 @@ import java.util.List;
 @Entity
 @Table(name="optional_data")
 @NamedQueries({
-	@NamedQuery(name="OptionalData.findAll", query="SELECT o FROM OptionalData o")
+	@NamedQuery(name="OptionalData.findAll", query="SELECT o FROM OptionalData o"),
+	@NamedQuery(name="OptionalData.findByIds", query="SELECT o FROM OptionalData o where o.id in ?1")
 })
 public class OptionalData implements Serializable {
 	private static final long serialVersionUID = 1L;

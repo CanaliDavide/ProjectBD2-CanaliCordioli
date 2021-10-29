@@ -6,23 +6,28 @@
 	<link href="./CSS/CssDefault.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
-	<span id="right" th:if="${isLogged}" th:text="user.username">Matteo</span>
+	<span id="right" th:if="${isLogged}" th:text="${name}">Matteo</span>
 	<span id ="right" th:unless="${isLogged}"><a href="">SingIn</a></span>
 	<header>Confirm</header>
 	<section class="content">
 		<h2>Confirm your order</h2>
 		<p th:text="${namePack}">My package</p>
+		<p th:text="${#dates.format(dateOfActivation, 'dd-MM-yyyy')}"></p>
 		<p><span th:text="${validityString}"></span> months</p>
 		<p>Optional product:</p>
 		
-		<p>Total cost: <span th:text="${cost}">500</span>$</p>
-		
 		<ul th:remove="all-but-first">											
-			<li th:each="option : ${order.options}">
+			<li th:each="option : ${options}">
 				<p th:text="${option.name}">option 1</p>
 			</li>
 			<li>option 2</li>
-		</ul><button th:if="${isLogged}">Buy</button>
+		</ul>
+		
+		<p>Total cost: <span th:text="${cost}">500</span>$</p>
+		
+		<form action="BuyOrder" method="post">
+			<button th:if="${isLogged}">Buy</button>
+		</form>
 		<button th:unless="${isLogged}">You need to be singed in to purchase</button>
 	</section>
 </body>

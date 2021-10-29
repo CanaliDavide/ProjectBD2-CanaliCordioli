@@ -25,4 +25,9 @@ public class OptionalSrv {
 		return optional;
 	}
 	
+	public List<OptionalData> findByIds(List<Integer> ids){
+		TypedQuery<OptionalData> query = em.createNamedQuery("OptionalData.findByIds", OptionalData.class);
+		return query.setParameter(1, ids).getResultList();
+	}
+	
 }

@@ -1,8 +1,13 @@
 package en.polimi.db2.servlets;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
@@ -17,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
+import en.polimi.db2.services.OptionalSrv;
 import en.polimi.db2.services.PackageSrv;
 import en.polimi.db2.services.PeriodSrv;
 import en.polimi.db2.services.UserSrv;
@@ -37,6 +43,8 @@ public class Confirmation extends HttpServlet {
 	private PackageSrv packageService;
 	@EJB
 	private PeriodSrv periodService;
+	@EJB
+	private OptionalSrv optionalService;
 	
     public void init() throws ServletException{	
     	ServletContext context = getServletContext();
@@ -44,7 +52,6 @@ public class Confirmation extends HttpServlet {
     }
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		Utility ins=Utility.getInstance();
 		HttpSession session=request.getSession(false);
 		Integer idUser=-1;
@@ -72,7 +79,18 @@ public class Confirmation extends HttpServlet {
 		String packSelection = request.getParameter("packSelection"); //id pack scelto
 		String validity = request.getParameter("ValidityPeriod");//id validity perido
 		String[] options = request.getParameterValues("opt"); // non so bene cosa cazzo ci sia dentro -- ho scoperto che contiene gli id degli option selezioanti
-	
+	    String activationDate = request.getParameter("activationDate");
+		
+	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALIAN);
+	    
+	    Date actDate = null;
+	    try {
+			 actDate = formatter.parse(activationDate);
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		for(int i=0;i<options.length;i++){
 		    System.out.println("Option: "+options[i]);
 		}
@@ -109,9 +127,20 @@ public class Confirmation extends HttpServlet {
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("isLogged", isLogged);
 		ctx.setVariable("name", username);
+		ctx.setVariable("idPack", idPack);
 		ctx.setVariable("namePack", namePack);
+		ctx.setVariable("idVal", idValidity);
 		ctx.setVariable("validityString", validityString);
 		ctx.setVariable("cost", cost);
+		ctx.setVariable("options", optionalService.findByIds(idOptional));
+		ctx.setVariable("dateOfActivation", actDate);
+		
+		session.setAttribute("idPack", idPack);
+		session.setAttribute("idVal", idValidity);
+		session.setAttribute("cost", cost);
+		session.setAttribute("options", optionalService.findByIds(idOptional));
+		session.setAttribute("dateOfActivation", actDate);
+		
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 

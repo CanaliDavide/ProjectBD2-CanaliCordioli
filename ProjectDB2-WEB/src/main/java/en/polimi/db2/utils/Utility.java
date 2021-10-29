@@ -42,6 +42,9 @@ public class Utility {
 		return ld.isAfter(date);
 	}
 	
+	public boolean externalService() {
+		return Math.random() < 0.5 ? true : false;
+	}
 	
 	
 }
