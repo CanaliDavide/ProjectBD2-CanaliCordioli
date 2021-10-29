@@ -8,6 +8,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import en.polimi.db2.entities.OptionalData;
 import en.polimi.db2.entities.OrderData;
@@ -29,7 +30,15 @@ public class OrderSrv {
 			List<OptionalData> optionalData, PackageData packageData, UserData userData, Validityperiod validityperiod) {
 		OrderData order = new OrderData(dataActivation, dateTime, isValid, numberOfInvalid, totalCost,
 				optionalData, packageData, userData, validityperiod);
+		
+		em.find(UserData.class, userData.getId()).setIsInsolvent(!isValid);
+	
 		em.persist(order);
 		return order;
+	}
+
+	public List<OrderData> findAllRejectedWithUserId(int id) {
+		TypedQuery<OrderData> query = em.createQuery("select o from OrderData o where o.userData = ?1 and o.isValid = 0", OrderData.class);
+		return query.setParameter(1, em.find(UserData.class, id)).getResultList();
 	}
 }

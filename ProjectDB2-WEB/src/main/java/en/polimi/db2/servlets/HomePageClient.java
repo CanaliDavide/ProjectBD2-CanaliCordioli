@@ -15,7 +15,9 @@ import javax.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
+import en.polimi.db2.entities.OrderData;
 import en.polimi.db2.entities.PackageData;
+import en.polimi.db2.services.OrderSrv;
 import en.polimi.db2.services.PackageSrv;
 import en.polimi.db2.services.UserSrv;
 import en.polimi.db2.utils.Utility;
@@ -28,9 +30,10 @@ public class HomePageClient extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	@EJB
 	private UserSrv userService;
-    
 	@EJB
 	private PackageSrv packageService;
+	@EJB
+	private OrderSrv orderService;
 	
 	private TemplateEngine templateEngine;
     
@@ -51,6 +54,7 @@ public class HomePageClient extends HttpServlet {
 		Integer idUser=-1;
 		boolean isLogged=false;
 		String username="";
+		boolean isInsolvent = false;
 		if(session==null) {
 			//errore e dice che devi riloggare
 			return;
@@ -67,8 +71,10 @@ public class HomePageClient extends HttpServlet {
 		if(idUser!=-1) {
 			isLogged=true;
 			username=userService.findUser(idUser).getUsername();
+			isInsolvent = userService.findUser(idUser).getIsInsolvent();
 		}
 		List<PackageData> packages=packageService.findAllPackage();
+		List<OrderData> orders = orderService.findAllRejectedWithUserId(idUser);
 		
 		String path = "Templates/HomeClient.html";
 		ServletContext servletContext = getServletContext();
@@ -76,6 +82,8 @@ public class HomePageClient extends HttpServlet {
 		ctx.setVariable("isLogged", isLogged);
 		ctx.setVariable("name", username);
 		ctx.setVariable("packages", packages);
+		ctx.setVariable("isInsolvent", isInsolvent);
+		ctx.setVariable("rejectedOrders", orders);
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 

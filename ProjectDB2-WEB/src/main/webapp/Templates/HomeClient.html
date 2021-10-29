@@ -40,7 +40,7 @@
 	<section class="content" th:if="${isInsolvent}">
 		<h2>List of rejected orders</h2>
 		<a th:each="order : ${rejectedOrders}" th:href="@{/LoadConfirm(idOrder=${order.id})}" href="">
-			<span th:text="${order.name}">Name order</span> - cost <span th:text="${order.cost}">500$</span>
+			<span th:text="${order.packageData.name}">Name order</span> - cost <span th:text="${order.totalCost}">500$</span>
 		</a>
 	</section>
 </body>

@@ -106,8 +106,10 @@ public class BuyOrder extends HttpServlet {
 		int idPack = (int) session.getAttribute("idPack");
 		int idValidity = (int) session.getAttribute("idVal");
 		
+		
 		orderService.createOrder(actDate, datetime, isValid, numberOfInvalid, totalCost, optionals,
 				packageService.findPackageWithId(idPack), userService.findUser(idUser), periodService.findValidityWithId(idValidity));
+		
 		
 		response.sendRedirect("HomePageClient");
 	}
