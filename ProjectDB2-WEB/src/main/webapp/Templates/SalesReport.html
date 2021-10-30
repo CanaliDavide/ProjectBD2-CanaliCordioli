@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SalesReport</title>
+	<style type="text/css"></style>
+	<link href="./CSS/CssDefault.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+	<span id="right" th:text="user.username">Matteo</span>
+	<header>Sales Report</header>
+	
+	<section  class="content">
+		<table>
+			<tr>
+				<th><a href="">Query 1</a></th>
+				<th><a href="">Query 2</a></th>
+				<th><a href="">Query 3</a></th>
+				<th><a href="">Query 4</a></th>
+				<th><a href="">Query 5</a></th>
+				<th><a href="">Query 6</a></th>
+			</tr>
+		</table>
+	</section>
+	
+
+	<section class="content" th:if="${}">
+		<h2>purchases per package</h2>
+		<section class="insider" >
+			<table>
+				<tr>
+					<th>IdPackage</th>
+					<th>NamePackage</th>
+					<th>Purchases</th>
+				</tr>
+				<tr th:each="package : ${packages}">
+					<td th:text="${package.getId()}">1</td>
+					<td th:text="${package.getName()}">pippo</td>
+					<td th:text="${package.getAmount()}">5</td>
+				</tr>
+			</table>
+		</section>
+	</section>
+
+	<section class="content" th:if="${}">
+		<h2>purchases per package and validity period</h2>
+		<section class="insider" >
+			<table>
+				<tr>
+					<th>IdPackage</th>
+					<th>NamePackage</th>
+					<th>Purchases</th>
+					<th>ValidityPeriod</th>
+				</tr>
+				<tr th:each="package : ${packages}">
+					<td th:text="${package.getId()}">1</td>
+					<td th:text="${package.getName()}">pippo</td>
+					<td th:text="${package.getAmount()}">5</td>
+					<td th:text="${package.getValidity()}">36</td>
+				</tr>
+			</table>
+		</section>
+	</section>
+
+	<section class="content" th:if="${}">
+		<h2>income per package with and without optionals</h2>
+		<section class="insider" >
+			<table>
+				<tr>
+					<th>IdPackage</th>
+					<th>NamePackage</th>
+					<th>IncomeNoOptional</th>
+					<th>IncomeWithOptional</th>
+				</tr>
+				<tr th:each="package : ${packages}">
+					<td th:text="${package.getId()}">1</td>
+					<td th:text="${package.getName()}">pippo</td>
+					<td th:text="${package.IncomeNoOptional()}">5</td>
+					<td th:text="${package.IncomeWithOptional()}">36</td>
+				</tr>
+			</table>
+		</section>
+	</section>
+
+	<section class="content" th:if="${}">
+		<h2>avarage per package of optional purchased</h2>
+		<section class="insider" >
+			<table>
+				<tr>
+					<th>IdPackage</th>
+					<th>NamePackage</th>
+					<th>AvarageOfOptionals</th>
+				</tr>
+				<tr th:each="package : ${packages}">
+					<td th:text="${package.getId()}">1</td>
+					<td th:text="${package.getName()}">pippo</td>
+					<td th:text="${package.AvarageOfOptionals()}">5</td>
+				</tr>
+			</table>
+		</section>
+	</section>
+
+	<section class="content" th:if="${}">
+		<h2>list of insolvent (da vedere con la query fatta)</h2>
+		<section class="insider" >
+			<table>
+				<tr>
+					<th>IdPackage</th>
+					<th>NamePackage</th>
+					<th>AvarageOfOptionals</th>
+				</tr>
+				<tr th:each="package : ${packages}">
+					<td th:text="${package.getId()}">1</td>
+					<td th:text="${package.getName()}">pippo</td>
+					<td th:text="${package.AvarageOfOptionals()}">5</td>
+				</tr>
+			</table>
+		</section>
+	</section>
+
+	<section class="content" th:if="${}">
+		<h2>best seller optional product</h2>
+		<section class="insider">
+			<table>
+				<tr>
+					<th>IdOptional</th>
+					<th>NameOptional</th>
+					<th>Income</th>
+				</tr>
+				<tr th:each="optional : ${optionals}">
+					<td th:text="${optional.getId()}">1</td>
+					<td th:text="${optional.getName()}">pippo</td>
+					<td th:text="${optional.getIncome()}">5</td>
+				</tr>
+			</table>
+		</section>
+	</section>
+
+</body>
+</html>

@@ -79,7 +79,13 @@ public class Login extends HttpServlet {
 		        session.setAttribute("idUser",user.getId());
 		        boolean isFromCofirm=false;
 		        if(session.getAttribute("comingFromConfirm")==null) {
-		        	response.sendRedirect("HomePageClient");
+		        	if(user.getIsEmployee()) {
+		        		response.sendRedirect("HomePageEmployee");
+		        	}
+		        	else {
+		        		response.sendRedirect("HomePageClient");
+		        	}
+		        	
 		        	//System.out.println("In homepage");
 		        }
 		        else {
