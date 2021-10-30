@@ -71,7 +71,9 @@ public class BuyService extends HttpServlet {
 		}
 		else {
 			try {
-				idUser=(Integer)session.getAttribute("idUser"); 
+				if(session.getAttribute("idUser")!=null) {
+					idUser=(Integer)session.getAttribute("idUser");
+				}
 			}
 			catch(Exception e) {
 				//errore e dice che devi riloggare
