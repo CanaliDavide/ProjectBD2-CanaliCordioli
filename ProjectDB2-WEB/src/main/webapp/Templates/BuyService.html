@@ -11,6 +11,7 @@
 
 
 	<span id="right" th:if="${isLogged}" th:text="${name}">Matteo</span>
+	<span id="right"><a th:if="${isLogged}" th:href="@{/Login}">Logout</a> |</span>
 	<span id="right" th:unless="${isLogged}"><a href="">SingIn</a></span>
 	<header>Buy Service</header>
 	<section class="content">

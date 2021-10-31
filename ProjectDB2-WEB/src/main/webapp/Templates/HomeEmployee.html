@@ -7,6 +7,7 @@
 </head>
 <body>
 	<span id="right" th:text="${name}">Matteo</span>
+	<span id="right"><a th:if="${isLogged}" th:href="@{/Login}">Logout</a> |</span>
 	<header>Home Employee</header>
 
 	<section class="content">
