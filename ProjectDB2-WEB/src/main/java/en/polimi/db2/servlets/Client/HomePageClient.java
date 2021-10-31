@@ -1,4 +1,4 @@
-package en.polimi.db2.servlets;
+package en.polimi.db2.servlets.Client;
 
 import java.io.IOException;
 import java.util.List;
@@ -55,27 +55,30 @@ public class HomePageClient extends HttpServlet {
 		boolean isLogged=false;
 		String username="";
 		boolean isInsolvent = false;
+		List<OrderData> orders = null;
 		if(session==null) {
 			//errore e dice che devi riloggare
 			return;
 		}
 		else {
 			try {
-				idUser=(Integer)session.getAttribute("idUser"); 
+				idUser = (Integer) session.getAttribute("idUser"); 
 			}
 			catch(Exception e) {
 				//errore e dice che devi riloggare
 				return;
 			}
 		}
-		if(idUser!=-1) {
+		
+		if(idUser != null && idUser != -1) {
 			isLogged=true;
 			username=userService.findUser(idUser).getUsername();
 			isInsolvent = userService.findUser(idUser).getIsInsolvent();
+			orders = orderService.findAllRejectedWithUserId(idUser);
 		}
-		List<PackageData> packages=packageService.findAllPackage();
-		List<OrderData> orders = orderService.findAllRejectedWithUserId(idUser);
 		
+		List<PackageData> packages=packageService.findAllPackage();
+				
 		String path = "Templates/HomeClient.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());

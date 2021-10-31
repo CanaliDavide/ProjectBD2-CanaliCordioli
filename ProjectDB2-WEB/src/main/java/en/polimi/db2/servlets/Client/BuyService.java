@@ -1,4 +1,4 @@
-package en.polimi.db2.servlets;
+package en.polimi.db2.servlets.Client;
 
 import java.io.IOException;
 import java.util.List;
@@ -78,7 +78,7 @@ public class BuyService extends HttpServlet {
 				return;
 			}
 		}
-		if(idUser!=-1) {
+		if(idUser != null && idUser!=-1) {
 			isLogged=true;
 			username=userService.findUser(idUser).getUsername();
 		}

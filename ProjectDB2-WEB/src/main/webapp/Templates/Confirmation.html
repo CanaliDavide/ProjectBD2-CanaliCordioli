@@ -28,7 +28,9 @@
 		<form action="BuyOrder" method="post">
 			<button th:if="${isLogged}">Buy</button>
 		</form>
-		<button th:unless="${isLogged}">You need to be singed in to purchase</button>
+		<form action="Login" method="get">
+			<button th:unless="${isLogged}">You need to be singed in to purchase</button>
+		</form>
 	</section>
 </body>
 </html>

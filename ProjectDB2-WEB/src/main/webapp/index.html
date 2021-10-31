@@ -19,19 +19,21 @@
   				<input type="password" id="passwordLogIn" name="passwordLogIn"  minlength="3" required><br>
 			</form>		
 			<button type="submit" form="AccessForm" value="Submit">Login</button>
-			<button>Continue as Guest</button>
+			<form action="HomePageClient" method="get">
+				<button >Continue as Guest</button>
+			</form>
 		</section>	
 			<br>
 		<section class="boxCenter">
 			<h2>Need a new account?<span th:if="${newUserCreated}">new user created!</span></h2>			
 			<form action="CreateUser" method="post" id="RegistrationForm">
-  				<label for="useremail">email:</label><br>
+  				<label for="useremail"> email: </label><br>
   				<input type="email" id="useremail" name="useremail" required>	<br>
-  				<label for="userpswd1">password:</label><br>
+  				<label for="userpswd1"> password: </label><br>
 	  			<input type="password" id="userpswd1" name="userpswd1"  minlength="3" required><br>
-	  			<label for="userpswd2">ripeti password:</label><br>
+	  			<label for="userpswd2"> ripeti password: </label><br>
 	  			<input type="password" id="userpswd2" name="userpswd2"  minlength="3" required> <br>
-  				<label for="username">username:</label><br>
+  				<label for="username"> username: </label><br>
   				<input type="text" id="username" name="username" required>	   	<br>							
   			</form>
   			<button  type="submit" form="RegistrationForm" value="Submit">Register</button>	

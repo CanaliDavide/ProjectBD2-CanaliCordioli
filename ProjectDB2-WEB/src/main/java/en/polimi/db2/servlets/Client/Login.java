@@ -1,4 +1,4 @@
-package en.polimi.db2.servlets;
+package en.polimi.db2.servlets.Client;
 
 import java.io.IOException;
 import javax.servlet.ServletContext;
@@ -63,7 +63,7 @@ public class Login extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Utility ins=Utility.getInstance();
+		Utility ins = Utility.getInstance();
 		String mail = request.getParameter("emailLogIn");
 		String password = request.getParameter("passwordLogIn");
 		UserData user=null;
@@ -77,16 +77,13 @@ public class Login extends HttpServlet {
 			if(user!=null) {
 				HttpSession session=request.getSession(true);  
 		        session.setAttribute("idUser",user.getId());
-		        boolean isFromCofirm=false;
-		        if(session.getAttribute("comingFromConfirm")==null) {
+		        Boolean isFromConfirm=(Boolean) session.getAttribute("isFromConfirm");
+		        if(isFromConfirm == null || !isFromConfirm ) {
 		        	response.sendRedirect("HomePageClient");
-		        	//System.out.println("In homepage");
 		        }
 		        else {
-		        	isFromCofirm=(boolean) session.getAttribute("comingFromConfirm");
-		        	response.sendRedirect("ConfirmationPage");
+		        	response.sendRedirect("Confirmation");
 		        }
-		    
 			}
 			else {
 				HttpSession session=request.getSession(false); 

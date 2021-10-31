@@ -1,4 +1,4 @@
-package en.polimi.db2.servlets;
+package en.polimi.db2.servlets.Client;
 
 import java.io.IOException;
 

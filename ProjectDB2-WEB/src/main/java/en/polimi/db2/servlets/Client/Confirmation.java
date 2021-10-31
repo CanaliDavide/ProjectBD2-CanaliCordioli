@@ -1,4 +1,4 @@
-package en.polimi.db2.servlets;
+package en.polimi.db2.servlets.Client;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -71,11 +71,11 @@ public class Confirmation extends HttpServlet {
 				//return;
 			}
 		}
-		if(idUser!=-1) {
+		if(idUser != null && idUser!=-1) {
 			isLogged=true;
 			username=userService.findUser(idUser).getUsername();
 		}
-		
+	
 		String packSelection = request.getParameter("packSelection"); //id pack scelto
 		String validity = request.getParameter("ValidityPeriod");//id validity perido
 		String[] options = request.getParameterValues("opt"); // non so bene cosa cazzo ci sia dentro -- ho scoperto che contiene gli id degli option selezioanti
@@ -94,6 +94,7 @@ public class Confirmation extends HttpServlet {
 		for(int i=0;i<options.length;i++){
 		    System.out.println("Option: "+options[i]);
 		}
+		
 		System.out.println("pack selection:" + packSelection+ "-----validity id:"+validity);
 		Integer idPack=-1;
 		Integer idValidity =-1;
@@ -135,6 +136,7 @@ public class Confirmation extends HttpServlet {
 		ctx.setVariable("options", optionalService.findByIds(idOptional));
 		ctx.setVariable("dateOfActivation", actDate);
 		
+		session.setAttribute("isFromConfirm", true);
 		session.setAttribute("idPack", idPack);
 		session.setAttribute("idVal", idValidity);
 		session.setAttribute("cost", cost);
