@@ -23,10 +23,8 @@ public class PackageSrv {
 	
 	public PackageSrv() {}
 	
-	public PackageData createPackage(String name, List<OrderData> orderData, List<OptionalData> optionalData,
-			List<PackageService> packageServices, List<Service> services, List<PackageOption> packageOptions) {
-		PackageData newPackage = new PackageData(name, orderData, optionalData,
-				packageServices, services, packageOptions);
+	public PackageData createPackage(String name, List<OptionalData> optionalData, List<Service> services) {
+		PackageData newPackage = new PackageData(name, optionalData, services);
 		em.persist(newPackage);
 		return newPackage;
 	}

@@ -104,12 +104,12 @@ public class BuyOrder extends HttpServlet {
 		
 		int numberOfInvalid = isValid? 0:1;
 		
-		List<OptionalData> optionals = (List<OptionalData>) session.getAttribute("options");
+		List<Integer> optionals = (List<Integer>) session.getAttribute("options");
 		int idPack = (int) session.getAttribute("idPack");
 		int idValidity = (int) session.getAttribute("idVal");
 		
 		
-		orderService.createOrder(actDate, datetime, isValid, numberOfInvalid, totalCost, optionals,
+		orderService.createOrder(actDate, datetime, isValid, numberOfInvalid, totalCost,  optionalService.findByIds(optionals),
 				packageService.findPackageWithId(idPack), userService.findUser(idUser), periodService.findValidityWithId(idValidity));
 		
 		

@@ -4,18 +4,20 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.util.List;
 
-
 /**
  * The persistent class for the service database table.
  * 
  */
 @Entity
-@NamedQuery(name="Service.findAll", query="SELECT s FROM Service s")
+@NamedQueries({ 
+	@NamedQuery(name = "Service.findAll", query = "SELECT s FROM Service s"),
+	@NamedQuery(name = "Service.findByIds", query = "SELECT s FROM Service s where s.id in ?1") 
+})
 public class Service implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private float feeGiga;
@@ -32,21 +34,14 @@ public class Service implements Serializable {
 
 	private String type;
 
-	//bi-directional many-to-one association to PackageService
-	@OneToMany(mappedBy="service")
+	// bi-directional many-to-one association to PackageService
+	@OneToMany(mappedBy = "service")
 	private List<PackageService> packageServices;
 
-	//bi-directional many-to-many association to PackageData
+	// bi-directional many-to-many association to PackageData
 	@ManyToMany
-	@JoinTable(
-		name="package_service"
-		, joinColumns={
-			@JoinColumn(name="idService")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="idPackage")
-			}
-		)
+	@JoinTable(name = "package_service", joinColumns = { @JoinColumn(name = "idService") }, inverseJoinColumns = {
+			@JoinColumn(name = "idPackage") })
 	private List<PackageData> packageData;
 
 	public Service() {

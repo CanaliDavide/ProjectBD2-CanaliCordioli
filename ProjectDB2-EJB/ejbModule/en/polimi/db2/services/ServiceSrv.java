@@ -22,4 +22,9 @@ public class ServiceSrv {
 		TypedQuery<Service> query = em.createNamedQuery("Service.findAll", Service.class);
 		return query.getResultList();
 	}
+	
+	public List<Service> findByIds(List<Integer> ids){
+		TypedQuery<Service> query = em.createNamedQuery("Service.findByIds", Service.class);
+		return query.setParameter(1, ids).getResultList();
+	}
 }

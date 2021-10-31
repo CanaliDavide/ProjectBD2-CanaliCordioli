@@ -43,7 +43,16 @@ public class PackageData implements Serializable {
 	private List<PackageService> packageServices;
 
 	//bi-directional many-to-many association to Service
-	@ManyToMany(mappedBy="packageData")
+	@ManyToMany
+	@JoinTable(
+		name="package_service"
+		, joinColumns={
+			@JoinColumn(name="idPackage")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="idService")
+			}
+		)
 	private List<Service> services;
 
 	//bi-directional many-to-one association to PackageOption
@@ -53,14 +62,10 @@ public class PackageData implements Serializable {
 	public PackageData() {
 	}
 
-	public PackageData(String name, List<OrderData> orderData, List<OptionalData> optionalData,
-			List<PackageService> packageServices, List<Service> services, List<PackageOption> packageOptions) {
+	public PackageData(String name, List<OptionalData> optionalData, List<Service> services) {
 		this.name = name;
-		this.orderData = orderData;
 		this.optionalData = optionalData;
-		this.packageServices = packageServices;
 		this.services = services;
-		this.packageOptions = packageOptions;
 	}
 
 	public int getId() {

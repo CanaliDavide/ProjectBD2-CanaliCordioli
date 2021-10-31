@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
+import en.polimi.db2.entities.OptionalData;
 import en.polimi.db2.services.OptionalSrv;
 import en.polimi.db2.services.PackageSrv;
 import en.polimi.db2.services.PeriodSrv;
@@ -83,37 +84,48 @@ public class Confirmation extends HttpServlet {
 		String[] options = request.getParameterValues("opt"); // non so bene cosa cazzo ci sia dentro -- ho scoperto che contiene gli id degli option selezioanti
 	    String activationDate = request.getParameter("activationDate");
 		
-	    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALIAN);
 	    
 	    Date actDate = null;
-	    try {
-			 actDate = formatter.parse(activationDate);
-		} catch (ParseException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		for(int i=0;i<options.length;i++){
-		    System.out.println("Option: "+options[i]);
-		}
-		
-		System.out.println("pack selection:" + packSelection+ "-----validity id:"+validity);
 		Integer idPack=-1;
 		Integer idValidity =-1;
 		List<Integer> idOptional = new ArrayList<Integer>();
-		if(ins.checkString(packSelection)&& ins.checkString(validity) ) {
-			try {
-				idPack=Integer.parseInt(packSelection);
-				idValidity=Integer.parseInt(validity);
-				if(options!=null) {
-					for(int i=0; i<options.length;i++) {
-						idOptional.add(Integer.parseInt(options[i]));
-					}
-				}
-			}catch (Exception e) {
-				//qualche merda
+	    if(packSelection == null || validity == null || options == null || activationDate == null) {
+	    	idPack = (Integer) session.getAttribute("idPack");
+	    	idValidity = (Integer) session.getAttribute("idVal");
+	    	idOptional = (List<Integer>) session.getAttribute("options");
+	    	actDate = (Date) session.getAttribute("dateOfActivation");	
+	    }else {
+	    	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALIAN);
+		    
+		    
+		    try {
+				 actDate = formatter.parse(activationDate);
+			} catch (ParseException e1) {
+				e1.printStackTrace();
 			}
-		}
+			
+			for(int i=0;i<options.length;i++){
+			    System.out.println("Option: "+options[i]);
+			}
+			
+			System.out.println("pack selection:" + packSelection+ "-----validity id:"+validity);
+
+			if(ins.checkString(packSelection)&& ins.checkString(validity) ) {
+				try {
+					idPack=Integer.parseInt(packSelection);
+					idValidity=Integer.parseInt(validity);
+					if(options!=null) {
+						for(int i=0; i<options.length;i++) {
+							idOptional.add(Integer.parseInt(options[i]));
+						}
+					}
+				}catch (Exception e) {
+					//qualche merda
+				}
+			}
+	    }
+	    
+	    
 		
 		//se sono qua vuol dire tutti gli id sono validi!
 		//ora li posso veramente salvare nella session
@@ -125,7 +137,10 @@ public class Confirmation extends HttpServlet {
 		
 		validityString=periodService.findValidityWithId(idValidity).getMonth();
 		
-		Double cost = packageService.totalCostForPackage(idPack, idValidity,idOptional);
+		Double cost = packageService.totalCostForPackage(idPack, idValidity, idOptional);
+		
+		List<OptionalData> optionalsData = optionalService.findByIds(idOptional);
+		
 		
 		String path = "Templates/Confirmation.html";
 		ServletContext servletContext = getServletContext();
@@ -137,14 +152,14 @@ public class Confirmation extends HttpServlet {
 		ctx.setVariable("idVal", idValidity);
 		ctx.setVariable("validityString", validityString);
 		ctx.setVariable("cost", cost);
-		ctx.setVariable("options", optionalService.findByIds(idOptional));
+		ctx.setVariable("options", optionalsData);
 		ctx.setVariable("dateOfActivation", actDate);
 		
 		session.setAttribute("isFromConfirm", true);
 		session.setAttribute("idPack", idPack);
-		session.setAttribute("idVal", idValidity);
 		session.setAttribute("cost", cost);
-		session.setAttribute("options", optionalService.findByIds(idOptional));
+		session.setAttribute("idVal", idValidity);
+		session.setAttribute("options", idOptional);
 		session.setAttribute("dateOfActivation", actDate);
 		
 		templateEngine.process(path, ctx, response.getWriter());

@@ -28,10 +28,14 @@ public class OrderSrv {
 	
 	public OrderData createOrder(Date dataActivation, Timestamp dateTime, boolean isValid, int numberOfInvalid, float totalCost,
 			List<OptionalData> optionalData, PackageData packageData, UserData userData, Validityperiod validityperiod) {
+		
 		OrderData order = new OrderData(dataActivation, dateTime, isValid, numberOfInvalid, totalCost,
 				optionalData, packageData, userData, validityperiod);
 		
-		em.find(UserData.class, userData.getId()).setIsInsolvent(!isValid);
+	
+		UserData user = em.find(UserData.class, userData.getId());
+		if(!user.getIsInsolvent() && !isValid)
+			user.setIsInsolvent(true);
 	
 		em.persist(order);
 		return order;
@@ -41,4 +45,6 @@ public class OrderSrv {
 		TypedQuery<OrderData> query = em.createQuery("select o from OrderData o where o.userData = ?1 and o.isValid = 0", OrderData.class);
 		return query.setParameter(1, em.find(UserData.class, id)).getResultList();
 	}
+	
+	
 }

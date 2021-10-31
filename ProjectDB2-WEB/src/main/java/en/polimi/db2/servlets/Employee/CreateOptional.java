@@ -1,8 +1,6 @@
-package en.polimi.db2.servlets;
+package en.polimi.db2.servlets.Employee;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -12,17 +10,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import en.polimi.db2.services.OptionalSrv;
 import en.polimi.db2.services.UserSrv;
+import en.polimi.db2.utils.Utility;
 
 /**
- * Servlet implementation class CreatePackage
+ * Servlet implementation class CreateOptional
  */
-@WebServlet("/CreatePackage")
-public class CreatePackage extends HttpServlet {
+@WebServlet("/CreateOptional")
+public class CreateOptional extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
 	@EJB
 	private UserSrv userService;
+	@EJB
+	private OptionalSrv optionalService;
+	
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session=request.getSession(false);
@@ -50,38 +53,23 @@ public class CreatePackage extends HttpServlet {
 			return;
 		}
 		
-		String[] options = request.getParameterValues("opt");
-		String[] services = request.getParameterValues("serv");
-		String namePackage = request.getParameter("packageName");
-		
-		List<Integer> optionsInteger=new ArrayList<Integer>();
-		List<Integer> servicesInteger=new ArrayList<Integer>();
-		
-		if(options!=null) {
+		String nameOptional = request.getParameter("optionName");
+		String feeString = request.getParameter("feeMonthly");
+		Float fee=null;
+		if(Utility.getInstance().checkString(feeString) && Utility.getInstance().checkString(nameOptional)) {
 			try {
-				for(int i=0; i<options.length; i++) {
-					optionsInteger.add(Integer.parseInt(options[i]));
-				}
+				fee= Float.valueOf(feeString);
 			}catch(Exception e) {
 				//errore
 			}
 		}
-		
-		if(services!=null) {
-			try {
-				for(int i=0; i<services.length; i++) {
-					servicesInteger.add(Integer.parseInt(services[i]));
-				}
-			}catch(Exception e) {
-				//errore
-			}
+		else {
+			//errore
 		}
 		
-		//do query to insert all the data in the m-m table and to add the package 
-		
+		optionalService.createOptional(fee, nameOptional);
 		
 		response.sendRedirect("HomePageEmployee");
 	}
-
 
 }

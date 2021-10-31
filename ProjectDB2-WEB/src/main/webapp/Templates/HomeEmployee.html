@@ -6,12 +6,12 @@
 	<link href="./CSS/CssDefault.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
-	<span id="right" th:text="user.username">Matteo</span>
+	<span id="right" th:text="${name}">Matteo</span>
 	<header>Home Employee</header>
 
 	<section class="content">
 		<h3>Create new Package</h3>
-		<form action="CreatePackage" method="post" id="CreatePackagaeForm">
+		<form action="CreatePackage" method="post" id="CreatePackageForm">
 			<label>package name</label><br>
 			<input type="text" name="packageName" id="packageName" required>
 
@@ -32,18 +32,18 @@
 			</fieldset>
 		</form>
 		<br>
-		<button type="submit" form="CreatePackagaeForm" value="Submit">CreatePackage</button>
+		<button type="submit" form="CreatePackageForm" value="Submit">CreatePackage</button>
 	</section>
 
 	<section class="content">
 		<h3>Create new Optional</h3>
-		<form action="" method="post" id="CreeateOptional">
+		<form action="CreateOptional" method="post" id="CreateOptional">
 			<label>option name</label><br>
 			<input type="text" name="optionName" id="optionName" required><br>
 			<label>fee monthly</label><br>
 			<input type="number" name="feeMonthly" id="feeMonthly" step="0.01" required>
 		</form>
 		<br>
-		<button type="submit" form="AccessForm" value="Submit">CreateOptional</button>
+		<button type="submit" form="CreateOptional" value="Submit">CreateOptional</button>
 	</section>
 </html>

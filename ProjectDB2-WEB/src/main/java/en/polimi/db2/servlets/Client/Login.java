@@ -1,4 +1,4 @@
-package en.polimi.db2.servlets;
+package en.polimi.db2.servlets.Client;
 
 import java.io.IOException;
 import javax.servlet.ServletContext;
@@ -27,30 +27,28 @@ public class Login extends HttpServlet {
 	private UserSrv userService;
 
 	private TemplateEngine templateEngine;
-    
-    
-    public void init() throws ServletException{	
-    	ServletContext context = getServletContext();
-        this.templateEngine = Utility.getInstance().connectTemplate(context);
-    }
-	
-	
+
+	public void init() throws ServletException {
+		ServletContext context = getServletContext();
+		this.templateEngine = Utility.getInstance().connectTemplate(context);
+	}
+
 	public Login() {
 		super();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
-		HttpSession session=request.getSession(true);  
-		boolean newUserCreated=false;
-		boolean logInError=false;
-		
-		if(session.getAttribute("newUserCreated")!=null) {
-			newUserCreated=(boolean)session.getAttribute("newUserCreated");
+
+		HttpSession session = request.getSession(true);
+		boolean newUserCreated = false;
+		boolean logInError = false;
+
+		if (session.getAttribute("newUserCreated") != null) {
+			newUserCreated = (boolean) session.getAttribute("newUserCreated");
 		}
-		if(session.getAttribute("logInError")!=null) {
-			logInError=(boolean)session.getAttribute("logInError");
+		if (session.getAttribute("logInError") != null) {
+			logInError = (boolean) session.getAttribute("logInError");
 		}
 		String path = "index.html";
 		ServletContext servletContext = getServletContext();
@@ -58,51 +56,44 @@ public class Login extends HttpServlet {
 		ctx.setVariable("logInError", logInError);
 		ctx.setVariable("newUserCreated", newUserCreated);
 		templateEngine.process(path, ctx, response.getWriter());
-		
+
 	}
-	
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Utility ins=Utility.getInstance();
+		Utility ins = Utility.getInstance();
 		String mail = request.getParameter("emailLogIn");
 		String password = request.getParameter("passwordLogIn");
-		UserData user=null;
-		if(ins.checkString(password) && ins.isMail(mail)) {
+		UserData user = null;
+		if (ins.checkString(password) && ins.isMail(mail)) {
 			try {
-				user=userService.checkCredentials(mail, password);
-			}catch( Exception e ) {
-				//TODO: capire cos afare
+				user = userService.checkCredentials(mail, password);
+			} catch (Exception e) {
+				// TODO: capire cos afare
 				System.out.println("problema con connessione o cose strane");
 			}
-			if(user!=null) {
-				HttpSession session=request.getSession(true);  
-		        session.setAttribute("idUser",user.getId());
-		        boolean isFromCofirm=false;
-		        if(session.getAttribute("comingFromConfirm")==null) {
-		        	if(user.getIsEmployee()) {
-		        		response.sendRedirect("HomePageEmployee");
-		        	}
-		        	else {
-		        		response.sendRedirect("HomePageClient");
-		        	}
-		        	
-		        	//System.out.println("In homepage");
-		        }
-		        else {
-		        	isFromCofirm=(boolean) session.getAttribute("comingFromConfirm");
-		        	response.sendRedirect("ConfirmationPage");
-		        }
-		    
-			}
-			else {
-				HttpSession session=request.getSession(false); 
+			if (user != null) {
+				HttpSession session = request.getSession(true);
+				session.setAttribute("idUser", user.getId());
+				boolean isFromCofirm = false;
+				if (user.getIsEmployee()) {
+					response.sendRedirect("HomePageEmployee");
+				} else {
+					if (session.getAttribute("isFromConfirm") == null) {
+						response.sendRedirect("HomePageClient");
+					} else {
+						isFromCofirm = (boolean) session.getAttribute("isFromConfirm");
+						response.sendRedirect("Confirmation");
+					}
+				}
+			} else {
+				HttpSession session = request.getSession(false);
 				session.setAttribute("logInError", true);
 				doGet(request, response);
 			}
-			
+
 		}
-		
-	
+
 	}
 
 }
