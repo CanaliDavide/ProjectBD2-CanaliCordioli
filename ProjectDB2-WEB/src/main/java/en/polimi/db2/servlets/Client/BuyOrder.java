@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 
 import en.polimi.db2.entities.OptionalData;
+import en.polimi.db2.entities.OrderData;
 import en.polimi.db2.services.OptionalSrv;
 import en.polimi.db2.services.OrderSrv;
 import en.polimi.db2.services.PackageSrv;
@@ -47,16 +48,18 @@ public class BuyOrder extends HttpServlet {
 	UserSrv userService;
 	@EJB
 	PeriodSrv periodService;
-	
+
 	public void init() throws ServletException {
 		ServletContext context = getServletContext();
 		this.templateEngine = Utility.getInstance().connectTemplate(context);
 	}
-	
+
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 	}
 
@@ -66,53 +69,57 @@ public class BuyOrder extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
-		HttpSession session=request.getSession(false);
-		Integer idUser=-1;
-		boolean isLogged=false;
-		String username="";
-		if(session==null) {
-			//errore e dice che devi riloggare
+
+		HttpSession session = request.getSession(false);
+		Integer idUser = -1;
+		boolean isLogged = false;
+		String username = "";
+		if (session == null) {
+			// errore e dice che devi riloggare
 			return;
-		}
-		else {
+		} else {
 			try {
-				if(session.getAttribute("idUser")!=null) {
-					idUser=(Integer)session.getAttribute("idUser");
+				if (session.getAttribute("idUser") != null) {
+					idUser = (Integer) session.getAttribute("idUser");
 				}
-			}
-			catch(Exception e) {
-				//errore e dice che devi riloggare
+			} catch (Exception e) {
+				// errore e dice che devi riloggare
 				System.out.print("error relog necessary");
-				//return;
+				// return;
 			}
 		}
-		if(idUser!=-1) {
-			isLogged=true;
+		if (idUser != -1) {
+			isLogged = true;
 		}
 
-		Double cost = (Double) session.getAttribute("cost");
-		float totalCost = cost.floatValue();
-        
-	    Date actDate = (Date) session.getAttribute("dateOfActivation");
-	    
-	    long currentDate = System.currentTimeMillis();
-		Timestamp datetime = new Timestamp(currentDate);
-		
-		
-		boolean isValid = Utility.getInstance().externalService();
-		
-		int numberOfInvalid = isValid? 0:1;
-		
-		List<Integer> optionals = (List<Integer>) session.getAttribute("options");
-		int idPack = (int) session.getAttribute("idPack");
-		int idValidity = (int) session.getAttribute("idVal");
-		
-		
-		orderService.createOrder(actDate, datetime, isValid, numberOfInvalid, totalCost,  optionalService.findByIds(optionals),
-				packageService.findPackageWithId(idPack), userService.findUser(idUser), periodService.findValidityWithId(idValidity));
-		
-		
+		Integer idOrder = (Integer) session.getAttribute("idOrder");
+		if (idOrder == null) {
+
+			Double cost = (Double) session.getAttribute("cost");
+			float totalCost = cost.floatValue();
+
+			Date actDate = (Date) session.getAttribute("dateOfActivation");
+
+			long currentDate = System.currentTimeMillis();
+			Timestamp datetime = new Timestamp(currentDate);
+
+			boolean isValid = Utility.getInstance().externalService();
+
+			int numberOfInvalid = isValid ? 0 : 1;
+
+			List<Integer> optionals = (List<Integer>) session.getAttribute("options");
+			int idPack = (int) session.getAttribute("idPack");
+			int idValidity = (int) session.getAttribute("idVal");
+
+			orderService.createOrder(actDate, datetime, isValid, numberOfInvalid, totalCost,
+					optionalService.findByIds(optionals), packageService.findPackageWithId(idPack),
+					userService.findUser(idUser), periodService.findValidityWithId(idValidity));
+
+		}else {
+			boolean isValid = Utility.getInstance().externalService();
+			orderService.buyInsolvent(idOrder, idUser, isValid);
+		}
+
 		response.sendRedirect("HomePageClient");
 	}
 
