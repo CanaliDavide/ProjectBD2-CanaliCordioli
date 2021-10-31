@@ -63,7 +63,9 @@ public class Confirmation extends HttpServlet {
 		}
 		else {
 			try {
-				idUser=(Integer)session.getAttribute("idUser"); 
+				if(session.getAttribute("idUser")!=null) {
+					idUser=(Integer)session.getAttribute("idUser");
+				}
 			}
 			catch(Exception e) {
 				//errore e dice che devi riloggare
@@ -99,12 +101,14 @@ public class Confirmation extends HttpServlet {
 		Integer idPack=-1;
 		Integer idValidity =-1;
 		List<Integer> idOptional = new ArrayList<Integer>();
-		if(ins.checkString(packSelection)&& ins.checkString(validity)) {
+		if(ins.checkString(packSelection)&& ins.checkString(validity) ) {
 			try {
 				idPack=Integer.parseInt(packSelection);
 				idValidity=Integer.parseInt(validity);
-				for(int i=0; i<options.length;i++) {
-					idOptional.add(Integer.parseInt(options[i]));
+				if(options!=null) {
+					for(int i=0; i<options.length;i++) {
+						idOptional.add(Integer.parseInt(options[i]));
+					}
 				}
 			}catch (Exception e) {
 				//qualche merda

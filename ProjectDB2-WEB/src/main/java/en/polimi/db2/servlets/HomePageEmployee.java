@@ -15,25 +15,28 @@ import javax.servlet.http.HttpSession;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
-import en.polimi.db2.entities.OrderData;
-import en.polimi.db2.entities.PackageData;
+import en.polimi.db2.entities.OptionalData;
+import en.polimi.db2.entities.Service;
+import en.polimi.db2.services.OptionalSrv;
 import en.polimi.db2.services.OrderSrv;
 import en.polimi.db2.services.PackageSrv;
+import en.polimi.db2.services.ServiceSrv;
 import en.polimi.db2.services.UserSrv;
 import en.polimi.db2.utils.Utility;
 
 /**
- * Servlet implementation class HomePageClient
+ * Servlet implementation class HomePageEmployee
  */
-@WebServlet("/HomePageClient")
-public class HomePageClient extends HttpServlet {
+@WebServlet("/HomePageEmployee")
+public class HomePageEmployee extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+       
 	@EJB
 	private UserSrv userService;
 	@EJB
-	private PackageSrv packageService;
+	private OptionalSrv optionalService;
 	@EJB
-	private OrderSrv orderService;
+	private ServiceSrv serviceService;
 	
 	private TemplateEngine templateEngine;
     
@@ -42,55 +45,48 @@ public class HomePageClient extends HttpServlet {
     	ServletContext context = getServletContext();
         this.templateEngine = Utility.getInstance().connectTemplate(context);
     }
-	
-    public HomePageClient() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
-
+    
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session=request.getSession(false);
 		Integer idUser=-1;
-		boolean isLogged=false;
 		String username="";
-		boolean isInsolvent = false;
 		if(session==null) {
 			//errore e dice che devi riloggare
 			return;
 		}
 		else {
 			try {
-				if(session.getAttribute("idUser")!=null) {
-					idUser=(Integer)session.getAttribute("idUser");
-				}
-				 
+				idUser=(Integer)session.getAttribute("idUser"); 
 			}
 			catch(Exception e) {
 				//errore e dice che devi riloggare
 				return;
 			}
 		}
-		if(idUser!=-1) {
-			isLogged=true;
-			username=userService.findUser(idUser).getUsername();
-			isInsolvent = userService.findUser(idUser).getIsInsolvent();
+		if(userService.findUser(idUser)==null) {
+			//errore
+			return;
 		}
-		List<PackageData> packages=packageService.findAllPackage();
-		List<OrderData> orders = orderService.findAllRejectedWithUserId(idUser);
+		if(!userService.findUser(idUser).getIsEmployee()) {
+			//errore autorizzazione
+			return;
+		}
 		
-		String path = "Templates/HomeClient.html";
+		username=userService.findUser(idUser).getUsername();
+		
+		List<Service> services =  serviceService.findAll();
+		List<OptionalData> optionals = optionalService.findAll();
+		
+		String path = "Templates/HomeEmployee.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		ctx.setVariable("isLogged", isLogged);
 		ctx.setVariable("name", username);
-		ctx.setVariable("packages", packages);
-		ctx.setVariable("isInsolvent", isInsolvent);
-		ctx.setVariable("rejectedOrders", orders);
+		ctx.setVariable("optionals", optionals);
+		ctx.setVariable("services", services);
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
-
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);

@@ -30,4 +30,9 @@ public class OptionalSrv {
 		return query.setParameter(1, ids).getResultList();
 	}
 	
+	public List<OptionalData> findAll(){
+		TypedQuery<OptionalData> query = em.createNamedQuery("OptionalData.findAll", OptionalData.class);
+		return query.getResultList();
+	}
+	
 }
