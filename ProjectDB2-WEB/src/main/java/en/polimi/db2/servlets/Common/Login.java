@@ -1,4 +1,4 @@
-package en.polimi.db2.servlets.Client;
+package en.polimi.db2.servlets.Common;
 
 import java.io.IOException;
 import javax.servlet.ServletContext;
@@ -13,6 +13,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import en.polimi.db2.entities.UserData;
 import en.polimi.db2.services.UserSrv;
+import en.polimi.db2.utils.ErrorManager;
 import en.polimi.db2.utils.Utility;
 import javax.ejb.EJB;
 
@@ -76,8 +77,9 @@ public class Login extends HttpServlet {
 			try {
 				user = userService.checkCredentials(mail, password);
 			} catch (Exception e) {
-				// TODO: capire cos afare
-				System.out.println("problema con connessione o cose strane");
+				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Conection with db failed!", response);
+				return;
+				//System.out.println("problema con connessione o cose strane");
 			}
 			if (user != null) {
 				HttpSession session = request.getSession(true);
@@ -99,6 +101,10 @@ public class Login extends HttpServlet {
 				doGet(request, response);
 			}
 
+		}
+		else {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Missing core parameter!", response);
+			return;
 		}
 
 	}

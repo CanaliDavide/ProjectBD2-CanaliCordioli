@@ -7,7 +7,7 @@
 	<display-name>ProjectDB2-WEB</display-name>
 	<servlet>
 		<servlet-name>Login</servlet-name>
-		<servlet-class>en.polimi.db2.servlets.Client.Login</servlet-class>
+		<servlet-class>en.polimi.db2.servlets.Common.Login</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Login</servlet-name>

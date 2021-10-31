@@ -22,6 +22,7 @@ import en.polimi.db2.services.OptionalSrv;
 import en.polimi.db2.services.PackageSrv;
 import en.polimi.db2.services.PeriodSrv;
 import en.polimi.db2.services.UserSrv;
+import en.polimi.db2.utils.ErrorManager;
 import en.polimi.db2.utils.Utility;
 
 /**
@@ -66,7 +67,7 @@ public class BuyService extends HttpServlet {
 		String numId=request.getParameter("idPack");//controllare che questo esista
 		String username="";
 		if(session==null) {
-			//errore e dice che devi riloggare
+			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
 			return;
 		}
 		else {
@@ -76,7 +77,7 @@ public class BuyService extends HttpServlet {
 				}
 			}
 			catch(Exception e) {
-				//errore e dice che devi riloggare
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
 				return;
 			}
 		}
@@ -93,10 +94,11 @@ public class BuyService extends HttpServlet {
 			try {
 				idPack=Integer.parseInt(numId);
 			}catch(Exception e ) {
-				//errore
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please try again!", response);
+				return;
 			}
 			if(packageService.findPackageWithId(idPack)==null) {
-				//errore
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please try again!", response);
 				return;
 			}
 		}

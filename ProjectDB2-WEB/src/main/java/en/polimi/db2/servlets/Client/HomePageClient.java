@@ -19,6 +19,7 @@ import en.polimi.db2.entities.PackageData;
 import en.polimi.db2.services.OrderSrv;
 import en.polimi.db2.services.PackageSrv;
 import en.polimi.db2.services.UserSrv;
+import en.polimi.db2.utils.ErrorManager;
 import en.polimi.db2.utils.Utility;
 
 /**
@@ -55,7 +56,7 @@ public class HomePageClient extends HttpServlet {
 		String username="";
 		boolean isInsolvent = false;
 		if(session==null) {
-			//errore e dice che devi riloggare
+			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
 			return;
 		}
 		else {
@@ -63,10 +64,9 @@ public class HomePageClient extends HttpServlet {
 				if(session.getAttribute("idUser")!=null) {
 					idUser=(Integer)session.getAttribute("idUser");
 				}
-				 
 			}
 			catch(Exception e) {
-				//errore e dice che devi riloggare
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
 				return;
 			}
 		}

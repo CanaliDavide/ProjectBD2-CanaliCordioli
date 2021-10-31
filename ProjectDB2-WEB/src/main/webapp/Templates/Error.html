@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ErrorPage</title>
+	<style type="text/css"></style>
+	<link href="./CSS/CssDefault.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+	<header>Ops... Something went wrong!</header>
+
+	<section class="content">
+		<h3>Error! <span th:text="${code}">404</span></h3>
+		<p th:text="${message}">ciao io sono il messaggio di errore!</p>
+	</section>
+</body>
+</html>

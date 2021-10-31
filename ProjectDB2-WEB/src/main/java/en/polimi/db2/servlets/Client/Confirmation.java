@@ -1,7 +1,6 @@
 package en.polimi.db2.servlets.Client;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,6 +26,7 @@ import en.polimi.db2.services.OptionalSrv;
 import en.polimi.db2.services.PackageSrv;
 import en.polimi.db2.services.PeriodSrv;
 import en.polimi.db2.services.UserSrv;
+import en.polimi.db2.utils.ErrorManager;
 import en.polimi.db2.utils.Utility;
 
 /**
@@ -59,7 +59,7 @@ public class Confirmation extends HttpServlet {
 		boolean isLogged=false;
 		String username="";
 		if(session==null) {
-			//errore e dice che devi riloggare
+			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
 			return;
 		}
 		else {
@@ -69,9 +69,9 @@ public class Confirmation extends HttpServlet {
 				}
 			}
 			catch(Exception e) {
-				//errore e dice che devi riloggare
-				System.out.print("error relog necessary");
-				//return;
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+				//System.out.print("error relog necessary");
+				return;
 			}
 		}
 		if(idUser != null && idUser!=-1) {
@@ -101,14 +101,15 @@ public class Confirmation extends HttpServlet {
 		    try {
 				 actDate = formatter.parse(activationDate);
 			} catch (ParseException e1) {
-				e1.printStackTrace();
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please try again!", response);
+				return;
 			}
 			
 			for(int i=0;i<options.length;i++){
 			    System.out.println("Option: "+options[i]);
 			}
 			
-			System.out.println("pack selection:" + packSelection+ "-----validity id:"+validity);
+			//System.out.println("pack selection:" + packSelection+ "-----validity id:"+validity);
 
 			if(ins.checkString(packSelection)&& ins.checkString(validity) ) {
 				try {
@@ -120,8 +121,13 @@ public class Confirmation extends HttpServlet {
 						}
 					}
 				}catch (Exception e) {
-					//qualche merda
+					ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please try again!", response);
+					return;
 				}
+			}
+			else {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Missing core parameter!", response);
+				return;
 			}
 	    }
 	    
@@ -169,8 +175,6 @@ public class Confirmation extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		//possiamo mettere nel post l'azione casuale di accettare o no la transazione
 		
 	}
 
