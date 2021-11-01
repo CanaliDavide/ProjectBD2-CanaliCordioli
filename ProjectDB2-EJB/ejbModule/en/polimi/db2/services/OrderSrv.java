@@ -59,7 +59,7 @@ public class OrderSrv {
 		return result;
 	}
 	
-	public void buyInsolvent(int idOrder, int idUser, boolean isValid) {
+	public OrderData buyInsolvent(int idOrder, int idUser, boolean isValid) {
 		OrderData order = em.find(OrderData.class, idOrder);
 		if(order.getUserData().getId() == idUser) {
 			if(isValid) {
@@ -73,5 +73,6 @@ public class OrderSrv {
 				order.setNumberOfInvalid(order.getNumberOfInvalid() + 1);
 			}
 		}
+		return order;
 	}
 }

@@ -109,9 +109,9 @@ public class Confirmation extends HttpServlet {
 			    System.out.println("Option: "+options[i]);
 			}
 			
-			//System.out.println("pack selection:" + packSelection+ "-----validity id:"+validity);
+			System.out.println("pack selection:" + packSelection+ "-----validity id:"+validity);
 
-			if(ins.checkString(packSelection)&& ins.checkString(validity) ) {
+			if(ins.checkString(packSelection) && ins.checkString(validity) ) {
 				try {
 					idPack=Integer.parseInt(packSelection);
 					idValidity=Integer.parseInt(validity);

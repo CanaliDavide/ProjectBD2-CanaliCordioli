@@ -33,6 +33,18 @@ public class Alert implements Serializable {
 
 	public Alert() {
 	}
+	
+	
+
+	public Alert(String email, Timestamp lastReject, float totalCost, String username, UserData userData) {
+		this.email = email;
+		this.lastReject = lastReject;
+		this.totalCost = totalCost;
+		this.username = username;
+		this.userData = userData;
+	}
+
+
 
 	public int getId() {
 		return this.id;

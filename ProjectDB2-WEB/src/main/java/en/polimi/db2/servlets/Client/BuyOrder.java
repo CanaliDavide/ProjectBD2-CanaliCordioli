@@ -23,6 +23,7 @@ import org.thymeleaf.TemplateEngine;
 
 import en.polimi.db2.entities.OptionalData;
 import en.polimi.db2.entities.OrderData;
+import en.polimi.db2.services.AlertSrv;
 import en.polimi.db2.services.OptionalSrv;
 import en.polimi.db2.services.OrderSrv;
 import en.polimi.db2.services.PackageSrv;
@@ -48,6 +49,8 @@ public class BuyOrder extends HttpServlet {
 	UserSrv userService;
 	@EJB
 	PeriodSrv periodService;
+	@EJB
+	AlertSrv alertService;
 
 	public void init() throws ServletException {
 		ServletContext context = getServletContext();
@@ -93,6 +96,8 @@ public class BuyOrder extends HttpServlet {
 		}
 
 		Integer idOrder = (Integer) session.getAttribute("idOrder");
+		long currentDate = System.currentTimeMillis();
+		Timestamp datetime = new Timestamp(currentDate);
 		if (idOrder == null) {
 
 			Double cost = (Double) session.getAttribute("cost");
@@ -100,8 +105,7 @@ public class BuyOrder extends HttpServlet {
 
 			Date actDate = (Date) session.getAttribute("dateOfActivation");
 
-			long currentDate = System.currentTimeMillis();
-			Timestamp datetime = new Timestamp(currentDate);
+
 
 			boolean isValid = Utility.getInstance().externalService();
 
@@ -117,7 +121,9 @@ public class BuyOrder extends HttpServlet {
 
 		}else {
 			boolean isValid = Utility.getInstance().externalService();
-			orderService.buyInsolvent(idOrder, idUser, isValid);
+			OrderData order = orderService.buyInsolvent(idOrder, idUser, isValid);
+			if(!isValid && order.getNumberOfInvalid() == 3)
+				alertService.createAlert(order.getUserData().getMail(),order.getUserData().getUsername(), order.getUserData(), datetime, order.getTotalCost());
 		}
 
 		response.sendRedirect("HomePageClient");
