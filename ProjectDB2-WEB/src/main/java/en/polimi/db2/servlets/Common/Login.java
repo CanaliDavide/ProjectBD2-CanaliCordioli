@@ -43,12 +43,6 @@ public class Login extends HttpServlet {
 
 		HttpSession session = request.getSession(true);
 		
-		if(session.getAttribute("isFromConfirm")==null) {
-			//non esiste isFromConfirm, quindi devo resettare la sessione perche vengo da un logout 
-			session.invalidate();
-			session = request.getSession(true);
-		}
-		
 		boolean newUserCreated = false;
 		boolean logInError = false;
 

@@ -7,7 +7,7 @@
 </head>
 <body>
 	<span id="right" th:if="${isLogged}" th:text="${name}">Matteo</span>
-	<span id="right"><a th:if="${isLogged}" th:href="@{/Login}">Logout</a> |</span>
+	<span id="right"><a th:if="${isLogged}" th:href="@{/Logout}">Logout</a> |</span>
 	<span id ="right" th:unless="${isLogged}"><a href="Login">SingIn</a></span>
 	<header>Confirm</header>
 	<section class="content">
@@ -15,9 +15,9 @@
 		<p th:text="${namePack}">My package</p>
 		<p th:text="${#dates.format(dateOfActivation, 'dd-MM-yyyy')}"></p>
 		<p><span th:text="${validityString}"></span> months</p>
-		<p>Optional product:</p>
+		<p th:unless="${options.isEmpty()}">Optional product:</p>
 		
-		<ul th:remove="all-but-first">											
+		<ul  th:remove="all-but-first">											
 			<li th:each="option : ${options}">
 				<p th:text="${option.name}">option 1</p>
 			</li>

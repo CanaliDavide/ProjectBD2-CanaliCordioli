@@ -89,7 +89,11 @@ public class Confirmation extends HttpServlet {
 		Integer idPack=-1;
 		Integer idValidity =-1;
 		List<Integer> idOptional = new ArrayList<Integer>();
-	    if(packSelection == null || validity == null || options == null || activationDate == null) {
+		
+		if(options == null)
+			options = new String[0];
+		
+	    if(packSelection == null || validity == null || activationDate == null) {
 	    	idPack = (Integer) session.getAttribute("idPack");
 	    	idValidity = (Integer) session.getAttribute("idVal");
 	    	idOptional = (List<Integer>) session.getAttribute("options");
@@ -146,7 +150,6 @@ public class Confirmation extends HttpServlet {
 		Double cost = packageService.totalCostForPackage(idPack, idValidity, idOptional);
 		
 		List<OptionalData> optionalsData = optionalService.findByIds(idOptional);
-		
 		
 		String path = "Templates/Confirmation.html";
 		ServletContext servletContext = getServletContext();

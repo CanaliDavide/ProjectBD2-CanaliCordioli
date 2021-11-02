@@ -1,5 +1,6 @@
 package en.polimi.db2.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.LocalBean;
@@ -26,6 +27,10 @@ public class OptionalSrv {
 	}
 	
 	public List<OptionalData> findByIds(List<Integer> ids){
+		if(ids.isEmpty()) {
+			List<OptionalData> opt = new ArrayList<OptionalData>();
+			return opt;
+		}
 		TypedQuery<OptionalData> query = em.createNamedQuery("OptionalData.findByIds", OptionalData.class);
 		return query.setParameter(1, ids).getResultList();
 	}

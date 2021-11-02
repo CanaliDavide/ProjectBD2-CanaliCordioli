@@ -39,9 +39,20 @@ public class PackageSrv {
 	}
 	
 	public Double totalCostForPackage(int idPack, int idValidity, List<Integer> idOptionals) {
-		TypedQuery<Double> query = em.createQuery("select (sum(od.feeMonthly)+vp.feeMonth)*vp.month from PackageOption po join OptionalData od on po.id.idOptional = od.id, Validityperiod vp"
-				+ " where po.id.idPackage = ?1 and vp.id = ?2 and od.id in ?3", Double.class);
-		return query.setParameter(1, idPack).setParameter(2, idValidity).setParameter(3, idOptionals).getSingleResult();
+
+		if(idOptionals.isEmpty()) {
+			TypedQuery<Float> query = em.createQuery("select vp.feeMonth*vp.month from Validityperiod vp"
+					+ " where vp.id = ?1 ", Float.class);
+			return query.setParameter(1, idValidity).getSingleResult().doubleValue();
+		}
+		else {
+			TypedQuery<Double> query = em.createQuery("select (sum(od.feeMonthly)+vp.feeMonth)*vp.month from PackageOption po join OptionalData od on po.id.idOptional = od.id, Validityperiod vp"
+					+ " where po.id.idPackage = ?1 and vp.id = ?2 and od.id in ?3", Double.class);
+			
+			return query.setParameter(1, idPack).setParameter(2, idValidity).setParameter(3, idOptionals).getSingleResult();
+		}
+			
+		
 	}
 	
 }

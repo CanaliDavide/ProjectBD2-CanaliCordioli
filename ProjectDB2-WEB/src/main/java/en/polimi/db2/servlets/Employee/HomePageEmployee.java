@@ -83,6 +83,7 @@ public class HomePageEmployee extends HttpServlet {
 		ctx.setVariable("name", username);
 		ctx.setVariable("optionals", optionals);
 		ctx.setVariable("services", services);
+		ctx.setVariable("isLogged", true);
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
