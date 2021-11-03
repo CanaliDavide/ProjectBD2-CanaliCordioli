@@ -103,4 +103,13 @@ public class OrderSrv {
 				+ " group by o.packageData.id");
 		return query.getResultList();
 	}
+	
+	public List<Object[]> avgOptionalsPerPackage(){
+		Query query = em.createQuery(
+				"select o.packageData.id,count(o.id),count(distinct(o.id))"
+				+ " from OrderData o left join o.orderOptions po"
+				+ " join OptionalData opt on po.id.idOptional = opt.id"
+				+ " group by o.packageData.id");
+		return query.getResultList();
+	}
 }
