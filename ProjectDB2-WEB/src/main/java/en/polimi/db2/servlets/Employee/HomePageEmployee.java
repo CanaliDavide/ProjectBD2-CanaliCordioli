@@ -17,9 +17,11 @@ import org.thymeleaf.context.WebContext;
 
 import en.polimi.db2.entities.OptionalData;
 import en.polimi.db2.entities.Service;
+import en.polimi.db2.entities.Validityperiod;
 import en.polimi.db2.services.OptionalSrv;
 import en.polimi.db2.services.OrderSrv;
 import en.polimi.db2.services.PackageSrv;
+import en.polimi.db2.services.PeriodSrv;
 import en.polimi.db2.services.ServiceSrv;
 import en.polimi.db2.services.UserSrv;
 import en.polimi.db2.utils.Utility;
@@ -37,6 +39,8 @@ public class HomePageEmployee extends HttpServlet {
 	private OptionalSrv optionalService;
 	@EJB
 	private ServiceSrv serviceService;
+	@EJB
+	private PeriodSrv periodService;
 	
 	private TemplateEngine templateEngine;
     
@@ -76,6 +80,7 @@ public class HomePageEmployee extends HttpServlet {
 		
 		List<Service> services =  serviceService.findAll();
 		List<OptionalData> optionals = optionalService.findAll();
+		List<Validityperiod> periods = periodService.findAllPeriode();
 		
 		String path = "Templates/HomeEmployee.html";
 		ServletContext servletContext = getServletContext();
@@ -83,6 +88,7 @@ public class HomePageEmployee extends HttpServlet {
 		ctx.setVariable("name", username);
 		ctx.setVariable("optionals", optionals);
 		ctx.setVariable("services", services);
+		ctx.setVariable("validityPeriods", periods);
 		ctx.setVariable("isLogged", true);
 		templateEngine.process(path, ctx, response.getWriter());
 	}

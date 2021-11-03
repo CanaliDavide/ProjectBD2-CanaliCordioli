@@ -23,6 +23,14 @@
 					<label th:text="${service.getType()}">mobile phone</label>
 				</span>
 			</fieldset>
+			
+			<fieldset>
+				<legend>validity periods</legend>
+				<span th:each="period : ${validityPeriods}"> <input
+					type="checkbox" name="prd" th:value="${period.getId()}">
+					<label th:text="${period.getMonth()}">12</label>
+				</span>
+			</fieldset>
 
 			<fieldset>
 				<legend>optional allowed</legend>

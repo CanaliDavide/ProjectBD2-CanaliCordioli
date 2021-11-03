@@ -14,6 +14,7 @@ import en.polimi.db2.entities.PackageData;
 import en.polimi.db2.entities.PackageOption;
 import en.polimi.db2.entities.PackageService;
 import en.polimi.db2.entities.Service;
+import en.polimi.db2.entities.Validityperiod;
 
 @Stateless
 @LocalBean
@@ -23,8 +24,8 @@ public class PackageSrv {
 	
 	public PackageSrv() {}
 	
-	public PackageData createPackage(String name, List<OptionalData> optionalData, List<Service> services) {
-		PackageData newPackage = new PackageData(name, optionalData, services);
+	public PackageData createPackage(String name, List<OptionalData> optionalData, List<Service> services, List<Validityperiod> validityPeriods) {
+		PackageData newPackage = new PackageData(name, optionalData, services, validityPeriods);
 		em.persist(newPackage);
 		return newPackage;
 	}
@@ -39,7 +40,6 @@ public class PackageSrv {
 	}
 	
 	public Double totalCostForPackage(int idPack, int idValidity, List<Integer> idOptionals) {
-
 		if(idOptionals.isEmpty()) {
 			TypedQuery<Float> query = em.createQuery("select vp.feeMonth*vp.month from Validityperiod vp"
 					+ " where vp.id = ?1 ", Float.class);
@@ -51,8 +51,5 @@ public class PackageSrv {
 			
 			return query.setParameter(1, idPack).setParameter(2, idValidity).setParameter(3, idOptionals).getSingleResult();
 		}
-			
-		
 	}
-	
 }

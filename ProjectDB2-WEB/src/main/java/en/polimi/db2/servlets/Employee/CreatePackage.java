@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import en.polimi.db2.services.OptionalSrv;
 import en.polimi.db2.services.PackageSrv;
+import en.polimi.db2.services.PeriodSrv;
 import en.polimi.db2.services.ServiceSrv;
 import en.polimi.db2.services.UserSrv;
 
@@ -32,6 +33,8 @@ public class CreatePackage extends HttpServlet {
 	private ServiceSrv serviceService;
 	@EJB
 	private OptionalSrv optionalService;
+	@EJB
+	private PeriodSrv periodService;
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session=request.getSession(false);
@@ -61,10 +64,12 @@ public class CreatePackage extends HttpServlet {
 		
 		String[] options = request.getParameterValues("opt");
 		String[] services = request.getParameterValues("serv");
+		String[] periods = request.getParameterValues("prd");
 		String namePackage = request.getParameter("packageName");
 		
 		List<Integer> optionsInteger=new ArrayList<Integer>();
 		List<Integer> servicesInteger=new ArrayList<Integer>();
+		List<Integer> periodsInteger=new ArrayList<Integer>();
 		
 		if(options!=null) {
 			try {
@@ -85,8 +90,20 @@ public class CreatePackage extends HttpServlet {
 				//errore
 			}
 		}
+		if(periods != null) {
+			try {
+				for(int i=0; i<services.length; i++) {
+					periodsInteger.add(Integer.parseInt(periods[i]));
+				}
+			}catch(Exception e) {
+				//errore
+			}
+		}
 		
-		packageService.createPackage(namePackage, optionalService.findByIds(optionsInteger), serviceService.findByIds(servicesInteger));		
+		packageService.createPackage(namePackage, 
+				optionalService.findByIds(optionsInteger), 
+				serviceService.findByIds(servicesInteger),
+				periodService.findByIds(periodsInteger));		
 		
 		response.sendRedirect("HomePageEmployee");
 	}

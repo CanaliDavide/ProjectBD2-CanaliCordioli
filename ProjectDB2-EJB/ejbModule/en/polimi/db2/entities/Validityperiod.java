@@ -4,27 +4,37 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.util.List;
 
-
 /**
  * The persistent class for the validityperiod database table.
  * 
  */
 @Entity
-@NamedQuery(name="Validityperiod.findAll", query="SELECT v FROM Validityperiod v")
+@NamedQueries({ @NamedQuery(name = "Validityperiod.findAll", query = "SELECT v FROM Validityperiod v"),
+		@NamedQuery(name = "Validityperiod.findByIds", query = "SELECT v FROM Validityperiod v where v.id in ?1") })
 public class Validityperiod implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private float feeMonth;
 
 	private int month;
 
-	//bi-directional many-to-one association to OrderData
-	@OneToMany(mappedBy="validityperiod")
+	// bi-directional many-to-one association to OrderData
+	@OneToMany(mappedBy = "validityperiod")
 	private List<OrderData> orderData;
+
+	// bi-directional many-to-one association to PackageService
+	@OneToMany(mappedBy = "validityPeriod")
+	private List<PackageValidity> packageValidities;
+
+	// bi-directional many-to-many association to PackageData
+	@ManyToMany
+	@JoinTable(name = "package_validity", joinColumns = { @JoinColumn(name = "idValidity") }, inverseJoinColumns = {
+			@JoinColumn(name = "idPackage") })
+	private List<PackageData> packageData;
 
 	public Validityperiod() {
 	}

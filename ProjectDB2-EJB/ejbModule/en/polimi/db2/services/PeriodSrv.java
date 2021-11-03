@@ -1,5 +1,6 @@
 package en.polimi.db2.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.LocalBean;
@@ -8,6 +9,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import en.polimi.db2.entities.OptionalData;
 import en.polimi.db2.entities.PackageData;
 import en.polimi.db2.entities.Validityperiod;
 
@@ -24,5 +26,14 @@ public class PeriodSrv {
 	
 	public Validityperiod findValidityWithId(int id) {
 		return em.find(Validityperiod.class, id);
+	}
+	
+	public List<Validityperiod> findByIds(List<Integer> ids){
+		if(ids.isEmpty()) {
+			List<Validityperiod> prd = new ArrayList<Validityperiod>();
+			return prd;
+		}
+		TypedQuery<Validityperiod> query = em.createNamedQuery("Validityperiod.findByIds", Validityperiod.class);
+		return query.setParameter(1, ids).getResultList();
 	}
 }

@@ -18,6 +18,9 @@
 		<class>en.polimi.db2.entities.Service</class>
 		<class>en.polimi.db2.entities.UserData</class>
 		<class>en.polimi.db2.entities.Validityperiod</class>
+		<class>en.polimi.db2.entities.PackageValidity</class>
+		<class>en.polimi.db2.entities.PackageValidityPK</class>
+		
 
 		<properties>
 

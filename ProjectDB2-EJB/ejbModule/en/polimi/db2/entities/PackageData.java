@@ -58,14 +58,30 @@ public class PackageData implements Serializable {
 	//bi-directional many-to-one association to PackageOption
 	@OneToMany(mappedBy="packageData")
 	private List<PackageOption> packageOptions;
+	
+	@OneToMany(mappedBy="packageData")
+	private List<PackageValidity> packageValidities;
+	
+	@ManyToMany
+	@JoinTable(
+			name = "package_validity"
+			, joinColumns= {
+					@JoinColumn(name="idPackage")
+					}
+			, inverseJoinColumns= {
+					@JoinColumn(name="idValidity")
+					}
+			)
+	private List<Validityperiod> validityPeriods;
 
 	public PackageData() {
 	}
 
-	public PackageData(String name, List<OptionalData> optionalData, List<Service> services) {
+	public PackageData(String name, List<OptionalData> optionalData, List<Service> services, List<Validityperiod> validityPeriods) {
 		this.name = name;
 		this.optionalData = optionalData;
 		this.services = services;
+		this.validityPeriods = validityPeriods;
 	}
 
 	public int getId() {
