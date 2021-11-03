@@ -62,5 +62,4 @@ public class UserSrv {
 		throw new NonUniqueResultException("More than one user registered with same credentials");
 
 	}
-
 }

@@ -99,13 +99,11 @@ public class BuyOrder extends HttpServlet {
 		long currentDate = System.currentTimeMillis();
 		Timestamp datetime = new Timestamp(currentDate);
 		if (idOrder == null) {
-
+			System.out.println("new order");
 			Double cost = (Double) session.getAttribute("cost");
 			float totalCost = cost.floatValue();
 
 			Date actDate = (Date) session.getAttribute("dateOfActivation");
-
-
 
 			boolean isValid = Utility.getInstance().externalService();
 
@@ -120,12 +118,13 @@ public class BuyOrder extends HttpServlet {
 					userService.findUser(idUser), periodService.findValidityWithId(idValidity));
 
 		}else {
+			System.out.println("old order");
 			boolean isValid = Utility.getInstance().externalService();
 			OrderData order = orderService.buyInsolvent(idOrder, idUser, isValid);
-			if(!isValid && order.getNumberOfInvalid() == 3)
+			if(!isValid && orderService.numberOfFailedPay(idUser)%3 == 0)
 				alertService.createAlert(order.getUserData().getMail(),order.getUserData().getUsername(), order.getUserData(), datetime, order.getTotalCost());
 		}
-
+		session.removeAttribute("idOrder");
 		response.sendRedirect("HomePageClient");
 	}
 

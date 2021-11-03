@@ -23,5 +23,4 @@ public class AlertSrv {
 		em.persist(alert);
 		return alert;
 	}
-
 }

@@ -8,6 +8,7 @@ import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import en.polimi.db2.entities.OptionalData;
@@ -75,4 +76,39 @@ public class OrderSrv {
 		}
 		return order;
 	}
+	
+	public Integer numberOfFailedPay(int userId) {
+		TypedQuery<Integer> query = em.createQuery(
+				"select sum(o.numberOfInvalid) from OrderData o where o.userData.id = ?1",Integer.class);
+		return query.getFirstResult();
+	}
+	
+	public List<Object[]> totalPurchasePerPackage(){
+		Query query = em.createQuery(
+				"select o.packageData.id, count(o) from OrderData o group by o.packageData.id");
+		return query.getResultList();
+	}
+	
+	public List<Object[]> totalPurchasePerPerckageAndValidity(){
+		Query query = em.createQuery(
+				"select o.packageData.id, o.validityperiod.month, count(o) from OrderData o group by o.packageData.id, o.validityperiod.id");
+		return query.getResultList();
+	}
+	
+	public List<Object[]> packageValue(){
+		Query query = em.createQuery(
+				"select o.packageData.id, sum(o.totalCost), sum(o.totalCost)-sum(opt.feeMonthly*o.validityperiod.month)"
+				+ " from OrderData o left join o.packageData.packageOptions po"
+				+ " join OptionalData opt on po.id.idOptional = opt.id"
+				+ " group by o.packageData.id");
+		return query.getResultList();
+	}
+	
+	/*
+	 * 		Query query = em.createQuery(
+				"select o.packageData.id, sum(o.totalCost), sum(o.totalCost)-sum(od.feeMonthly*o.validityperiod.month)"
+				+ " from OrderData o left join PackageOption po on o.packageData.id = po.id.idPackage"
+				+ " join OptionalData od on po.id.idOptional = od.id"
+				+ " group by o.packageData.id");
+	 */
 }
