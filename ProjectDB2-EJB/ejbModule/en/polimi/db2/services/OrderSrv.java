@@ -103,12 +103,4 @@ public class OrderSrv {
 				+ " group by o.packageData.id");
 		return query.getResultList();
 	}
-	
-	/*
-	 * 		Query query = em.createQuery(
-				"select o.packageData.id, sum(o.totalCost), sum(o.totalCost)-sum(od.feeMonthly*o.validityperiod.month)"
-				+ " from OrderData o left join PackageOption po on o.packageData.id = po.id.idPackage"
-				+ " join OptionalData od on po.id.idOptional = od.id"
-				+ " group by o.packageData.id");
-	 */
 }
