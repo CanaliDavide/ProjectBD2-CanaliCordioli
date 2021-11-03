@@ -42,12 +42,6 @@ public class HomePageClient extends HttpServlet {
     	ServletContext context = getServletContext();
         this.templateEngine = Utility.getInstance().connectTemplate(context);
     }
-	
-    public HomePageClient() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session=request.getSession(false);

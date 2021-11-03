@@ -2,7 +2,6 @@ package en.polimi.db2.servlets.Common;
 
 import java.io.IOException;
 
-import javax.ejb.EJB;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,10 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
-import en.polimi.db2.services.OptionalSrv;
-import en.polimi.db2.services.PackageSrv;
-import en.polimi.db2.services.PeriodSrv;
-import en.polimi.db2.services.UserSrv;
 import en.polimi.db2.utils.ErrorManager;
 import en.polimi.db2.utils.Utility;
 
@@ -44,7 +39,6 @@ public class Error extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

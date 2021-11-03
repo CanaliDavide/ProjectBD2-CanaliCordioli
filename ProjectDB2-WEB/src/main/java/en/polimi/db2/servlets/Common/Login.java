@@ -34,10 +34,6 @@ public class Login extends HttpServlet {
 		this.templateEngine = Utility.getInstance().connectTemplate(context);
 	}
 
-	public Login() {
-		super();
-	}
-
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -73,19 +69,16 @@ public class Login extends HttpServlet {
 			} catch (Exception e) {
 				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Conection with db failed!", response);
 				return;
-				//System.out.println("problema con connessione o cose strane");
 			}
 			if (user != null) {
 				HttpSession session = request.getSession(true);
 				session.setAttribute("idUser", user.getId());
-				boolean isFromCofirm = false;
 				if (user.getIsEmployee()) {
 					response.sendRedirect("HomePageEmployee");
 				} else {
 					if (session.getAttribute("isFromConfirm") == null) {
 						response.sendRedirect("HomePageClient");
 					} else {
-						isFromCofirm = (boolean) session.getAttribute("isFromConfirm");
 						response.sendRedirect("Confirmation");
 					}
 				}

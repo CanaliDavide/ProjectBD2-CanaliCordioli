@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import en.polimi.db2.services.UserSrv;
+import en.polimi.db2.utils.ErrorManager;
 import en.polimi.db2.utils.Utility;
 
 /**
@@ -22,13 +23,7 @@ public class CreateUser extends HttpServlet {
 	@EJB
 	private UserSrv userService;
     
-    public CreateUser() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
@@ -47,8 +42,8 @@ public class CreateUser extends HttpServlet {
 				userService.createUser(name, password2, email, true, false);
 			}
 			catch(Exception e) {
-				//TODO: inventarsi qualcosa
-				System.out.println("Error creation user!");
+				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error creating user in db!", response);
+				return;
 			}
 			
 			HttpSession session=request.getSession(true);  

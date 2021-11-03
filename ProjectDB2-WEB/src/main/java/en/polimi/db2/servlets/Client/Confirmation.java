@@ -52,6 +52,7 @@ public class Confirmation extends HttpServlet {
         this.templateEngine = Utility.getInstance().connectTemplate(context);
     }
     
+	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Utility ins=Utility.getInstance();
 		HttpSession session=request.getSession(false);
@@ -70,7 +71,6 @@ public class Confirmation extends HttpServlet {
 			}
 			catch(Exception e) {
 				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
-				//System.out.print("error relog necessary");
 				return;
 			}
 		}
@@ -79,9 +79,9 @@ public class Confirmation extends HttpServlet {
 			username=userService.findUser(idUser).getUsername();
 		}
 	
-		String packSelection = request.getParameter("packSelection"); //id pack scelto
-		String validity = request.getParameter("ValidityPeriod");//id validity perido
-		String[] options = request.getParameterValues("opt"); // non so bene cosa cazzo ci sia dentro -- ho scoperto che contiene gli id degli option selezioanti
+		String packSelection = request.getParameter("packSelection");
+		String validity = request.getParameter("ValidityPeriod");
+		String[] options = request.getParameterValues("opt");
 	    String activationDate = request.getParameter("activationDate");
 		
 	    
@@ -93,14 +93,18 @@ public class Confirmation extends HttpServlet {
 		if(options == null)
 			options = new String[0];
 		
-	    if(packSelection == null || validity == null || activationDate == null) {
-	    	idPack = (Integer) session.getAttribute("idPack");
-	    	idValidity = (Integer) session.getAttribute("idVal");
-	    	idOptional = (List<Integer>) session.getAttribute("options");
-	    	actDate = (Date) session.getAttribute("dateOfActivation");	
+	    if(!ins.checkString(packSelection) || !ins.checkString(validity) || !ins.checkString(activationDate)) {
+	    	try {
+	    		idPack = (Integer) session.getAttribute("idPack");
+		    	idValidity = (Integer) session.getAttribute("idVal");
+		    	idOptional = (List<Integer>) session.getAttribute("options");
+		    	actDate = (Date) session.getAttribute("dateOfActivation");
+	    	}catch(Exception e) {
+	    		ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please try again!", response);
+				return;
+	    	}		
 	    }else {
 	    	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALIAN);
-		    
 		    
 		    try {
 				 actDate = formatter.parse(activationDate);
@@ -108,38 +112,20 @@ public class Confirmation extends HttpServlet {
 				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please try again!", response);
 				return;
 			}
-			
-			for(int i=0;i<options.length;i++){
-			    System.out.println("Option: "+options[i]);
-			}
-			
-			System.out.println("pack selection:" + packSelection+ "-----validity id:"+validity);
-
-			if(ins.checkString(packSelection) && ins.checkString(validity) ) {
-				try {
-					idPack=Integer.parseInt(packSelection);
-					idValidity=Integer.parseInt(validity);
-					if(options!=null) {
-						for(int i=0; i<options.length;i++) {
-							idOptional.add(Integer.parseInt(options[i]));
-						}
+		    try {
+				idPack=Integer.parseInt(packSelection);
+				idValidity=Integer.parseInt(validity);
+				if(options!=null) {
+					for(int i=0; i<options.length;i++) {
+						idOptional.add(Integer.parseInt(options[i]));
 					}
-				}catch (Exception e) {
-					ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please try again!", response);
-					return;
 				}
-			}
-			else {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Missing core parameter!", response);
+			}catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please try again!", response);
 				return;
 			}
 	    }
 	    
-	    
-		
-		//se sono qua vuol dire tutti gli id sono validi!
-		//ora li posso veramente salvare nella session
-		
 		String namePack=null;
 		int validityString=-1;
 		
@@ -150,6 +136,13 @@ public class Confirmation extends HttpServlet {
 		Double cost = packageService.totalCostForPackage(idPack, idValidity, idOptional);
 		
 		List<OptionalData> optionalsData = optionalService.findByIds(idOptional);
+
+		session.setAttribute("isFromConfirm", true);
+		session.setAttribute("idPack", idPack);
+		session.setAttribute("cost", cost);
+		session.setAttribute("idVal", idValidity);
+		session.setAttribute("options", idOptional);
+		session.setAttribute("dateOfActivation", actDate);		
 		
 		String path = "Templates/Confirmation.html";
 		ServletContext servletContext = getServletContext();
@@ -162,15 +155,7 @@ public class Confirmation extends HttpServlet {
 		ctx.setVariable("validityString", validityString);
 		ctx.setVariable("cost", cost);
 		ctx.setVariable("options", optionalsData);
-		ctx.setVariable("dateOfActivation", actDate);
-		
-		session.setAttribute("isFromConfirm", true);
-		session.setAttribute("idPack", idPack);
-		session.setAttribute("cost", cost);
-		session.setAttribute("idVal", idValidity);
-		session.setAttribute("options", idOptional);
-		session.setAttribute("dateOfActivation", actDate);
-		
+		ctx.setVariable("dateOfActivation", actDate);	
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 

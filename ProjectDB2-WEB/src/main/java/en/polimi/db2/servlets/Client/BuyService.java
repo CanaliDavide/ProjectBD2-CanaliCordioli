@@ -51,20 +51,12 @@ public class BuyService extends HttpServlet {
     	ServletContext context = getServletContext();
         this.templateEngine = Utility.getInstance().connectTemplate(context);
     }
-    
-    public BuyService() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session=request.getSession(false);
 		Integer idUser=-1;
 		boolean isLogged=false;
-		String numId=request.getParameter("idPack");//controllare che questo esista
+		String idPackString=request.getParameter("idPack");//controllare che questo esista
 		String username="";
 		if(session==null) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
@@ -90,9 +82,10 @@ public class BuyService extends HttpServlet {
 		
 		List<Validityperiod> validityPeriod= periodService.findAllPeriode();
 		int idPack=-1;
-		if(Utility.getInstance().checkString(numId)) {
+		
+		if(Utility.getInstance().checkString(idPackString)) {
 			try {
-				idPack=Integer.parseInt(numId);
+				idPack=Integer.parseInt(idPackString);
 			}catch(Exception e ) {
 				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please try again!", response);
 				return;
