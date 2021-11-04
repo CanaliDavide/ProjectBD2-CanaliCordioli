@@ -50,7 +50,7 @@ public class UserSrv {
 	public UserData checkCredentials(String mail, String pwd) throws CredentialsException, NonUniqueResultException {
 		List<UserData> uList = null;
 		try {
-			uList = em.createNamedQuery("User.checkCredentials", UserData.class).setParameter(1, mail).setParameter(2, pwd)
+			uList = em.createNamedQuery("UserData.checkCredentials", UserData.class).setParameter(1, mail).setParameter(2, pwd)
 					.getResultList();
 		} catch (PersistenceException e) {
 			throw new CredentialsException("Could not verify credentals");
@@ -60,6 +60,10 @@ public class UserSrv {
 		else if (uList.size() == 1)
 			return uList.get(0);
 		throw new NonUniqueResultException("More than one user registered with same credentials");
-
+	}
+	
+	public List<UserData> findAllInsolvent(){
+		TypedQuery<UserData> query = em.createNamedQuery("UserData.findAllInsolvent", UserData.class);
+		return query.getResultList();
 	}
 }

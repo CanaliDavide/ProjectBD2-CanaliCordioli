@@ -6,19 +6,21 @@ import java.util.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
-
 /**
  * The persistent class for the order_data database table.
  * 
  */
 @Entity
-@Table(name="order_data")
-@NamedQuery(name="OrderData.findAll", query="SELECT o FROM OrderData o")
+@Table(name = "order_data")
+@NamedQueries({ 
+	@NamedQuery(name = "OrderData.findAll", query = "SELECT o FROM OrderData o"),
+	@NamedQuery(name = "OrderData.findAllSuspended", query = "SELECT o FROM OrderData o WHERE o.isValid = false") 
+})
 public class OrderData implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@Temporal(TemporalType.DATE)
@@ -32,45 +34,37 @@ public class OrderData implements Serializable {
 
 	private float totalCost;
 
-	//bi-directional many-to-many association to OptionalData
+	// bi-directional many-to-many association to OptionalData
 	@ManyToMany
-	@JoinTable(
-		name="order_option"
-		, joinColumns={
-			@JoinColumn(name="idOrder")
-			}
-		, inverseJoinColumns={
-			@JoinColumn(name="idOptional")
-			}
-		)
+	@JoinTable(name = "order_option", joinColumns = { @JoinColumn(name = "idOrder") }, inverseJoinColumns = {
+			@JoinColumn(name = "idOptional") })
 	private List<OptionalData> optionalData;
 
-	//bi-directional many-to-one association to PackageData
+	// bi-directional many-to-one association to PackageData
 	@ManyToOne
-	@JoinColumn(name="idPackage")
+	@JoinColumn(name = "idPackage")
 	private PackageData packageData;
 
-	//bi-directional many-to-one association to UserData
+	// bi-directional many-to-one association to UserData
 	@ManyToOne
-	@JoinColumn(name="idUser")
+	@JoinColumn(name = "idUser")
 	private UserData userData;
 
-	//bi-directional many-to-one association to Validityperiod
+	// bi-directional many-to-one association to Validityperiod
 	@ManyToOne
-	@JoinColumn(name="idValidityPeriod")
+	@JoinColumn(name = "idValidityPeriod")
 	private Validityperiod validityperiod;
 
-	//bi-directional many-to-one association to OrderOption
-	@OneToMany(mappedBy="orderData")
+	// bi-directional many-to-one association to OrderOption
+	@OneToMany(mappedBy = "orderData")
 	private List<OrderOption> orderOptions;
 
 	public OrderData() {
 	}
-	
-	
 
 	public OrderData(Date dataActivation, Timestamp dateTime, boolean isValid, int numberOfInvalid, float totalCost,
-			List<OptionalData> optionalData, PackageData packageData, UserData userData, Validityperiod validityperiod) {
+			List<OptionalData> optionalData, PackageData packageData, UserData userData,
+			Validityperiod validityperiod) {
 		this.dataActivation = dataActivation;
 		this.dateTime = dateTime;
 		this.isValid = isValid;
@@ -81,8 +75,6 @@ public class OrderData implements Serializable {
 		this.userData = userData;
 		this.validityperiod = validityperiod;
 	}
-
-
 
 	public int getId() {
 		return this.id;

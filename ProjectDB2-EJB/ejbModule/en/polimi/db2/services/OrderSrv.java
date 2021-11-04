@@ -112,4 +112,26 @@ public class OrderSrv {
 				+ " group by o.packageData.id");
 		return query.getResultList();
 	}
+	
+	public List<Object[]> mostValueOptional(){
+		Query query = em.createQuery(
+				"select opt.id, sum(opt.feeMonthly*o.validityperiod.month)"
+				+ " from OrderData o join o.orderOptions op"
+				+ " join OptionalData opt on opt.id = op.id.idOptional"
+				+ " group by opt.id"
+				+ " order by sum(opt.feeMonthly*o.validityperiod.month) desc");
+		return query.setMaxResults(1).getResultList();
+	}
+	
+	/*
+	 * "select opt.id, sum(opt.feeMonthly*o.validityperiod.month)"
+				+ " from OrderData o join OrderOption op on o.id = op.id.idOrder"
+				+ " join OptionalData opt on opt.id = op.id.idOptional"
+				+ " group by opt.id");
+	 */
+	
+	public List<OrderData> findAllSuspended(){
+		TypedQuery<OrderData> query = em.createNamedQuery("OrderData.findAllSuspended", OrderData.class);
+		return query.getResultList();
+	}
 }
