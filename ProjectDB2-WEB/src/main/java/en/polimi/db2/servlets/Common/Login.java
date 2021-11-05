@@ -87,13 +87,10 @@ public class Login extends HttpServlet {
 				session.setAttribute("logInError", true);
 				doGet(request, response);
 			}
-
 		}
 		else {
 			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Missing core parameter!", response);
 			return;
 		}
-
 	}
-
 }

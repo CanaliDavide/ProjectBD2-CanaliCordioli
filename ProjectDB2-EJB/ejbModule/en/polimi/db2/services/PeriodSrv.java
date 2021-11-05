@@ -17,7 +17,7 @@ public class PeriodSrv {
 	@PersistenceContext(unitName = "ProjectDB2-EJB")
 	protected EntityManager em;
 	
-	public List<Validityperiod> findAllPeriode() {
+	public List<Validityperiod> findAllPeriods() {
 		TypedQuery<Validityperiod> query = em.createNamedQuery("Validityperiod.findAll", Validityperiod.class);
 		return query.getResultList();
 	}

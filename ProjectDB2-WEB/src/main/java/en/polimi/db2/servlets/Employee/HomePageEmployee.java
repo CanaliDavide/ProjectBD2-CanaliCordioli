@@ -78,7 +78,7 @@ public class HomePageEmployee extends HttpServlet {
 		
 		List<Service> services =  serviceService.findAll();
 		List<OptionalData> optionals = optionalService.findAll();
-		List<Validityperiod> periods = periodService.findAllPeriode();
+		List<Validityperiod> periods = periodService.findAllPeriods();
 		
 		String path = "Templates/HomeEmployee.html";
 		ServletContext servletContext = getServletContext();

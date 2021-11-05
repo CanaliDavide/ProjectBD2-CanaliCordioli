@@ -1,4 +1,5 @@
 package en.polimi.db2.servlets.Client;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -34,44 +35,59 @@ public class HomePageClient extends HttpServlet {
 	private PackageSrv packageService;
 	@EJB
 	private OrderSrv orderService;
-	
-	private TemplateEngine templateEngine;
-    
-    
-    public void init() throws ServletException{	
-    	ServletContext context = getServletContext();
-        this.templateEngine = Utility.getInstance().connectTemplate(context);
-    }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session=request.getSession(false);
-		Integer idUser=-1;
-		boolean isLogged=false;
-		String username="";
+	private TemplateEngine templateEngine;
+
+	public void init() throws ServletException {
+		ServletContext context = getServletContext();
+		this.templateEngine = Utility.getInstance().connectTemplate(context);
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		HttpSession session = request.getSession(false);
+
+		Integer idUser = -1;
+		boolean isLogged = false;
+		String username = "";
 		boolean isInsolvent = false;
-		if(session==null) {
+
+		if (session == null) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
 			return;
-		}
-		else {
+		} else {
 			try {
-				if(session.getAttribute("idUser")!=null) {
-					idUser=(Integer)session.getAttribute("idUser");
+				if (session.getAttribute("idUser") != null) {
+					idUser = (Integer) session.getAttribute("idUser");
 				}
-			}
-			catch(Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect, please re-login!", response);
 				return;
 			}
 		}
-		if(idUser!=-1) {
-			isLogged=true;
-			username=userService.findUser(idUser).getUsername();
-			isInsolvent = userService.findUser(idUser).getIsInsolvent();
+		if (idUser != -1) {
+			isLogged = true;
+			try {
+				username = userService.findUser(idUser).getUsername();
+				isInsolvent = userService.findUser(idUser).getIsInsolvent();
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Error in querying the database", response);
+			}
 		}
-		List<PackageData> packages=packageService.findAllPackage();
-		List<OrderData> orders = orderService.findAllRejectedWithUserId(idUser);
-		
+
+		List<PackageData> packages = null;
+		List<OrderData> orders = null;
+		try {
+			packages = packageService.findAllPackage();
+			orders = orderService.findAllRejectedWithUserId(idUser);
+		} catch (Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in querying the database", response);
+		}
+
 		String path = "Templates/HomeClient.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
@@ -83,8 +99,8 @@ public class HomePageClient extends HttpServlet {
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

@@ -6,13 +6,10 @@ import java.util.List;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
-import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
 import en.polimi.db2.entities.UserData;
-import en.polimi.db2.exceptions.CredentialsException;
 
 @Stateless
 @LocalBean
@@ -24,7 +21,7 @@ public class UserSrv {
 	}
 
 	public UserData createUser(String username, String password, String mail, boolean isEmployee, boolean isInsolvent) {
-		UserData user = new UserData(mail, password,username , isEmployee, isInsolvent);
+		UserData user = new UserData(mail, password, username, isEmployee, isInsolvent);
 		em.persist(user);
 		return user;
 	}
@@ -46,23 +43,22 @@ public class UserSrv {
 		TypedQuery<UserData> query = em.createNamedQuery("UserData.findAll", UserData.class);
 		return query.getResultList();
 	}
-	
-	public UserData checkCredentials(String mail, String pwd) throws CredentialsException, NonUniqueResultException {
+
+	public UserData checkCredentials(String mail, String pwd) {
 		List<UserData> uList = null;
 		try {
-			uList = em.createNamedQuery("UserData.checkCredentials", UserData.class).setParameter(1, mail).setParameter(2, pwd)
-					.getResultList();
-		} catch (PersistenceException e) {
-			throw new CredentialsException("Could not verify credentals");
-		}
-		if (uList.isEmpty())
+			uList = em.createNamedQuery("UserData.checkCredentials", UserData.class).setParameter(1, mail)
+					.setParameter(2, pwd).getResultList();
+		} catch (Exception e) {
 			return null;
-		else if (uList.size() == 1)
+		}
+		if (uList.isEmpty() || uList.size() != 1)
+			return null;
+		else
 			return uList.get(0);
-		throw new NonUniqueResultException("More than one user registered with same credentials");
 	}
-	
-	public List<UserData> findAllInsolvent(){
+
+	public List<UserData> findAllInsolvent() {
 		TypedQuery<UserData> query = em.createNamedQuery("UserData.findAllInsolvent", UserData.class);
 		return query.getResultList();
 	}

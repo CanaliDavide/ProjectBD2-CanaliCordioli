@@ -31,75 +31,103 @@ import en.polimi.db2.utils.Utility;
 @WebServlet("/BuyService")
 public class BuyService extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
 	@EJB
 	private UserSrv userService;
-    
+
 	@EJB
 	private PackageSrv packageService;
-	
+
 	@EJB
 	private PeriodSrv periodService;
-	
+
 	@EJB
 	private OptionalSrv optionalService;
-	
-	private TemplateEngine templateEngine;
-    
-    
-    public void init() throws ServletException{	
-    	ServletContext context = getServletContext();
-        this.templateEngine = Utility.getInstance().connectTemplate(context);
-    }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session=request.getSession(false);
-		Integer idUser=-1;
-		boolean isLogged=false;
-		String idPackString=request.getParameter("idPack");//controllare che questo esista
-		String username="";
-		if(session==null) {
+	private TemplateEngine templateEngine;
+
+	public void init() throws ServletException {
+		ServletContext context = getServletContext();
+		this.templateEngine = Utility.getInstance().connectTemplate(context);
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		HttpSession session = request.getSession(false);
+		Integer idUser = -1;
+		boolean isLogged = false;
+		String idPackString = request.getParameter("idPack");// controllare che questo esista
+		String username = "";
+		if (session == null) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
 			return;
-		}
-		else {
+		} else {
 			try {
-				if(session.getAttribute("idUser")!=null) {
-					idUser=(Integer)session.getAttribute("idUser");
+				if (session.getAttribute("idUser") != null) {
+					idUser = (Integer) session.getAttribute("idUser");
 				}
-			}
-			catch(Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect, please re-login!", response);
 				return;
 			}
 		}
-		if(idUser != null && idUser!=-1) {
-			isLogged=true;
-			username=userService.findUser(idUser).getUsername();
-		}
-		
-		List<PackageData> packages=packageService.findAllPackage();
-		
-		List<Validityperiod> validityPeriod= periodService.findAllPeriode();
-		int idPack=-1;
-		
-		if(Utility.getInstance().checkString(idPackString)) {
+		if (idUser != -1) {
+			isLogged = true;
 			try {
-				idPack=Integer.parseInt(idPackString);
-			}catch(Exception e ) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please try again!", response);
-				return;
-			}
-			if(packageService.findPackageWithId(idPack)==null) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please try again!", response);
-				return;
+				username = userService.findUser(idUser).getUsername();
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Error in querying the database", response);
 			}
 		}
-		else {
-			idPack=packages.get(0).getId();
+
+		List<PackageData> packages = null;
+		List<Validityperiod> validityPeriod = null;
+
+		try {
+			packages = packageService.findAllPackage();
+			validityPeriod = periodService.findAllPeriods();
+		} catch (Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in querying the database", response);
 		}
-		
-		List<OptionalData> optionals = packageService.findPackageWithId(idPack).getOptionalData();
+
+		int idPack = -1;
+
+		if (Utility.getInstance().checkString(idPackString)) {
+			try {
+				idPack = Integer.parseInt(idPackString);
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect, please try again!", response);
+				return;
+			}
+
+			PackageData pack = null;
+			try {
+				pack = packageService.findPackageWithId(idPack);
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Error in querying the database", response);
+			}
+
+			if (pack == null) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect, please try again!", response);
+				return;
+			}
+		} else {
+			idPack = packages.get(0).getId();
+		}
+
+		List<OptionalData> optionals = null;
+		try {
+			optionals = packageService.findPackageWithId(idPack).getOptionalData();
+		} catch (Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in querying the database", response);
+		}
 		
 		String path = "Templates/BuyService.html";
 		ServletContext servletContext = getServletContext();
@@ -114,9 +142,11 @@ public class BuyService extends HttpServlet {
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

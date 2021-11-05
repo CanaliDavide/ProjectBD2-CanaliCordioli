@@ -22,35 +22,36 @@ public class CreateUser extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	@EJB
 	private UserSrv userService;
-    
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Utility ins=Utility.getInstance();
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		Utility ins = Utility.getInstance();
+		
 		String name = request.getParameter("username");
-		String email = request.getParameter("useremail");
+		String mail = request.getParameter("useremail");
 		String password1 = request.getParameter("userpswd1");
 		String password2 = request.getParameter("userpswd2");
-		
-		if(ins.checkString(name) && ins.checkString(password1) 
-				&& ins.checkString(password2)&&ins.isMail(email)
+
+		if (ins.checkString(name) && ins.checkString(password1) && ins.checkString(password2) && ins.isMail(mail)
 				&& password1.equals(password2)) {
 			try {
-				userService.createUser(name, password2, email, true, false);
-			}
-			catch(Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error creating user in db!", response);
+				userService.createUser(name, password2, mail, true, false);
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Error creating user in database!", response);
 				return;
 			}
-			
-			HttpSession session=request.getSession(true);  
-	        session.setAttribute("newUserCreated", true);
-	        response.sendRedirect("Login");
+
+			HttpSession session = request.getSession(true);
+			session.setAttribute("newUserCreated", true);
+			response.sendRedirect("Login");
 		}
-		
+
 	}
 
 }
