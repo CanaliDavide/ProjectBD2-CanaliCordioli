@@ -60,12 +60,24 @@ public class PackageValue extends HttpServlet {
 			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
 			return;
 		}
-		if(!userService.findUser(idUser).getIsEmployee()) {
+		if (idUser == -1) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+					"Some parameters was incorrect, please re-login!", response);
+			return;
+		}
+		if(!userService.isEmployee(idUser)) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "You don't have permissions!", response);
 			return;
 		}
 		
-		List<Object[]> result = orderService.packageValue();
+		List<Object[]> result = null;
+		try {
+			result = orderService.packageValue();
+		}catch(Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in querying the database", response);
+			return;
+		}
 		
 		List<String[]> finalResult=new ArrayList<>();
 		
@@ -114,7 +126,9 @@ public class PackageValue extends HttpServlet {
 				
 				finalResult.add(array);
 			}catch(Exception e) {
-				e.printStackTrace();
+				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Error in querying the database", response);
+				return;
 			}
 		}
 		

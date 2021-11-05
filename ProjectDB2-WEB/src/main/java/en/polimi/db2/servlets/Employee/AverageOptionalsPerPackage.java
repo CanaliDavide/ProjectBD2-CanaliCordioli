@@ -28,19 +28,20 @@ import en.polimi.db2.utils.Utility;
 @WebServlet("/AverageOptionalsPerPackage")
 public class AverageOptionalsPerPackage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
 	private TemplateEngine templateEngine;
 	@EJB
 	OrderSrv orderService;
 	@EJB
 	private UserSrv userService;
-    
+
 	public void init() throws ServletException {
 		ServletContext context = getServletContext();
 		this.templateEngine = Utility.getInstance().connectTemplate(context);
 	}
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		HttpSession session = request.getSession(false);
 		Integer idUser = -1;
@@ -53,49 +54,65 @@ public class AverageOptionalsPerPackage extends HttpServlet {
 					idUser = (Integer) session.getAttribute("idUser");
 				}
 			} catch (Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect, please re-login!", response);
 				return;
 			}
 		}
-		if(userService.findUser(idUser)==null) {
-			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+		if (userService.findUser(idUser) == null) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+					"Some parameters was incorrect, please re-login!", response);
 			return;
 		}
-		if(!userService.findUser(idUser).getIsEmployee()) {
+		if (idUser == -1) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+					"Some parameters was incorrect, please re-login!", response);
+			return;
+		}
+		if(!userService.isEmployee(idUser)) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "You don't have permissions!", response);
 			return;
 		}
-		
-		List<Object[]> result = orderService.avgOptionalsPerPackage();
-		List<Object[]> finalResult=new ArrayList<>();
-		for(Object[] o : result) {
+
+		List<Object[]> result = null;
+		List<Object[]> finalResult = new ArrayList<>();
+
+		try {
+			result = orderService.avgOptionalsPerPackage();
+		} catch (Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in querying the database", response);
+			return;
+		}
+
+		for (Object[] o : result) {
 			try {
 				String[] array = new String[4];
-				
-				array[0]=((Integer) o[0]).toString();
-				array[1]=(String) o[1];
-				Long d1=(Long) o[2];
-				Long d2= (Long) o[3];
-				Double d3 = d1.doubleValue()/d2.doubleValue();
+
+				array[0] = ((Integer) o[0]).toString();
+				array[1] = (String) o[1];
+				Long d1 = (Long) o[2];
+				Long d2 = (Long) o[3];
+				Double d3 = d1.doubleValue() / d2.doubleValue();
 				String avg = d3.toString();
 				String[] avgSplit = new String[1];
-				
-				if(avg.contains(".")) {
+
+				if (avg.contains(".")) {
 					avgSplit = avg.split(Pattern.quote("."), 2);
-				}else {
+				} else {
 					avgSplit[0] = avg;
 				}
-			
-				if(avgSplit.length == 1) {
-					array[2]= avgSplit[0];
-				}
-				else {
+
+				if (avgSplit.length == 1) {
+					array[2] = avgSplit[0];
+				} else {
 					avgSplit[1] = avgSplit[1].concat("000");
-					array[2]= avgSplit[0]+"."+avgSplit[1].substring(0, 2);
+					array[2] = avgSplit[0] + "." + avgSplit[1].substring(0, 2);
 				}
 				finalResult.add(array);
-			}catch(Exception e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Error in querying the database", response);
 				return;
 			}
 		}
@@ -109,12 +126,12 @@ public class AverageOptionalsPerPackage extends HttpServlet {
 		ctx.setVariable("query5", false);
 		ctx.setVariable("query6", false);
 		ctx.setVariable("result", finalResult);
-		
+
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

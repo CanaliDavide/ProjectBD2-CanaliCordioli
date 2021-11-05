@@ -26,19 +26,20 @@ import en.polimi.db2.utils.Utility;
 @WebServlet("/PurchasePerPackageAndValidity")
 public class PurchasePerPackageAndValidity extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
 	private TemplateEngine templateEngine;
 	@EJB
 	OrderSrv orderService;
 	@EJB
 	private UserSrv userService;
-    
+
 	public void init() throws ServletException {
 		ServletContext context = getServletContext();
 		this.templateEngine = Utility.getInstance().connectTemplate(context);
 	}
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
 		Integer idUser = -1;
 		if (session == null) {
@@ -50,21 +51,35 @@ public class PurchasePerPackageAndValidity extends HttpServlet {
 					idUser = (Integer) session.getAttribute("idUser");
 				}
 			} catch (Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect, please re-login!", response);
 				return;
 			}
 		}
-		if(userService.findUser(idUser)==null) {
-			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+		if (userService.findUser(idUser) == null) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+					"Some parameters was incorrect, please re-login!", response);
 			return;
 		}
-		if(!userService.findUser(idUser).getIsEmployee()) {
+		if (idUser == -1) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+					"Some parameters was incorrect, please re-login!", response);
+			return;
+		}
+		if(!userService.isEmployee(idUser)) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "You don't have permissions!", response);
 			return;
 		}
-		
-		List<Object[]> result = orderService.totalPurchasePerPerckageAndValidity();
-		
+
+		List<Object[]> result = null;
+		try {
+			result = orderService.totalPurchasePerPerckageAndValidity();
+		} catch (Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in querying the database", response);
+			return;
+		}
+
 		String path = "Templates/SalesReport.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
@@ -75,14 +90,16 @@ public class PurchasePerPackageAndValidity extends HttpServlet {
 		ctx.setVariable("query5", false);
 		ctx.setVariable("query6", false);
 		ctx.setVariable("result", result);
-		
+
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

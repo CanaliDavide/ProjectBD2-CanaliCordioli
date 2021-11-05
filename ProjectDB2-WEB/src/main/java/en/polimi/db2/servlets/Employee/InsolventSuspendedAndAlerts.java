@@ -30,7 +30,7 @@ import en.polimi.db2.utils.Utility;
 @WebServlet("/InsolventSuspendedAndAlerts")
 public class InsolventSuspendedAndAlerts extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	@EJB
 	OrderSrv orderService;
 	@EJB
@@ -38,14 +38,15 @@ public class InsolventSuspendedAndAlerts extends HttpServlet {
 	@EJB
 	AlertSrv alertService;
 	private TemplateEngine templateEngine;
-    
+
 	public void init() throws ServletException {
 		ServletContext context = getServletContext();
 		this.templateEngine = Utility.getInstance().connectTemplate(context);
 	}
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-	
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
 		HttpSession session = request.getSession(false);
 		Integer idUser = -1;
 		if (session == null) {
@@ -57,25 +58,37 @@ public class InsolventSuspendedAndAlerts extends HttpServlet {
 					idUser = (Integer) session.getAttribute("idUser");
 				}
 			} catch (Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect, please re-login!", response);
 				return;
 			}
 		}
-		if(userService.findUser(idUser)==null) {
-			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+		if (userService.findUser(idUser) == null) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+					"Some parameters was incorrect, please re-login!", response);
 			return;
 		}
-		if(!userService.findUser(idUser).getIsEmployee()) {
+		if (idUser == -1) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+					"Some parameters was incorrect, please re-login!", response);
+			return;
+		}
+		if(!userService.isEmployee(idUser)) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "You don't have permissions!", response);
 			return;
 		}
-		
-		List<OrderData> order = orderService.findAllSuspended();
-		List<UserData> user = userService.findAllInsolvent();
-		List<Alert> alert = alertService.findAll();
-		
-		for(int i=0; i<alert.size(); i++) {
-			System.out.println(alert.get(i).getLastReject().toString());
+
+		List<OrderData> order = null;
+		List<Alert> alert = null;
+		List<UserData> user = null;
+		try {
+			order = orderService.findAllSuspended();
+			alert = alertService.findAll();
+			user = userService.findAllInsolvent();
+		} catch (Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in querying the database", response);
+			return;
 		}
 		
 		String path = "Templates/SalesReport.html";
@@ -91,13 +104,15 @@ public class InsolventSuspendedAndAlerts extends HttpServlet {
 		ctx.setVariable("user", user);
 		ctx.setVariable("alert", alert);
 		templateEngine.process(path, ctx, response.getWriter());
-			
+
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
