@@ -5,13 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
 import en.polimi.db2.services.OrderSrv;
+import en.polimi.db2.services.UserSrv;
+import en.polimi.db2.utils.ErrorManager;
+import en.polimi.db2.utils.Utility;
 
 /**
  * Servlet implementation class PackageValue
@@ -20,33 +28,77 @@ import en.polimi.db2.services.OrderSrv;
 public class PackageValue extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
+	private TemplateEngine templateEngine;
 	@EJB
 	OrderSrv orderService;
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public PackageValue() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+	@EJB
+	private UserSrv userService;
+    
+	public void init() throws ServletException {
+		ServletContext context = getServletContext();
+		this.templateEngine = Utility.getInstance().connectTemplate(context);
+	}
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		HttpSession session = request.getSession(false);
+		Integer idUser = -1;
+		if (session == null) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
+			return;
+		} else {
+			try {
+				if (session.getAttribute("idUser") != null) {
+					idUser = (Integer) session.getAttribute("idUser");
+				}
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+				return;
+			}
+		}
+		if(userService.findUser(idUser)==null) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+			return;
+		}
+		if(!userService.findUser(idUser).getIsEmployee()) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "You don't have permissions!", response);
+			return;
+		}
+		
 		List<Object[]> result = orderService.packageValue();
 		
-		List<Integer> packsIds = new ArrayList<Integer>();
-		List<Double> totalValue = new ArrayList<Double>();
-		List<Double> valueNoOpt = new ArrayList<Double>();
-
+		List<String[]> finalResult=new ArrayList<>();
 		
-		for(Object[] res : result) {
-			System.out.println(res[0] + " " + res[1] +" "+ res[2]);
-			packsIds.add((Integer) res[0]);
-			totalValue.add((Double) res[1]);
-			valueNoOpt.add((Double) res[2]);
+		for(Object[] o : result) {
+			try {
+				String[] array = new String[4];
+				
+				array[0]=(String) o[0];
+				array[1]=(String) o[1];
+				Long d1=(Long) o[2];
+				Long d2= (Long) o[3];
+				Long d3 = d1/d2;
+				String avg=d3.toString();
+				
+				String avg1= avg.split(".")[0];
+				String avg2= avg.split(".")[1];
+				array[2]= avg1+"."+avg2.substring(0, 2);
+				finalResult.add(array);
+			}catch(Exception e) {
+				
+			}
 		}
+		
+		String path = "Templates/SalesReport.html";
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		ctx.setVariable("query1", false);
+		ctx.setVariable("query2", false);
+		ctx.setVariable("query3", true);
+		ctx.setVariable("query4", false);
+		ctx.setVariable("query5", false);
+		ctx.setVariable("query6", false);
+		ctx.setVariable("result", finalResult);
+		templateEngine.process(path, ctx, response.getWriter());
 	}
 
 	/**

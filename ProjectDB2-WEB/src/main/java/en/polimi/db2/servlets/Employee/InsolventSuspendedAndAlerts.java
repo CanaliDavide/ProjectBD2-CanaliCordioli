@@ -4,11 +4,16 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.WebContext;
 
 import en.polimi.db2.entities.Alert;
 import en.polimi.db2.entities.OrderData;
@@ -16,6 +21,8 @@ import en.polimi.db2.entities.UserData;
 import en.polimi.db2.services.AlertSrv;
 import en.polimi.db2.services.OrderSrv;
 import en.polimi.db2.services.UserSrv;
+import en.polimi.db2.utils.ErrorManager;
+import en.polimi.db2.utils.Utility;
 
 /**
  * Servlet implementation class InsolventSuspendedAndAlerts
@@ -30,30 +37,60 @@ public class InsolventSuspendedAndAlerts extends HttpServlet {
 	UserSrv userService;
 	@EJB
 	AlertSrv alertService;
-	
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public InsolventSuspendedAndAlerts() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+	private TemplateEngine templateEngine;
+    
+	public void init() throws ServletException {
+		ServletContext context = getServletContext();
+		this.templateEngine = Utility.getInstance().connectTemplate(context);
+	}
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<OrderData> orderResult = orderService.findAllSuspended();
-		List<UserData> userResult = userService.findAllInsolvent();
-		List<Alert> alertResult = alertService.findAll();
+		
 	
-		for(OrderData ord:orderResult)
-			System.out.println(ord.getId());
-		for(UserData usr:userResult)
-			System.out.println(usr.getId());
-		for(Alert alt: alertResult)
-			System.out.println(alt.getId());
+		HttpSession session = request.getSession(false);
+		Integer idUser = -1;
+		if (session == null) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
+			return;
+		} else {
+			try {
+				if (session.getAttribute("idUser") != null) {
+					idUser = (Integer) session.getAttribute("idUser");
+				}
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+				return;
+			}
+		}
+		if(userService.findUser(idUser)==null) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+			return;
+		}
+		if(!userService.findUser(idUser).getIsEmployee()) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "You don't have permissions!", response);
+			return;
+		}
+		
+		List<OrderData> order = orderService.findAllSuspended();
+		List<UserData> user = userService.findAllInsolvent();
+		List<Alert> alert = alertService.findAll();
+		
+		for(int i=0; i<alert.size(); i++) {
+			System.out.println(alert.get(i).getLastReject().toString());
+		}
+		
+		String path = "Templates/SalesReport.html";
+		ServletContext servletContext = getServletContext();
+		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+		ctx.setVariable("query1", false);
+		ctx.setVariable("query2", false);
+		ctx.setVariable("query3", false);
+		ctx.setVariable("query4", false);
+		ctx.setVariable("query5", true);
+		ctx.setVariable("query6", false);
+		ctx.setVariable("order", order);
+		ctx.setVariable("user", user);
+		ctx.setVariable("alert", alert);
+		templateEngine.process(path, ctx, response.getWriter());
 			
 	}
 

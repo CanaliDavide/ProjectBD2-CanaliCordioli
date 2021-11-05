@@ -88,21 +88,21 @@ public class OrderSrv {
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalPurchasePerPackage() {
-		Query query = em.createQuery("select o.packageData.id, count(o) from OrderData o group by o.packageData.id");
+		Query query = em.createQuery("select o.packageData.id, o.packageData.name ,count(o) from OrderData o group by o.packageData.id");
 		return query.getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalPurchasePerPerckageAndValidity() {
 		Query query = em.createQuery(
-				"select o.packageData.id, o.validityperiod.month, count(o) from OrderData o group by o.packageData.id, o.validityperiod.id");
+				"select o.packageData.id, o.packageData.name, count(o), o.validityperiod.month from OrderData o group by o.packageData.id, o.validityperiod.id");
 		return query.getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> packageValue() {
 		Query query = em.createQuery(
-				"select o.packageData.id, sum(o.totalCost), sum(o.totalCost)-sum(opt.feeMonthly*o.validityperiod.month)"
+				"select o.packageData.id, o.packageData.name, sum(o.totalCost), sum(o.totalCost)-sum(opt.feeMonthly*o.validityperiod.month)"
 						+ " from OrderData o left join o.packageData.packageOptions po"
 						+ " join OptionalData opt on po.id.idOptional = opt.id" + " group by o.packageData.id");
 		return query.getResultList();
@@ -110,7 +110,7 @@ public class OrderSrv {
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> avgOptionalsPerPackage() {
-		Query query = em.createQuery("select o.packageData.id,count(o.id),count(distinct(o.id))"
+		Query query = em.createQuery("select o.packageData.id, o.packageData.name, count(o.id), count(distinct(o.id))"
 				+ " from OrderData o left join o.orderOptions po"
 				+ " join OptionalData opt on po.id.idOptional = opt.id" + " group by o.packageData.id");
 		return query.getResultList();
@@ -118,7 +118,7 @@ public class OrderSrv {
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> mostValueOptional() {
-		Query query = em.createQuery("select opt.id, sum(opt.feeMonthly*o.validityperiod.month)"
+		Query query = em.createQuery("select opt.id, opt.name,sum(opt.feeMonthly*o.validityperiod.month)"
 				+ " from OrderData o join o.orderOptions op" + " join OptionalData opt on opt.id = op.id.idOptional"
 				+ " group by opt.id" + " order by sum(opt.feeMonthly*o.validityperiod.month) desc");
 		return query.setMaxResults(1).getResultList();

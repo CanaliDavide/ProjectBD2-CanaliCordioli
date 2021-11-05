@@ -13,18 +13,18 @@
 	<section  class="content">
 		<table>
 			<tr>
-				<th><a href="@{/PurchasePerPackage}">Query 1</a></th>
-				<th><a href="@{/PurchasePerPackageAndValidity}">Query 2</a></th>
-				<th><a href="">Query 3</a></th>
-				<th><a href="">Query 4</a></th>
-				<th><a href="">Query 5</a></th>
-				<th><a href="">Query 6</a></th>
+				<th><a th:href="@{/PurchasePerPackage}">Query 1</a></th>
+				<th><a th:href="@{/PurchasePerPackageAndValidity}">Query 2</a></th>
+				<th><a th:href="@{/PackageValue}">Query 3</a></th>
+				<th><a th:href="@{/AverageOptionalsPerPackage}">Query 4</a></th>
+				<th><a th:href="@{/InsolventSuspendedAndAlerts}">Query 5</a></th>
+				<th><a th:href="@{/MostValueOptional}">Query 6</a></th>
 			</tr>
 		</table>
 	</section>
 	
 
-	<section class="content" th:if="${}">
+	<section class="content" th:if="${query1}">
 		<h2>purchases per package</h2>
 		<section class="insider" >
 			<table>
@@ -33,16 +33,16 @@
 					<th>NamePackage</th>
 					<th>Purchases</th>
 				</tr>
-				<tr th:each="package : ${packages}">
-					<td th:text="${package.getId()}">1</td>
-					<td th:text="${package.getName()}">pippo</td>
-					<td th:text="${package.getAmount()}">5</td>
+				<tr th:each="o : ${result}">
+					<td th:text="${o[0]}">1</td>
+					<td th:text="${o[1]}">pippo</td>
+					<td th:text="${o[2]}">5</td>
 				</tr>
 			</table>
 		</section>
 	</section>
 
-	<section class="content" th:if="${}">
+	<section class="content" th:if="${query2}">
 		<h2>purchases per package and validity period</h2>
 		<section class="insider" >
 			<table>
@@ -52,37 +52,37 @@
 					<th>Purchases</th>
 					<th>ValidityPeriod</th>
 				</tr>
-				<tr th:each="package : ${packages}">
-					<td th:text="${package.getId()}">1</td>
-					<td th:text="${package.getName()}">pippo</td>
-					<td th:text="${package.getAmount()}">5</td>
-					<td th:text="${package.getValidity()}">36</td>
+				<tr th:each="o : ${result}">
+					<td th:text="${o[0]}">1</td>
+					<td th:text="${o[1]}">pippo</td>
+					<td th:text="${o[2]}">5</td>
+					<td th:text="${o[3]}">5</td>
 				</tr>
 			</table>
 		</section>
 	</section>
 
-	<section class="content" th:if="${}">
+	<section class="content" th:if="${query3}">
 		<h2>income per package with and without optionals</h2>
 		<section class="insider" >
 			<table>
 				<tr>
 					<th>IdPackage</th>
 					<th>NamePackage</th>
-					<th>IncomeNoOptional</th>
 					<th>IncomeWithOptional</th>
+					<th>IncomeNoOptional</th>
 				</tr>
-				<tr th:each="package : ${packages}">
-					<td th:text="${package.getId()}">1</td>
-					<td th:text="${package.getName()}">pippo</td>
-					<td th:text="${package.IncomeNoOptional()}">5</td>
-					<td th:text="${package.IncomeWithOptional()}">36</td>
+				<tr th:each="o : ${result}">
+					<td th:text="${o[0]}">1</td>
+					<td th:text="${o[1]}">pippo</td>
+					<td th:text="${o[2]}">5</td>
+					<td th:text="${o[2]}">5</td>
 				</tr>
 			</table>
 		</section>
 	</section>
 
-	<section class="content" th:if="${}">
+	<section class="content" th:if="${query4}">
 		<h2>avarage per package of optional purchased</h2>
 		<section class="insider" >
 			<table>
@@ -91,34 +91,66 @@
 					<th>NamePackage</th>
 					<th>AvarageOfOptionals</th>
 				</tr>
-				<tr th:each="package : ${packages}">
-					<td th:text="${package.getId()}">1</td>
-					<td th:text="${package.getName()}">pippo</td>
-					<td th:text="${package.AvarageOfOptionals()}">5</td>
+				<tr th:each="o : ${result}">
+					<td th:text="${o[0]}">1</td>
+					<td th:text="${o[1]}">pippo</td>
+					<td th:text="${o[2]}">5</td>
 				</tr>
 			</table>
 		</section>
 	</section>
 
-	<section class="content" th:if="${}">
-		<h2>list of insolvent (da vedere con la query fatta)</h2>
+	<section class="content" th:if="${query5}">
+		<h2>insolvents</h2>
 		<section class="insider" >
 			<table>
 				<tr>
-					<th>IdPackage</th>
-					<th>NamePackage</th>
-					<th>AvarageOfOptionals</th>
+					<th>IdUser</th>
+					<th>Username</th>
+					<th>Mail</th>
 				</tr>
-				<tr th:each="package : ${packages}">
-					<td th:text="${package.getId()}">1</td>
-					<td th:text="${package.getName()}">pippo</td>
-					<td th:text="${package.AvarageOfOptionals()}">5</td>
+				<tr th:each="u : ${user}">
+					<td th:text="${u.getId()}">1</td>
+					<td th:text="${u.getUsername()}">pippo</td>
+					<td th:text="${u.getMail()}">5</td>
+				</tr>
+			</table>
+		</section>
+		
+		<h2>suspended orders</h2>
+		<section class="insider" >
+			<table>
+				<tr>
+					<th>IdOrder</th>
+					<th>PackageName</th>
+					<th>UserMail</th>
+				</tr>
+				<tr th:each="o : ${order}">
+					<td th:text="${o.getId()}">1</td>
+					<td th:text="${o.getPackageData().getName()}">pippo</td>
+					<td th:text="${o.getUserData().getMail()}">5</td>
+				</tr>
+			</table>
+		</section>
+		
+		<h2>alerts</h2>
+		<section class="insider" >
+			<table>
+				<tr>
+					<th>Mail</th>
+					<th>Cost</th>
+					<th>Rejected</th>
+				</tr>
+				<tr th:each="a : ${alert}">
+					<td th:text="${a.getEmail()}">1</td>
+					<td th:text="${a.getTotalCost()}">pippo</td>
+					<td th:text="${a.getLastReject().toString()}">5</td>
 				</tr>
 			</table>
 		</section>
 	</section>
 
-	<section class="content" th:if="${}">
+	<section class="content" th:if="${query6}">
 		<h2>best seller optional product</h2>
 		<section class="insider">
 			<table>
@@ -127,10 +159,10 @@
 					<th>NameOptional</th>
 					<th>Income</th>
 				</tr>
-				<tr th:each="optional : ${optionals}">
-					<td th:text="${optional.getId()}">1</td>
-					<td th:text="${optional.getName()}">pippo</td>
-					<td th:text="${optional.getIncome()}">5</td>
+				<tr th:each="o : ${result}">
+					<td th:text="${o[0]}">1</td>
+					<td th:text="${o[1]}">pippo</td>
+					<td th:text="${o[2]}">5</td>
 				</tr>
 			</table>
 		</section>
