@@ -1,7 +1,6 @@
 package en.polimi.db2.servlets.Employee;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

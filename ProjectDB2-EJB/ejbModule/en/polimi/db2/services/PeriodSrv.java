@@ -9,8 +9,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import en.polimi.db2.entities.OptionalData;
-import en.polimi.db2.entities.PackageData;
 import en.polimi.db2.entities.Validityperiod;
 
 @Stateless

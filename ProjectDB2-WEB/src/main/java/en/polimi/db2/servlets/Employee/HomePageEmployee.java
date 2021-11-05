@@ -19,8 +19,6 @@ import en.polimi.db2.entities.OptionalData;
 import en.polimi.db2.entities.Service;
 import en.polimi.db2.entities.Validityperiod;
 import en.polimi.db2.services.OptionalSrv;
-import en.polimi.db2.services.OrderSrv;
-import en.polimi.db2.services.PackageSrv;
 import en.polimi.db2.services.PeriodSrv;
 import en.polimi.db2.services.ServiceSrv;
 import en.polimi.db2.services.UserSrv;

@@ -1,5 +1,6 @@
 package en.polimi.db2.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.LocalBean;
@@ -24,6 +25,10 @@ public class ServiceSrv {
 	}
 	
 	public List<Service> findByIds(List<Integer> ids){
+		if(ids.isEmpty()) {
+			List<Service> srv = new ArrayList<Service>();
+			return srv;
+		}
 		TypedQuery<Service> query = em.createNamedQuery("Service.findByIds", Service.class);
 		return query.setParameter(1, ids).getResultList();
 	}

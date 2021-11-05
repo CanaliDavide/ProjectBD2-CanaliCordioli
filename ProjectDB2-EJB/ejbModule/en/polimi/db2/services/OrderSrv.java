@@ -13,7 +13,6 @@ import javax.persistence.TypedQuery;
 
 import en.polimi.db2.entities.OptionalData;
 import en.polimi.db2.entities.OrderData;
-import en.polimi.db2.entities.OrderOption;
 import en.polimi.db2.entities.PackageData;
 import en.polimi.db2.entities.UserData;
 import en.polimi.db2.entities.Validityperiod;
@@ -49,88 +48,83 @@ public class OrderSrv {
 	}
 
 	public OrderData findRejectedOrderOfUser(int idOrder, int idUser) {
-		OrderData result;
 		TypedQuery<OrderData> query = em.createQuery(
 				"select o from OrderData o where o.userData = ?1 and o.id = ?2 and o.isValid = 0", OrderData.class);
 		try {
-			result = query.setParameter(1, em.find(UserData.class, idUser)).setParameter(2, idOrder).getSingleResult();
+			return query.setParameter(1, em.find(UserData.class, idUser)).setParameter(2, idOrder).getSingleResult();
 		} catch (Exception e) {
-			result = null;
+			return null;
 		}
-		return result;
 	}
-	
+
 	public OrderData buyInsolvent(int idOrder, int idUser, boolean isValid) {
 		OrderData order = em.find(OrderData.class, idOrder);
-		if(order.getUserData().getId() == idUser) {
-			if(isValid) {
-				order.setIsValid(true);
-				em.flush();
-				UserData user = em.find(UserData.class, idUser);
-				if(findAllRejectedWithUserId(idUser) == null) {
-					user.setIsInsolvent(false);
+		if (order != null) {
+			if (order.getUserData().getId() == idUser) {
+				if (isValid) {
+					order.setIsValid(true);
+					em.flush();
+					UserData user = em.find(UserData.class, idUser);
+					if (findAllRejectedWithUserId(idUser) == null) {
+						user.setIsInsolvent(false);
+					}
+				} else {
+					order.setNumberOfInvalid(order.getNumberOfInvalid() + 1);
 				}
-			}else {
-				order.setNumberOfInvalid(order.getNumberOfInvalid() + 1);
 			}
 		}
 		return order;
 	}
-	
+
 	public Integer numberOfFailedPay(int userId) {
-		TypedQuery<Integer> query = em.createQuery(
-				"select sum(o.numberOfInvalid) from OrderData o where o.userData.id = ?1",Integer.class);
-		return query.getFirstResult();
+		TypedQuery<Integer> query = em
+				.createQuery("select sum(o.numberOfInvalid) from OrderData o where o.userData.id = ?1", Integer.class);
+		try {
+			return query.getFirstResult();
+		}catch(Exception e) {
+			return null;
+		}
 	}
-	
-	public List<Object[]> totalPurchasePerPackage(){
-		Query query = em.createQuery(
-				"select o.packageData.id, count(o) from OrderData o group by o.packageData.id");
+
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalPurchasePerPackage() {
+		Query query = em.createQuery("select o.packageData.id, count(o) from OrderData o group by o.packageData.id");
 		return query.getResultList();
 	}
-	
-	public List<Object[]> totalPurchasePerPerckageAndValidity(){
+
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalPurchasePerPerckageAndValidity() {
 		Query query = em.createQuery(
 				"select o.packageData.id, o.validityperiod.month, count(o) from OrderData o group by o.packageData.id, o.validityperiod.id");
 		return query.getResultList();
 	}
-	
-	public List<Object[]> packageValue(){
+
+	@SuppressWarnings("unchecked")
+	public List<Object[]> packageValue() {
 		Query query = em.createQuery(
 				"select o.packageData.id, sum(o.totalCost), sum(o.totalCost)-sum(opt.feeMonthly*o.validityperiod.month)"
-				+ " from OrderData o left join o.packageData.packageOptions po"
-				+ " join OptionalData opt on po.id.idOptional = opt.id"
-				+ " group by o.packageData.id");
+						+ " from OrderData o left join o.packageData.packageOptions po"
+						+ " join OptionalData opt on po.id.idOptional = opt.id" + " group by o.packageData.id");
 		return query.getResultList();
 	}
-	
-	public List<Object[]> avgOptionalsPerPackage(){
-		Query query = em.createQuery(
-				"select o.packageData.id,count(o.id),count(distinct(o.id))"
+
+	@SuppressWarnings("unchecked")
+	public List<Object[]> avgOptionalsPerPackage() {
+		Query query = em.createQuery("select o.packageData.id,count(o.id),count(distinct(o.id))"
 				+ " from OrderData o left join o.orderOptions po"
-				+ " join OptionalData opt on po.id.idOptional = opt.id"
-				+ " group by o.packageData.id");
+				+ " join OptionalData opt on po.id.idOptional = opt.id" + " group by o.packageData.id");
 		return query.getResultList();
 	}
-	
-	public List<Object[]> mostValueOptional(){
-		Query query = em.createQuery(
-				"select opt.id, sum(opt.feeMonthly*o.validityperiod.month)"
-				+ " from OrderData o join o.orderOptions op"
-				+ " join OptionalData opt on opt.id = op.id.idOptional"
-				+ " group by opt.id"
-				+ " order by sum(opt.feeMonthly*o.validityperiod.month) desc");
+
+	@SuppressWarnings("unchecked")
+	public List<Object[]> mostValueOptional() {
+		Query query = em.createQuery("select opt.id, sum(opt.feeMonthly*o.validityperiod.month)"
+				+ " from OrderData o join o.orderOptions op" + " join OptionalData opt on opt.id = op.id.idOptional"
+				+ " group by opt.id" + " order by sum(opt.feeMonthly*o.validityperiod.month) desc");
 		return query.setMaxResults(1).getResultList();
 	}
-	
-	/*
-	 * "select opt.id, sum(opt.feeMonthly*o.validityperiod.month)"
-				+ " from OrderData o join OrderOption op on o.id = op.id.idOrder"
-				+ " join OptionalData opt on opt.id = op.id.idOptional"
-				+ " group by opt.id");
-	 */
-	
-	public List<OrderData> findAllSuspended(){
+
+	public List<OrderData> findAllSuspended() {
 		TypedQuery<OrderData> query = em.createNamedQuery("OrderData.findAllSuspended", OrderData.class);
 		return query.getResultList();
 	}

@@ -10,7 +10,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import en.polimi.db2.entities.OptionalData;
-import en.polimi.db2.entities.PackageData;
 
 @Stateless
 @LocalBean
@@ -38,6 +37,5 @@ public class OptionalSrv {
 	public List<OptionalData> findAll(){
 		TypedQuery<OptionalData> query = em.createNamedQuery("OptionalData.findAll", OptionalData.class);
 		return query.getResultList();
-	}
-	
+	}	
 }

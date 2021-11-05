@@ -1,7 +1,6 @@
 package en.polimi.db2.servlets.Employee;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
