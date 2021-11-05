@@ -3,6 +3,7 @@ package en.polimi.db2.servlets.Employee;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
@@ -72,19 +73,48 @@ public class PackageValue extends HttpServlet {
 			try {
 				String[] array = new String[4];
 				
-				array[0]=(String) o[0];
+				array[0]=((Integer) o[0]).toString();
 				array[1]=(String) o[1];
-				Long d1=(Long) o[2];
-				Long d2= (Long) o[3];
-				Long d3 = d1/d2;
-				String avg=d3.toString();
+				Double d1=(Double) o[2];
+				Double d2= (Double) o[3];
 				
-				String avg1= avg.split(".")[0];
-				String avg2= avg.split(".")[1];
-				array[2]= avg1+"."+avg2.substring(0, 2);
+				String value = d1.toString();
+				String[] avgSplit = new String[1];
+				
+				if(value.contains(".")) {
+					avgSplit = value.split(Pattern.quote("."), 2);
+				}else {
+					avgSplit[0] = value;
+				}
+			
+				if(avgSplit.length == 1) {
+					array[2]= avgSplit[0];
+				}
+				else {
+					avgSplit[1] = avgSplit[1].concat("000");
+					array[2]= avgSplit[0]+"."+avgSplit[1].substring(0, 2);
+				}
+				
+				value = d2.toString();
+				avgSplit = new String[1];
+				
+				if(value.contains(".")) {
+					avgSplit = value.split(Pattern.quote("."), 2);
+				}else {
+					avgSplit[0] = value;
+				}
+			
+				if(avgSplit.length == 1) {
+					array[2]= avgSplit[0];
+				}
+				else {
+					avgSplit[1] = avgSplit[1].concat("000");
+					array[2]= avgSplit[0]+"."+avgSplit[1].substring(0, 2);
+				}
+				
 				finalResult.add(array);
 			}catch(Exception e) {
-				
+				e.printStackTrace();
 			}
 		}
 		

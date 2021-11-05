@@ -3,6 +3,7 @@ package en.polimi.db2.servlets.Employee;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
@@ -75,18 +76,23 @@ public class AverageOptionalsPerPackage extends HttpServlet {
 				array[1]=(String) o[1];
 				Long d1=(Long) o[2];
 				Long d2= (Long) o[3];
-				Long d3 = d1/d2;
-				String avg=d3.toString();
-				System.out.println(avg);
-				String avg1= avg.split(".")[0];
-				String avg2;
-				if(avg.contains(".")) {
-					avg2= avg.split(".")[1];
-				}else {
-					avg2="  ";
-				}
+				Double d3 = d1.doubleValue()/d2.doubleValue();
+				String avg = d3.toString();
+				String[] avgSplit = new String[1];
 				
-				array[2]= avg1+"."+avg2.substring(0, 2);
+				if(avg.contains(".")) {
+					avgSplit = avg.split(Pattern.quote("."), 2);
+				}else {
+					avgSplit[0] = avg;
+				}
+			
+				if(avgSplit.length == 1) {
+					array[2]= avgSplit[0];
+				}
+				else {
+					avgSplit[1] = avgSplit[1].concat("000");
+					array[2]= avgSplit[0]+"."+avgSplit[1].substring(0, 2);
+				}
 				finalResult.add(array);
 			}catch(Exception e) {
 				e.printStackTrace();
