@@ -39,6 +39,13 @@ public class UserSrv {
 		return em.find(UserData.class, id);
 	}
 
+	public boolean isEmployee(int id) {
+		UserData user = em.find(UserData.class, id);
+		if (user != null && user.getIsEmployee())
+			return true;
+		return false;
+	}
+
 	public Collection<UserData> findAllUser() {
 		TypedQuery<UserData> query = em.createNamedQuery("UserData.findAll", UserData.class);
 		return query.getResultList();

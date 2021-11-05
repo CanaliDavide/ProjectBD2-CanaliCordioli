@@ -74,11 +74,17 @@ public class BuyService extends HttpServlet {
 		}
 		if (idUser != -1) {
 			isLogged = true;
+			if (userService.isEmployee(idUser)) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_FORBIDDEN,
+						"You are not allowed to see this page!", response);
+				return;
+			}
 			try {
 				username = userService.findUser(idUser).getUsername();
 			} catch (Exception e) {
 				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 						"Error in querying the database", response);
+				return;
 			}
 		}
 
@@ -91,6 +97,7 @@ public class BuyService extends HttpServlet {
 		} catch (Exception e) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Error in querying the database", response);
+			return;
 		}
 
 		int idPack = -1;
@@ -110,6 +117,7 @@ public class BuyService extends HttpServlet {
 			} catch (Exception e) {
 				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 						"Error in querying the database", response);
+				return;
 			}
 
 			if (pack == null) {
@@ -127,6 +135,7 @@ public class BuyService extends HttpServlet {
 		} catch (Exception e) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Error in querying the database", response);
+			return;
 		}
 		
 		String path = "Templates/BuyService.html";

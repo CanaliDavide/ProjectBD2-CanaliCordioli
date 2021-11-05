@@ -47,7 +47,6 @@ public class BuyOrder extends HttpServlet {
 
 	}
 
-
 	@SuppressWarnings("unchecked")
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -63,59 +62,97 @@ public class BuyOrder extends HttpServlet {
 					idUser = (Integer) session.getAttribute("idUser");
 				}
 			} catch (Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect, please re-login!", response);
 				return;
 			}
 		}
-		if (idUser != -1) {
-		}
-		
-		Integer idOrder=null;
-		
-		try {
-			idOrder = (Integer) session.getAttribute("idOrder");
-		}catch(Exception e) {
-			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+
+		if (idUser == -1) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+					"Some parameters was incorrect, please re-login!", response);
 			return;
 		}
 		
+		if (userService.isEmployee(idUser)) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_FORBIDDEN,
+					"You are not allowed to see this page!", response);
+			return;
+		}
+			
+
+		Integer idOrder = null;
+
+		try {
+			idOrder = (Integer) session.getAttribute("idOrder");
+		} catch (Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+					"Some parameters was incorrect, please re-login!", response);
+			return;
+		}
+
 		long currentDate = System.currentTimeMillis();
 		Timestamp datetime = new Timestamp(currentDate);
 		if (idOrder == null) {
-			Double cost=null;
-			Date actDate=null;
-			List<Integer> optionals=null;
-			int idPack=-1;
-			int idValidity=-1;
+			Double cost = null;
+			Date actDate = null;
+			List<Integer> optionals = null;
+			int idPack = -1;
+			int idValidity = -1;
 			try {
 				cost = (Double) session.getAttribute("cost");
 				actDate = (Date) session.getAttribute("dateOfActivation");
 				optionals = (List<Integer>) session.getAttribute("options");
 				idPack = (int) session.getAttribute("idPack");
 				idValidity = (int) session.getAttribute("idVal");
-			}catch(Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect, please re-login!", response);
 				return;
 			}
-			
+
 			float totalCost = cost.floatValue();
-			
+
 			boolean isValid = Utility.getInstance().externalService();
 
 			int numberOfInvalid = isValid ? 0 : 1;
 
-			orderService.createOrder(actDate, datetime, isValid, numberOfInvalid, totalCost,
-					optionalService.findByIds(optionals), packageService.findPackageWithId(idPack),
-					userService.findUser(idUser), periodService.findValidityWithId(idValidity));
+			try {
+				orderService.createOrder(actDate, datetime, isValid, numberOfInvalid, totalCost,
+						optionalService.findByIds(optionals), packageService.findPackageWithId(idPack),
+						userService.findUser(idUser), periodService.findValidityWithId(idValidity));
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Error in querying the database", response);
+				return;
+			}
 
-		}else {
+		} else {
 			boolean isValid = Utility.getInstance().externalService();
-			OrderData order = orderService.buyInsolvent(idOrder, idUser, isValid);
-			if(!isValid && orderService.numberOfFailedPay(idUser)%3 == 0)
-				alertService.createAlert(order.getUserData().getMail(),order.getUserData().getUsername(), order.getUserData(), datetime, order.getTotalCost());
+			OrderData order = null;
+			Integer numOfFailed = -1;
+			
+			try {
+				order = orderService.buyInsolvent(idOrder, idUser, isValid);
+				numOfFailed = orderService.numberOfFailedPay(idUser);
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Error in querying the database", response);
+				return;
+			}
+
+			if (!isValid && numOfFailed % 3 == 0) {
+				try {
+					alertService.createAlert(order.getUserData().getMail(), order.getUserData().getUsername(),
+							order.getUserData(), datetime, order.getTotalCost());
+				} catch (Exception e) {
+					ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+							"Error in querying the database", response);
+					return;
+				}
+			}
 		}
 		session.removeAttribute("idOrder");
 		response.sendRedirect("HomePageClient");
 	}
-
 }

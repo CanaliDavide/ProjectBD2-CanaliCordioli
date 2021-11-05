@@ -22,62 +22,74 @@ import en.polimi.db2.utils.Utility;
 @WebServlet("/LoadConfirm")
 public class LoadConfirm extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	
+
 	@EJB
 	private UserSrv userService;
 	@EJB
 	private OrderSrv orderService;
-    
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session=request.getSession(false);
-		Integer idUser=-1;
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		HttpSession session = request.getSession(false);
+		Integer idUser = -1;
 		String orderId_str;
 		int orderId = -1;
-		
-		if(session==null) {
+
+		if (session == null) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
 			return;
-		}
-		else {
+		} else {
 			try {
-				if(session.getAttribute("idUser")!=null) {
-					idUser=(Integer)session.getAttribute("idUser");
+				if (session.getAttribute("idUser") != null) {
+					idUser = (Integer) session.getAttribute("idUser");
 				}
-			}
-			catch(Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect, please re-login!", response);
 				return;
 			}
 		}
-		
+		if (idUser != -1) {
+			if (userService.isEmployee(idUser)) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_FORBIDDEN,
+						"You are not allowed to see this page!", response);
+				return;
+			}
+		}
+
 		orderId_str = request.getParameter("idOrder");
-		
-		if(Utility.getInstance().checkString(orderId_str)) {
+
+		if (Utility.getInstance().checkString(orderId_str)) {
 			try {
 				orderId = Integer.parseInt(orderId_str);
-			}catch(Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect, please re-login!", response);
 				return;
 			}
 		}
-			
-		
-		OrderData order = orderService.findRejectedOrderOfUser(orderId, idUser);
-		
-		if(order != null) {
 
+		OrderData order = null;
+		try {
+			order = orderService.findRejectedOrderOfUser(orderId, idUser);
+		} catch (Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in querying the database", response);
+			return;
+		}
+		if (order != null) {
 			session.setAttribute("idOrder", orderId);
 			response.sendRedirect("Confirmation");
-		}else {
-			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect, please re-login!", response);
-		}
-		
-
+		} else {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+					"Some parameters was incorrect, please re-login!", response);
+			return;
+		} 
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
 }
