@@ -40,7 +40,7 @@ public class CreateUser extends HttpServlet {
 		if (ins.checkString(name) && ins.checkString(password1) && ins.checkString(password2) && ins.isMail(mail)
 				&& password1.equals(password2)) {
 			try {
-				userService.createUser(name, password2, mail, true, false);
+				userService.createUser(name, password2, mail, false, false);
 			} catch (Exception e) {
 				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 						"Error creating user in database!", response);
