@@ -22,6 +22,7 @@ import en.polimi.db2.services.OptionalSrv;
 import en.polimi.db2.services.PeriodSrv;
 import en.polimi.db2.services.ServiceSrv;
 import en.polimi.db2.services.UserSrv;
+import en.polimi.db2.utils.ErrorManager;
 import en.polimi.db2.utils.Utility;
 
 /**
@@ -30,7 +31,7 @@ import en.polimi.db2.utils.Utility;
 @WebServlet("/HomePageEmployee")
 public class HomePageEmployee extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
 	@EJB
 	private UserSrv userService;
 	@EJB
@@ -39,47 +40,60 @@ public class HomePageEmployee extends HttpServlet {
 	private ServiceSrv serviceService;
 	@EJB
 	private PeriodSrv periodService;
-	
+
 	private TemplateEngine templateEngine;
-    
-    
-    public void init() throws ServletException{	
-    	ServletContext context = getServletContext();
-        this.templateEngine = Utility.getInstance().connectTemplate(context);
-    }
-    
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session=request.getSession(false);
-		Integer idUser=-1;
-		String username="";
-		if(session==null) {
-			//errore e dice che devi riloggare
+
+	public void init() throws ServletException {
+		ServletContext context = getServletContext();
+		this.templateEngine = Utility.getInstance().connectTemplate(context);
+	}
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		HttpSession session = request.getSession(false);
+		Integer idUser = -1;
+		String username = "";
+		if (session == null) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
 			return;
-		}
-		else {
+		} else {
 			try {
-				idUser=(Integer)session.getAttribute("idUser"); 
-			}
-			catch(Exception e) {
-				//errore e dice che devi riloggare
+				if (session.getAttribute("idUser") != null) {
+					idUser = (Integer) session.getAttribute("idUser");
+				}
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect, please re-login!", response);
 				return;
 			}
 		}
-		if(userService.findUser(idUser)==null) {
-			//errore
+
+		if (idUser != -1) {
+			if (!userService.isEmployee(idUser)) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_FORBIDDEN,
+						"You are not allowed to see this page!", response);
+				return;
+			}
+
+			try {
+				username = userService.findUser(idUser).getUsername();
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Error in querying the database", response);
+				return;
+			}
+		} else {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+					"Some parameters was incorrect, please re-login!", response);
 			return;
 		}
-		if(!userService.findUser(idUser).getIsEmployee()) {
-			//errore autorizzazione
-			return;
-		}
-		
-		username=userService.findUser(idUser).getUsername();
-		
-		List<Service> services =  serviceService.findAll();
+
+		username = userService.findUser(idUser).getUsername();
+
+		List<Service> services = serviceService.findAll();
 		List<OptionalData> optionals = optionalService.findAll();
 		List<Validityperiod> periods = periodService.findAllPeriods();
-		
+
 		String path = "Templates/HomeEmployee.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
@@ -91,8 +105,8 @@ public class HomePageEmployee extends HttpServlet {
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
-	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

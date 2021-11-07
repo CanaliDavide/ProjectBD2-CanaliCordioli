@@ -1,6 +1,8 @@
 package en.polimi.db2.servlets.Client;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -155,6 +157,8 @@ public class Confirmation extends HttpServlet {
 			return;
 		}
 		
+		cost = new BigDecimal(String.valueOf(cost)).setScale(2, RoundingMode.FLOOR).doubleValue();
+	  
 		session.setAttribute("isFromConfirm", true);
 		session.setAttribute("idPack", idPack);
 		session.setAttribute("cost", cost);

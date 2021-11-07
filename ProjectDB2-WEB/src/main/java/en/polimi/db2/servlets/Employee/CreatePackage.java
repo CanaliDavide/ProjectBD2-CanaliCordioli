@@ -17,6 +17,7 @@ import en.polimi.db2.services.PackageSrv;
 import en.polimi.db2.services.PeriodSrv;
 import en.polimi.db2.services.ServiceSrv;
 import en.polimi.db2.services.UserSrv;
+import en.polimi.db2.utils.ErrorManager;
 
 /**
  * Servlet implementation class CreatePackage
@@ -40,25 +41,38 @@ public class CreatePackage extends HttpServlet {
 		HttpSession session=request.getSession(false);
 		Integer idUser=-1;
 		String username="";
-		if(session==null) {
-			//errore e dice che devi riloggare
+		if (session == null) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
 			return;
-		}
-		else {
+		} else {
 			try {
-				idUser=(Integer)session.getAttribute("idUser"); 
-			}
-			catch(Exception e) {
-				//errore e dice che devi riloggare
+				if (session.getAttribute("idUser") != null) {
+					idUser = (Integer) session.getAttribute("idUser");
+				}
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect, please re-login!", response);
 				return;
 			}
 		}
-		if(userService.findUser(idUser)==null) {
-			//errore
-			return;
-		}
-		if(!userService.findUser(idUser).getIsEmployee()) {
-			//errore autorizzazione
+
+		if (idUser != -1) {
+			if (!userService.isEmployee(idUser)) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_FORBIDDEN,
+						"You are not allowed to see this page!", response);
+				return;
+			}
+
+			try {
+				username = userService.findUser(idUser).getUsername();
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+						"Error in querying the database", response);
+				return;
+			}
+		} else {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+					"Some parameters was incorrect, please re-login!", response);
 			return;
 		}
 		
@@ -77,7 +91,9 @@ public class CreatePackage extends HttpServlet {
 					optionsInteger.add(Integer.parseInt(options[i]));
 				}
 			}catch(Exception e) {
-				//errore
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect!", response);
+				return;
 			}
 		}
 		
@@ -87,7 +103,9 @@ public class CreatePackage extends HttpServlet {
 					servicesInteger.add(Integer.parseInt(services[i]));
 				}
 			}catch(Exception e) {
-				//errore
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect!", response);
+				return;
 			}
 		}
 		if(periods != null) {
@@ -96,7 +114,9 @@ public class CreatePackage extends HttpServlet {
 					periodsInteger.add(Integer.parseInt(periods[i]));
 				}
 			}catch(Exception e) {
-				//errore
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
+						"Some parameters was incorrect!", response);
+				return;
 			}
 		}
 		

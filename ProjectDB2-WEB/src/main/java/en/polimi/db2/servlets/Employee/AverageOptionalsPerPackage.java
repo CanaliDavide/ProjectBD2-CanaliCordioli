@@ -1,9 +1,10 @@
 package en.polimi.db2.servlets.Employee;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
@@ -87,28 +88,17 @@ public class AverageOptionalsPerPackage extends HttpServlet {
 
 		for (Object[] o : result) {
 			try {
-				String[] array = new String[4];
+				String[] array = new String[3];
 
 				array[0] = ((Integer) o[0]).toString();
 				array[1] = (String) o[1];
 				Long d1 = (Long) o[2];
 				Long d2 = (Long) o[3];
 				Double d3 = d1.doubleValue() / d2.doubleValue();
-				String avg = d3.toString();
-				String[] avgSplit = new String[1];
-
-				if (avg.contains(".")) {
-					avgSplit = avg.split(Pattern.quote("."), 2);
-				} else {
-					avgSplit[0] = avg;
-				}
-
-				if (avgSplit.length == 1) {
-					array[2] = avgSplit[0];
-				} else {
-					avgSplit[1] = avgSplit[1].concat("000");
-					array[2] = avgSplit[0] + "." + avgSplit[1].substring(0, 2);
-				}
+				
+				d3 =  new BigDecimal(String.valueOf(d3)).setScale(2, RoundingMode.FLOOR).doubleValue();
+				array[2] = d3.toString();
+				
 				finalResult.add(array);
 			} catch (Exception e) {
 				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,

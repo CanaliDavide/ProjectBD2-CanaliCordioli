@@ -1,9 +1,10 @@
 package en.polimi.db2.servlets.Employee;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletContext;
@@ -90,39 +91,10 @@ public class PackageValue extends HttpServlet {
 				Double d1=(Double) o[2];
 				Double d2= (Double) o[3];
 				
-				String value = d1.toString();
-				String[] avgSplit = new String[1];
-				
-				if(value.contains(".")) {
-					avgSplit = value.split(Pattern.quote("."), 2);
-				}else {
-					avgSplit[0] = value;
-				}
-			
-				if(avgSplit.length == 1) {
-					array[2]= avgSplit[0];
-				}
-				else {
-					avgSplit[1] = avgSplit[1].concat("000");
-					array[2]= avgSplit[0]+"."+avgSplit[1].substring(0, 2);
-				}
-				
-				value = d2.toString();
-				avgSplit = new String[1];
-				
-				if(value.contains(".")) {
-					avgSplit = value.split(Pattern.quote("."), 2);
-				}else {
-					avgSplit[0] = value;
-				}
-			
-				if(avgSplit.length == 1) {
-					array[2]= avgSplit[0];
-				}
-				else {
-					avgSplit[1] = avgSplit[1].concat("000");
-					array[2]= avgSplit[0]+"."+avgSplit[1].substring(0, 2);
-				}
+				d1 =  new BigDecimal(String.valueOf(d1)).setScale(2, RoundingMode.FLOOR).doubleValue();
+				array[2] = d1.toString();
+				d2 =  new BigDecimal(String.valueOf(d2)).setScale(2, RoundingMode.FLOOR).doubleValue();
+				array[3] = d2.toString();
 				
 				finalResult.add(array);
 			}catch(Exception e) {

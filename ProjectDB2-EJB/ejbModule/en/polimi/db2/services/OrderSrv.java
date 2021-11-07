@@ -65,7 +65,8 @@ public class OrderSrv {
 					order.setIsValid(true);
 					em.flush();
 					UserData user = em.find(UserData.class, idUser);
-					if (findAllRejectedWithUserId(idUser) == null) {
+					List<OrderData> rejectedOrders = findAllRejectedWithUserId(idUser);
+					if (rejectedOrders == null || rejectedOrders.isEmpty()){
 						user.setIsInsolvent(false);
 					}
 				} else {
@@ -88,14 +89,17 @@ public class OrderSrv {
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalPurchasePerPackage() {
-		Query query = em.createQuery("select o.packageData.id, o.packageData.name ,count(o) from OrderData o group by o.packageData.id");
+		Query query = em.createQuery("select o.packageData.id, o.packageData.name ,count(o)"
+				+ " from OrderData o group by o.packageData.id");
 		return query.getResultList();
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Object[]> totalPurchasePerPerckageAndValidity() {
 		Query query = em.createQuery(
-				"select o.packageData.id, o.packageData.name, count(o), o.validityperiod.month from OrderData o group by o.packageData.id, o.validityperiod.id");
+				"select o.packageData.id, o.packageData.name, count(o), o.validityperiod.month"
+				+ " from OrderData o group by o.packageData.id, o.validityperiod.id"
+				+ " order by o.packageData.id");
 		return query.getResultList();
 	}
 
@@ -104,7 +108,9 @@ public class OrderSrv {
 		Query query = em.createQuery(
 				"select o.packageData.id, o.packageData.name, sum(o.totalCost), sum(o.totalCost)-sum(opt.feeMonthly*o.validityperiod.month)"
 						+ " from OrderData o left join o.packageData.packageOptions po"
-						+ " join OptionalData opt on po.id.idOptional = opt.id" + " group by o.packageData.id");
+						+ " join OptionalData opt on po.id.idOptional = opt.id" 
+						+ " group by o.packageData.id"
+						+ " order by o.packageData.id");
 		return query.getResultList();
 	}
 
@@ -112,7 +118,8 @@ public class OrderSrv {
 	public List<Object[]> avgOptionalsPerPackage() {
 		Query query = em.createQuery("select o.packageData.id, o.packageData.name, count(o.id), count(distinct(o.id))"
 				+ " from OrderData o left join o.orderOptions po"
-				+ " join OptionalData opt on po.id.idOptional = opt.id" + " group by o.packageData.id");
+				+ " join OptionalData opt on po.id.idOptional = opt.id" 
+				+ " group by o.packageData.id");
 		return query.getResultList();
 	}
 
@@ -120,7 +127,8 @@ public class OrderSrv {
 	public List<Object[]> mostValueOptional() {
 		Query query = em.createQuery("select opt.id, opt.name,sum(opt.feeMonthly*o.validityperiod.month)"
 				+ " from OrderData o join o.orderOptions op" + " join OptionalData opt on opt.id = op.id.idOptional"
-				+ " group by opt.id" + " order by sum(opt.feeMonthly*o.validityperiod.month) desc");
+				+ " group by opt.id" 
+				+ " order by sum(opt.feeMonthly*o.validityperiod.month) desc");
 		return query.setMaxResults(1).getResultList();
 	}
 
