@@ -42,6 +42,7 @@ public class PurchasePerPackage extends HttpServlet {
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
 		Integer idUser = -1;
+		String username=null;
 		if (session == null) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
 			return;
@@ -71,6 +72,7 @@ public class PurchasePerPackage extends HttpServlet {
 			return;
 		}
 
+		username=userService.findUser(idUser).getUsername();
 		List<Object[]> result = null;
 		try {
 			result = orderService.totalPurchasePerPackage();
@@ -90,6 +92,7 @@ public class PurchasePerPackage extends HttpServlet {
 		ctx.setVariable("query5", false);
 		ctx.setVariable("query6", false);
 		ctx.setVariable("result", result);
+		ctx.setVariable("username", username);
 		templateEngine.process(path, ctx, response.getWriter());
 
 	}

@@ -6,13 +6,14 @@
 	<link href="./CSS/CssDefault.css" type="text/css" rel="stylesheet"/>
 </head>
 <body>
+	<span id="right" th:text="${username}">Matteo</span>
 	<span id="right"><a th:href="@{/Logout}">Logout</a> |</span>
 	<header>Sales Report</header>
 	
 	<section  class="content">
 		<table>
 			<tr>
-				<th th:classappend="${query1} ? 'bkSelect'" ><a th:href="@{/PurchasePerPackage}">Query 1</a></th>
+				<th th:classappend="${query1} ? 'bkSelect'"><a th:href="@{/PurchasePerPackage}">Query 1</a></th>
 				<th th:classappend="${query2} ? 'bkSelect'"><a th:href="@{/PurchasePerPackageAndValidity}">Query 2</a></th>
 				<th th:classappend="${query3} ? 'bkSelect'"><a th:href="@{/PackageValue}">Query 3</a></th>
 				<th th:classappend="${query4} ? 'bkSelect'"><a th:href="@{/AverageOptionalsPerPackage}">Query 4</a></th>

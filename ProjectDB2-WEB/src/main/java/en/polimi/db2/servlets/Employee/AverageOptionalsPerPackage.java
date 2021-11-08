@@ -45,6 +45,7 @@ public class AverageOptionalsPerPackage extends HttpServlet {
 			throws ServletException, IOException {
 
 		HttpSession session = request.getSession(false);
+		String username = "";
 		Integer idUser = -1;
 		if (session == null) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
@@ -74,7 +75,7 @@ public class AverageOptionalsPerPackage extends HttpServlet {
 			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "You don't have permissions!", response);
 			return;
 		}
-
+		username =userService.findUser(idUser).getUsername();
 		List<Object[]> result = null;
 		List<Object[]> finalResult = new ArrayList<>();
 
@@ -116,7 +117,7 @@ public class AverageOptionalsPerPackage extends HttpServlet {
 		ctx.setVariable("query5", false);
 		ctx.setVariable("query6", false);
 		ctx.setVariable("result", finalResult);
-
+		ctx.setVariable("username", username);
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 

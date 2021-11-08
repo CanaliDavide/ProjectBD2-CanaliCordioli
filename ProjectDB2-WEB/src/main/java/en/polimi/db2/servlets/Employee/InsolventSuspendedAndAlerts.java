@@ -49,6 +49,7 @@ public class InsolventSuspendedAndAlerts extends HttpServlet {
 
 		HttpSession session = request.getSession(false);
 		Integer idUser = -1;
+		String username=null;
 		if (session == null) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
 			return;
@@ -77,7 +78,7 @@ public class InsolventSuspendedAndAlerts extends HttpServlet {
 			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "You don't have permissions!", response);
 			return;
 		}
-
+		username =userService.findUser(idUser).getUsername();
 		List<OrderData> order = null;
 		List<Alert> alert = null;
 		List<UserData> user = null;
@@ -101,6 +102,7 @@ public class InsolventSuspendedAndAlerts extends HttpServlet {
 		ctx.setVariable("query5", true);
 		ctx.setVariable("query6", false);
 		ctx.setVariable("order", order);
+		ctx.setVariable("username", username);
 		ctx.setVariable("user", user);
 		ctx.setVariable("alert", alert);
 		templateEngine.process(path, ctx, response.getWriter());
