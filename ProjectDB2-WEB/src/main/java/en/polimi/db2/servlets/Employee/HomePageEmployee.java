@@ -88,7 +88,13 @@ public class HomePageEmployee extends HttpServlet {
 			return;
 		}
 
-		username = userService.findUser(idUser).getUsername();
+		try {
+			username = userService.findUser(idUser).getUsername();
+		} catch (Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in querying the database", response);
+			return;
+		}
 
 		List<Service> services = serviceService.findAll();
 		List<OptionalData> optionals = optionalService.findAll();

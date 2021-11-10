@@ -49,7 +49,7 @@ public class InsolventSuspendedAndAlerts extends HttpServlet {
 
 		HttpSession session = request.getSession(false);
 		Integer idUser = -1;
-		String username=null;
+		String username = null;
 		if (session == null) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
 			return;
@@ -74,11 +74,18 @@ public class InsolventSuspendedAndAlerts extends HttpServlet {
 					"Some parameters was incorrect, please re-login!", response);
 			return;
 		}
-		if(!userService.isEmployee(idUser)) {
+		if (!userService.isEmployee(idUser)) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "You don't have permissions!", response);
 			return;
 		}
-		username =userService.findUser(idUser).getUsername();
+
+		try {
+			username = userService.findUser(idUser).getUsername();
+		} catch (Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in querying the database", response);
+			return;
+		}
 		List<OrderData> order = null;
 		List<Alert> alert = null;
 		List<UserData> user = null;
@@ -91,7 +98,7 @@ public class InsolventSuspendedAndAlerts extends HttpServlet {
 					"Error in querying the database", response);
 			return;
 		}
-		
+
 		String path = "Templates/SalesReport.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());

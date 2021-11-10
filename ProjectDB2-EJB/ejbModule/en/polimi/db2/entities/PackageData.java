@@ -182,4 +182,12 @@ public class PackageData implements Serializable {
 		return packageOption;
 	}
 
+	public List<Validityperiod> getValidityPeriods() {
+		return validityPeriods;
+	}
+
+	public void setValidityPeriods(List<Validityperiod> validityPeriods) {
+		this.validityPeriods = validityPeriods;
+	}
+
 }

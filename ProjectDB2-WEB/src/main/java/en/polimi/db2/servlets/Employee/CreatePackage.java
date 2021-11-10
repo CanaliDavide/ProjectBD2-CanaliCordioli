@@ -25,7 +25,7 @@ import en.polimi.db2.utils.ErrorManager;
 @WebServlet("/CreatePackage")
 public class CreatePackage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
 	@EJB
 	private UserSrv userService;
 	@EJB
@@ -36,11 +36,12 @@ public class CreatePackage extends HttpServlet {
 	private OptionalSrv optionalService;
 	@EJB
 	private PeriodSrv periodService;
-	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session=request.getSession(false);
-		Integer idUser=-1;
-		String username="";
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		HttpSession session = request.getSession(false);
+		Integer idUser = -1;
+		String username = "";
 		if (session == null) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
 			return;
@@ -75,58 +76,61 @@ public class CreatePackage extends HttpServlet {
 					"Some parameters was incorrect, please re-login!", response);
 			return;
 		}
-		
+
 		String[] options = request.getParameterValues("opt");
 		String[] services = request.getParameterValues("serv");
 		String[] periods = request.getParameterValues("prd");
 		String namePackage = request.getParameter("packageName");
-		
-		List<Integer> optionsInteger=new ArrayList<Integer>();
-		List<Integer> servicesInteger=new ArrayList<Integer>();
-		List<Integer> periodsInteger=new ArrayList<Integer>();
-		
-		if(options!=null) {
+
+		List<Integer> optionsInteger = new ArrayList<Integer>();
+		List<Integer> servicesInteger = new ArrayList<Integer>();
+		List<Integer> periodsInteger = new ArrayList<Integer>();
+
+		if (options != null) {
 			try {
-				for(int i=0; i<options.length; i++) {
+				for (int i = 0; i < options.length; i++) {
 					optionsInteger.add(Integer.parseInt(options[i]));
 				}
-			}catch(Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
-						"Some parameters was incorrect!", response);
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect!",
+						response);
 				return;
 			}
 		}
-		
-		if(services!=null) {
+
+		if (services != null) {
 			try {
-				for(int i=0; i<services.length; i++) {
+				for (int i = 0; i < services.length; i++) {
 					servicesInteger.add(Integer.parseInt(services[i]));
 				}
-			}catch(Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
-						"Some parameters was incorrect!", response);
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect!",
+						response);
 				return;
 			}
 		}
-		if(periods != null) {
+		if (periods != null) {
 			try {
-				for(int i=0; i<services.length; i++) {
+				for (int i = 0; i < periods.length; i++) {
 					periodsInteger.add(Integer.parseInt(periods[i]));
 				}
-			}catch(Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
-						"Some parameters was incorrect!", response);
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect!",
+						response);
 				return;
 			}
 		}
-		
-		packageService.createPackage(namePackage, 
-				optionalService.findByIds(optionsInteger), 
-				serviceService.findByIds(servicesInteger),
-				periodService.findByIds(periodsInteger));		
-		
+
+		try {
+			packageService.createPackage(namePackage, optionalService.findByIds(optionsInteger),
+					serviceService.findByIds(servicesInteger), periodService.findByIds(periodsInteger));
+		} catch (Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in querying the database", response);
+			return;
+		}
+
 		response.sendRedirect("HomePageEmployee");
 	}
-
 
 }

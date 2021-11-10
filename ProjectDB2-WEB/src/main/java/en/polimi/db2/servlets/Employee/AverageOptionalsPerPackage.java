@@ -71,11 +71,18 @@ public class AverageOptionalsPerPackage extends HttpServlet {
 					"Some parameters was incorrect, please re-login!", response);
 			return;
 		}
-		if(!userService.isEmployee(idUser)) {
+		if (!userService.isEmployee(idUser)) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "You don't have permissions!", response);
 			return;
 		}
-		username =userService.findUser(idUser).getUsername();
+
+		try {
+			username = userService.findUser(idUser).getUsername();
+		} catch (Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in querying the database", response);
+			return;
+		}
 		List<Object[]> result = null;
 		List<Object[]> finalResult = new ArrayList<>();
 
@@ -96,10 +103,10 @@ public class AverageOptionalsPerPackage extends HttpServlet {
 				Long d1 = (Long) o[2];
 				Long d2 = (Long) o[3];
 				Double d3 = d1.doubleValue() / d2.doubleValue();
-				
-				d3 =  new BigDecimal(String.valueOf(d3)).setScale(2, RoundingMode.FLOOR).doubleValue();
+
+				d3 = new BigDecimal(String.valueOf(d3)).setScale(2, RoundingMode.FLOOR).doubleValue();
 				array[2] = d3.toString();
-				
+
 				finalResult.add(array);
 			} catch (Exception e) {
 				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,

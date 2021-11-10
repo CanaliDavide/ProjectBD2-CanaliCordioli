@@ -21,17 +21,17 @@ import en.polimi.db2.utils.Utility;
 @WebServlet("/CreateOptional")
 public class CreateOptional extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
 	@EJB
 	private UserSrv userService;
 	@EJB
 	private OptionalSrv optionalService;
-	
-	
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		HttpSession session=request.getSession(false);
-		Integer idUser=-1;
-		String username="";
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		HttpSession session = request.getSession(false);
+		Integer idUser = -1;
+		String username = "";
 		if (session == null) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_REQUEST_TIMEOUT, "Session timed out!", response);
 			return;
@@ -66,27 +66,31 @@ public class CreateOptional extends HttpServlet {
 					"Some parameters was incorrect, please re-login!", response);
 			return;
 		}
-		
+
 		String nameOptional = request.getParameter("optionName");
 		String feeString = request.getParameter("feeMonthly");
-		Float fee=null;
-		if(Utility.getInstance().checkString(feeString) && Utility.getInstance().checkString(nameOptional)) {
+		Float fee = null;
+		if (Utility.getInstance().checkString(feeString) && Utility.getInstance().checkString(nameOptional)) {
 			try {
-				fee= Float.valueOf(feeString);
-			}catch(Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
-						"Some parameters was incorrect!", response);
+				fee = Float.valueOf(feeString);
+			} catch (Exception e) {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect!",
+						response);
 				return;
 			}
-		}
-		else {
-			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
-					"Some parameters was incorrect!", response);
+		} else {
+			ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Some parameters was incorrect!",
+					response);
 			return;
 		}
-		
-		optionalService.createOptional(fee, nameOptional);
-		
+
+		try {
+			optionalService.createOptional(fee, nameOptional);
+		} catch (Exception e) {
+			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+					"Error in querying the database", response);
+			return;
+		}
 		response.sendRedirect("HomePageEmployee");
 	}
 

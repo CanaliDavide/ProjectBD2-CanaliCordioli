@@ -89,12 +89,9 @@ public class BuyService extends HttpServlet {
 		}
 
 		List<PackageData> packages = null;
-		List<Validityperiod> validityPeriod = null;
 
 		try {
 			packages = packageService.findAllPackage();
-			//TODO: devo prendere solo i validiti legati al package, non tutti
-			validityPeriod = periodService.findAllPeriods();
 		} catch (Exception e) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Error in querying the database", response);
@@ -127,18 +124,26 @@ public class BuyService extends HttpServlet {
 				return;
 			}
 		} else {
-			idPack = packages.get(0).getId();
+			if (packages.size() > 0) {
+				idPack = packages.get(0).getId();
+			} else {
+				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST, "Database empty", response);
+				return;
+			}
 		}
 
 		List<OptionalData> optionals = null;
+		List<Validityperiod> validityPeriod = null;
+
 		try {
 			optionals = packageService.findPackageWithId(idPack).getOptionalData();
+			validityPeriod = packageService.findPackageWithId(idPack).getValidityPeriods();
 		} catch (Exception e) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Error in querying the database", response);
 			return;
 		}
-		
+
 		String path = "Templates/BuyService.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
@@ -151,7 +156,6 @@ public class BuyService extends HttpServlet {
 		templateEngine.process(path, ctx, response.getWriter());
 	}
 
-	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
