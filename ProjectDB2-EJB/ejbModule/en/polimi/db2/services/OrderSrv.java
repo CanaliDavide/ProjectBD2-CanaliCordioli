@@ -44,7 +44,11 @@ public class OrderSrv {
 	public List<OrderData> findAllRejectedWithUserId(int id) {
 		TypedQuery<OrderData> query = em
 				.createQuery("select o from OrderData o where o.userData = ?1 and o.isValid = 0", OrderData.class);
-		return query.setParameter(1, em.find(UserData.class, id)).getResultList();
+		try {
+			return query.setParameter(1, em.find(UserData.class, id)).getResultList();
+		}catch(Exception e) {
+			return null;
+		}
 	}
 
 	public OrderData findRejectedOrderOfUser(int idOrder, int idUser) {
