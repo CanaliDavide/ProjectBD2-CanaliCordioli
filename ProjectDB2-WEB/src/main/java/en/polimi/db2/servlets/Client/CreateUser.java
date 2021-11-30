@@ -51,7 +51,5 @@ public class CreateUser extends HttpServlet {
 			session.setAttribute("newUserCreated", true);
 			response.sendRedirect("Login");
 		}
-
 	}
-
 }

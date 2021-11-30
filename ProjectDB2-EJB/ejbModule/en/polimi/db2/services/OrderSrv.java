@@ -26,16 +26,12 @@ public class OrderSrv {
 	public OrderSrv() {
 	}
 
-	public OrderData createOrder(Date dataActivation, Timestamp dateTime, boolean isValid, int numberOfInvalid,
+	public OrderData createOrder(Date dataActivation, Timestamp dateTime, boolean isValid,
 			float totalCost, List<OptionalData> optionalData, PackageData packageData, UserData userData,
 			Validityperiod validityperiod) {
 
-		OrderData order = new OrderData(dataActivation, dateTime, isValid, numberOfInvalid, totalCost, optionalData,
+		OrderData order = new OrderData(dataActivation, dateTime, isValid, totalCost, optionalData,
 				packageData, userData, validityperiod);
-
-		UserData user = em.find(UserData.class, userData.getId());
-		if (!user.getIsInsolvent() && !isValid)
-			user.setIsInsolvent(true);
 
 		em.persist(order);
 		return order;
@@ -61,24 +57,13 @@ public class OrderSrv {
 		}
 	}
 
-	public OrderData buyInsolvent(int idOrder, int idUser, boolean isValid) {
+	public void buyInsolvent(int idOrder, int idUser, boolean isValid) {
 		OrderData order = em.find(OrderData.class, idOrder);
 		if (order != null) {
 			if (order.getUserData().getId() == idUser) {
-				if (isValid) {
-					order.setIsValid(true);
-					em.flush();
-					UserData user = em.find(UserData.class, idUser);
-					List<OrderData> rejectedOrders = findAllRejectedWithUserId(idUser);
-					if (rejectedOrders == null || rejectedOrders.isEmpty()){
-						user.setIsInsolvent(false);
-					}
-				} else {
-					order.setNumberOfInvalid(order.getNumberOfInvalid() + 1);
-				}
+				order.setIsValid(isValid);
 			}
 		}
-		return order;
 	}
 
 	public Integer numberOfFailedPay(int userId) {

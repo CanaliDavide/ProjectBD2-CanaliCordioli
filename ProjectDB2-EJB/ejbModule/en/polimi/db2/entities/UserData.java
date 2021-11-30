@@ -32,6 +32,8 @@ public class UserData implements Serializable {
 	private String password;
 
 	private String username;
+	
+	private int numberOfInvalid;
 
 	//bi-directional many-to-one association to Alert
 	@OneToMany(mappedBy="userData")
@@ -144,6 +146,14 @@ public class UserData implements Serializable {
 		orderData.setUserData(null);
 
 		return orderData;
+	}
+
+	public int getNumberOfInvalid() {
+		return numberOfInvalid;
+	}
+
+	public void setNumberOfInvalid(int numberOfInvalid) {
+		this.numberOfInvalid = numberOfInvalid;
 	}
 
 }
