@@ -20,6 +20,12 @@
 		<class>en.polimi.db2.entities.Validityperiod</class>
 		<class>en.polimi.db2.entities.PackageValidity</class>
 		<class>en.polimi.db2.entities.PackageValidityPK</class>
+		<class>en.polimi.db2.entities.InsolventUser</class>
+		<class>en.polimi.db2.entities.PurchasesPackage</class>
+		<class>en.polimi.db2.entities.PurchasesPackageValidity</class>
+		<class>en.polimi.db2.entities.PurchasesPackageValidityPK</class>
+		<class>en.polimi.db2.entities.SellerOptional</class>
+		<class>en.polimi.db2.entities.SuspendedOrder</class>
 		
 
 		<properties>
