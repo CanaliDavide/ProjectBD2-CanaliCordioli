@@ -30,6 +30,8 @@ public class OrderData implements Serializable {
 
 	private boolean isValid;
 
+	private int numberOfInvalid;
+
 	private float totalCost;
 
 	// bi-directional many-to-many association to OptionalData
@@ -60,12 +62,13 @@ public class OrderData implements Serializable {
 	public OrderData() {
 	}
 
-	public OrderData(Date dataActivation, Timestamp dateTime, boolean isValid, float totalCost,
+	public OrderData(Date dataActivation, Timestamp dateTime, boolean isValid, int numberOfInvalid, float totalCost,
 			List<OptionalData> optionalData, PackageData packageData, UserData userData,
 			Validityperiod validityperiod) {
 		this.dataActivation = dataActivation;
 		this.dateTime = dateTime;
 		this.isValid = isValid;
+		this.numberOfInvalid = numberOfInvalid;
 		this.totalCost = totalCost;
 		this.optionalData = optionalData;
 		this.packageData = packageData;
@@ -103,6 +106,14 @@ public class OrderData implements Serializable {
 
 	public void setIsValid(boolean isValid) {
 		this.isValid = isValid;
+	}
+
+	public int getNumberOfInvalid() {
+		return this.numberOfInvalid;
+	}
+
+	public void setNumberOfInvalid(int numberOfInvalid) {
+		this.numberOfInvalid = numberOfInvalid;
 	}
 
 	public float getTotalCost() {
