@@ -19,6 +19,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
 import en.polimi.db2.services.OrderSrv;
+import en.polimi.db2.services.SalesReportSrv;
 import en.polimi.db2.services.UserSrv;
 import en.polimi.db2.utils.ErrorManager;
 import en.polimi.db2.utils.Utility;
@@ -32,7 +33,7 @@ public class PackageValue extends HttpServlet {
 
 	private TemplateEngine templateEngine;
 	@EJB
-	OrderSrv orderService;
+	SalesReportSrv salesReportService;
 	@EJB
 	private UserSrv userService;
 
@@ -84,35 +85,11 @@ public class PackageValue extends HttpServlet {
 		}
 		List<Object[]> result = null;
 		try {
-			result = orderService.packageValue();
+			result = salesReportService.packageValue();
 		} catch (Exception e) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Error in querying the database", response);
 			return;
-		}
-
-		List<String[]> finalResult = new ArrayList<>();
-
-		for (Object[] o : result) {
-			try {
-				String[] array = new String[4];
-
-				array[0] = ((Integer) o[0]).toString();
-				array[1] = (String) o[1];
-				Double d1 = (Double) o[2];
-				Double d2 = (Double) o[3];
-
-				d1 = new BigDecimal(String.valueOf(d1)).setScale(2, RoundingMode.FLOOR).doubleValue();
-				array[2] = d1.toString();
-				d2 = new BigDecimal(String.valueOf(d2)).setScale(2, RoundingMode.FLOOR).doubleValue();
-				array[3] = d2.toString();
-
-				finalResult.add(array);
-			} catch (Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-						"Error in querying the database", response);
-				return;
-			}
 		}
 
 		String path = "Templates/SalesReport.html";
@@ -124,7 +101,7 @@ public class PackageValue extends HttpServlet {
 		ctx.setVariable("query4", false);
 		ctx.setVariable("query5", false);
 		ctx.setVariable("query6", false);
-		ctx.setVariable("result", finalResult);
+		ctx.setVariable("result", result);
 		ctx.setVariable("username", username);
 		templateEngine.process(path, ctx, response.getWriter());
 	}
