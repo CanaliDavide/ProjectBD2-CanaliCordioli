@@ -27,6 +27,14 @@ public class SalesReportSrv {
 				+ " from PurchasesPackage o");
 		return query.getResultList();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> totalPurchasePerPerckageAndValidity() {
+		Query query = em.createQuery(
+				"select o.idPack, o.namePack, o.numPurc, vp.month"
+				+ "from PurchasesPackageValidity o join Validityperiod vp on o.idValidity = vp.id");
+		return query.getResultList();
+	}
 
 
 }
