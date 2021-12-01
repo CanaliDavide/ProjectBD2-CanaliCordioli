@@ -43,6 +43,13 @@ public class SalesReportSrv {
 						+ " from PurchasesPackage o");
 		return query.getResultList();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> avgOptionalsPerPackage() {
+		Query query = em.createQuery("select o.idPack , o.namePack , o.averageOpt"
+				+ " from PurchasesPackage o");
+		return query.getResultList();
+	}
 
 
 }

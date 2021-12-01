@@ -19,6 +19,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
 import en.polimi.db2.services.OrderSrv;
+import en.polimi.db2.services.SalesReportSrv;
 import en.polimi.db2.services.UserSrv;
 import en.polimi.db2.utils.ErrorManager;
 import en.polimi.db2.utils.Utility;
@@ -32,7 +33,7 @@ public class AverageOptionalsPerPackage extends HttpServlet {
 
 	private TemplateEngine templateEngine;
 	@EJB
-	OrderSrv orderService;
+	SalesReportSrv salesReportService;
 	@EJB
 	private UserSrv userService;
 
@@ -84,36 +85,16 @@ public class AverageOptionalsPerPackage extends HttpServlet {
 			return;
 		}
 		List<Object[]> result = null;
-		List<Object[]> finalResult = new ArrayList<>();
 
 		try {
-			result = orderService.avgOptionalsPerPackage();
+			result = salesReportService.avgOptionalsPerPackage();
 		} catch (Exception e) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Error in querying the database", response);
 			return;
 		}
 
-		for (Object[] o : result) {
-			try {
-				String[] array = new String[3];
-
-				array[0] = ((Integer) o[0]).toString();
-				array[1] = (String) o[1];
-				Long d1 = (Long) o[2];
-				Long d2 = (Long) o[3];
-				Double d3 = d1.doubleValue() / d2.doubleValue();
-
-				d3 = new BigDecimal(String.valueOf(d3)).setScale(2, RoundingMode.FLOOR).doubleValue();
-				array[2] = d3.toString();
-
-				finalResult.add(array);
-			} catch (Exception e) {
-				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-						"Error in querying the database", response);
-				return;
-			}
-		}
+		
 		String path = "Templates/SalesReport.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
@@ -123,7 +104,7 @@ public class AverageOptionalsPerPackage extends HttpServlet {
 		ctx.setVariable("query4", true);
 		ctx.setVariable("query5", false);
 		ctx.setVariable("query6", false);
-		ctx.setVariable("result", finalResult);
+		ctx.setVariable("result", result);
 		ctx.setVariable("username", username);
 		templateEngine.process(path, ctx, response.getWriter());
 	}
