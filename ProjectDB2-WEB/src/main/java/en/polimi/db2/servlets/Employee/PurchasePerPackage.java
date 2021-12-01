@@ -16,6 +16,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
 import en.polimi.db2.services.OrderSrv;
+import en.polimi.db2.services.SalesReportSrv;
 import en.polimi.db2.services.UserSrv;
 import en.polimi.db2.utils.ErrorManager;
 import en.polimi.db2.utils.Utility;
@@ -29,7 +30,7 @@ public class PurchasePerPackage extends HttpServlet {
 
 	private TemplateEngine templateEngine;
 	@EJB
-	OrderSrv orderService;
+	SalesReportSrv salesReportService;
 	@EJB
 	private UserSrv userService;
 
@@ -81,7 +82,7 @@ public class PurchasePerPackage extends HttpServlet {
 		}
 		List<Object[]> result = null;
 		try {
-			result = orderService.totalPurchasePerPackage();
+			result = salesReportService.totalPurchasePerPackage();
 		} catch (Exception e) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Error in querying the database", response);
