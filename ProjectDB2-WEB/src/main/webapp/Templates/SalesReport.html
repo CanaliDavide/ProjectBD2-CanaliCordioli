@@ -110,9 +110,9 @@
 					<th>Mail</th>
 				</tr>
 				<tr th:each="u : ${user}">
-					<td th:text="${u.getId()}">1</td>
-					<td th:text="${u.getUsername()}">pippo</td>
-					<td th:text="${u.getMail()}">5</td>
+					<td th:text="${u[0]}">1</td>
+					<td th:text="${u[1]}">pippo</td>
+					<td th:text="${u[2]}">5</td>
 				</tr>
 			</table>
 		</section>
@@ -126,9 +126,9 @@
 					<th>UserMail</th>
 				</tr>
 				<tr th:each="o : ${order}">
-					<td th:text="${o.getId()}">1</td>
-					<td th:text="${o.getPackageData().getName()}">pippo</td>
-					<td th:text="${o.getUserData().getMail()}">5</td>
+					<td th:text="${o[0]}">1</td>
+					<td th:text="${o[1]}">pippo</td>
+					<td th:text="${o[2]}">5</td>
 				</tr>
 			</table>
 		</section>
@@ -142,9 +142,9 @@
 					<th>Rejected</th>
 				</tr>
 				<tr th:each="a : ${alert}">
-					<td th:text="${a.getEmail()}">1</td>
-					<td th:text="${a.getTotalCost()}">pippo</td>
-					<td th:text="${a.getLastReject().toString()}">5</td>
+					<td th:text="${a[0]}">1</td>
+					<td th:text="${a[1]}">pippo</td>
+					<td th:text="${a[2]}">5</td>
 				</tr>
 			</table>
 		</section>

@@ -121,6 +121,7 @@ public class CreatePackage extends HttpServlet {
 			}
 		}
 
+		
 		try {
 			packageService.createPackage(namePackage, optionalService.findByIds(optionsInteger),
 					serviceService.findByIds(servicesInteger), periodService.findByIds(periodsInteger));

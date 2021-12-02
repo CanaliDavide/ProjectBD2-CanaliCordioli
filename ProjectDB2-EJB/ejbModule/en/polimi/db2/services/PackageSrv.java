@@ -33,11 +33,12 @@ public class PackageSrv {
 		TypedQuery<PackageData> query = em.createNamedQuery("PackageData.findAll", PackageData.class);
 		return query.getResultList();
 	}
-
+	
 	public PackageData findPackageWithId(int id) {
 		return em.find(PackageData.class, id);
 	}
 
+	
 	public Double totalCostForPackage(int idPack, int idValidity, List<Integer> idOptionals) {
 		if (idOptionals.isEmpty()) {
 			TypedQuery<Float> query = em.createQuery(

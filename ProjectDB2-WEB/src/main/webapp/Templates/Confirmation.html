@@ -27,6 +27,11 @@
 		<p>Total cost: <span th:text="${cost}">500</span>$</p>
 		
 		<form action="BuyOrder" method="post">
+			<input type="checkbox" value="1" id="isValid" name="isValid"checked hidden>
+			<button th:if="${isLogged}">BuyValid</button>
+		</form>
+		<form action="BuyOrder" method="post">
+		<input type="checkbox" value="0" id="isValid" name="isValid" hidden>
 			<button th:if="${isLogged}">Buy</button>
 		</form>
 		<form action="Login" method="get">

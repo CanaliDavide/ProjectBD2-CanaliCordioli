@@ -51,6 +51,8 @@ public class BuyOrder extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		String isValidString =request.getParameter("isValid");
+		
 		HttpSession session = request.getSession(false);
 		Integer idUser = -1;
 		if (session == null) {
@@ -113,8 +115,18 @@ public class BuyOrder extends HttpServlet {
 
 			float totalCost = cost.floatValue();
 
-			boolean isValid = Utility.getInstance().externalService();
-
+			//boolean isValid = Utility.getInstance().externalService();
+			Integer isValidInteger=-1;
+			boolean isValid=false;
+			try {
+				isValidInteger=Integer.parseInt(isValidString);
+				if(isValidInteger==1)
+					isValid=true;
+			}
+			catch(Exception e) {
+				//lol ez
+			}
+			
 			int numberOfInvalid = isValid ? 0 : 1;
 
 			try {
