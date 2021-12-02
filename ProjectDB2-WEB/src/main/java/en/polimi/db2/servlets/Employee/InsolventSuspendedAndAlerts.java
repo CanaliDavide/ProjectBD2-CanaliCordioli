@@ -20,6 +20,7 @@ import en.polimi.db2.entities.OrderData;
 import en.polimi.db2.entities.UserData;
 import en.polimi.db2.services.AlertSrv;
 import en.polimi.db2.services.OrderSrv;
+import en.polimi.db2.services.SalesReportSrv;
 import en.polimi.db2.services.UserSrv;
 import en.polimi.db2.utils.ErrorManager;
 import en.polimi.db2.utils.Utility;
@@ -32,11 +33,10 @@ public class InsolventSuspendedAndAlerts extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@EJB
-	OrderSrv orderService;
+	SalesReportSrv salesReportService;
 	@EJB
-	UserSrv userService;
-	@EJB
-	AlertSrv alertService;
+	private UserSrv userService;
+	
 	private TemplateEngine templateEngine;
 
 	public void init() throws ServletException {
@@ -86,13 +86,13 @@ public class InsolventSuspendedAndAlerts extends HttpServlet {
 					"Error in querying the database", response);
 			return;
 		}
-		List<OrderData> order = null;
-		List<Alert> alert = null;
-		List<UserData> user = null;
+		List<Object> order = null;
+		List<Object> alert = null;
+		List<Object> user = null;
 		try {
-			order = orderService.findAllSuspended();
-			alert = alertService.findAll();
-			user = userService.findAllInsolvent();
+			order = salesReportService.findAllSuspended();
+			alert = salesReportService.findAllAlert();
+			user = salesReportService.findAllInsolvent();
 		} catch (Exception e) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 					"Error in querying the database", response);

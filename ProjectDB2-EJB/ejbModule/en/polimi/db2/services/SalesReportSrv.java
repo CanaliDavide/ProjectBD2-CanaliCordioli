@@ -50,6 +50,35 @@ public class SalesReportSrv {
 				+ " from PurchasesPackage o");
 		return query.getResultList();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> mostValueOptional() {
+		Query query = em.createQuery("select o.idOptional, o.nameOpt, o.totEarn"
+				+ " from SellerOptional o"
+				+ " order by o.totEarn desc");
+		return query.setMaxResults(1).getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Object> findAllSuspended() {
+		Query query = em.createQuery("select o.idOrder , o.namePack , o.mail"
+				+ " from SuspendedOrder o");
+		return query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Object> findAllAlert() {
+		Query query = em.createQuery("select o.email , o.totalCost, o.lastReject"
+				+ " from Alert o");
+		return query.getResultList();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Object> findAllInsolvent() {
+		Query query = em.createQuery("select o.idUser, o.username, o.mail"
+				+ " from InsolventUser o");
+		return query.getResultList();
+	}
 
 
 }

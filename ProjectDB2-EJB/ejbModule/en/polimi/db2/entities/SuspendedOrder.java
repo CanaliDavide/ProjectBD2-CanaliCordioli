@@ -19,14 +19,10 @@ public class SuspendedOrder implements Serializable {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idOrder;
 
-	private Timestamp dataTime;
+	private String namePack;
 
-	private int idPack;
-
-	private int idValidity;
-
-	private float totalCost;
-
+	private String mail;
+	
 	public SuspendedOrder() {
 	}
 
@@ -34,40 +30,19 @@ public class SuspendedOrder implements Serializable {
 		return this.idOrder;
 	}
 
-	public void setIdOrder(int idOrder) {
-		this.idOrder = idOrder;
+	public String getNamePack() {
+		return namePack;
 	}
 
-	public Timestamp getDataTime() {
-		return this.dataTime;
+	public void setNamePack(String namePack) {
+		this.namePack = namePack;
 	}
 
-	public void setDataTime(Timestamp dataTime) {
-		this.dataTime = dataTime;
+	public String getMail() {
+		return mail;
 	}
 
-	public int getIdPack() {
-		return this.idPack;
+	public void setMail(String mail) {
+		this.mail = mail;
 	}
-
-	public void setIdPack(int idPack) {
-		this.idPack = idPack;
-	}
-
-	public int getIdValidity() {
-		return this.idValidity;
-	}
-
-	public void setIdValidity(int idValidity) {
-		this.idValidity = idValidity;
-	}
-
-	public float getTotalCost() {
-		return this.totalCost;
-	}
-
-	public void setTotalCost(float totalCost) {
-		this.totalCost = totalCost;
-	}
-
 }
