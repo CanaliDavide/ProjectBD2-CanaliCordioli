@@ -141,27 +141,13 @@ public class BuyOrder extends HttpServlet {
 
 		} else {
 			boolean isValid = Utility.getInstance().externalService();
-			OrderData order = null;
-			Integer numOfFailed = -1;
 			
 			try {
-				order = orderService.buyInsolvent(idOrder, idUser, isValid);
-				numOfFailed = orderService.numberOfFailedPay(idUser);
+				orderService.buyInsolvent(idOrder, idUser, isValid);
 			} catch (Exception e) {
 				ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
 						"Error in querying the database", response);
 				return;
-			}
-
-			if (!isValid && numOfFailed % 3 == 0) {
-				try {
-					alertService.createAlert(order.getUserData().getMail(), order.getUserData().getUsername(),
-							order.getUserData(), datetime, order.getTotalCost());
-				} catch (Exception e) {
-					ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-							"Error in querying the database", response);
-					return;
-				}
 			}
 		}
 		session.removeAttribute("idOrder");
