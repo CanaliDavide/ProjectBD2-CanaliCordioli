@@ -31,7 +31,7 @@
 			<button th:if="${isLogged}">BuyValid</button>
 		</form>
 		<form action="BuyOrder" method="post">
-		<input type="checkbox" value="0" id="isValid" name="isValid" hidden>
+		<input type="checkbox" value="0" id="isValid" name="isValid" checked hidden>
 			<button th:if="${isLogged}">Buy</button>
 		</form>
 		<form action="Login" method="get">

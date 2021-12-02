@@ -92,9 +92,22 @@ public class BuyOrder extends HttpServlet {
 					"Some parameters was incorrect, please re-login!", response);
 			return;
 		}
+		
+		
 
 		long currentDate = System.currentTimeMillis();
 		Timestamp datetime = new Timestamp(currentDate);
+		Integer isValidInteger=-1;
+		boolean isValid=false;
+		try {
+			isValidInteger=Integer.parseInt(isValidString);
+			if(isValidInteger==1)
+				isValid=true;
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		
 		if (idOrder == null) {
 			Double cost = null;
 			Date actDate = null;
@@ -116,16 +129,7 @@ public class BuyOrder extends HttpServlet {
 			float totalCost = cost.floatValue();
 
 			//boolean isValid = Utility.getInstance().externalService();
-			Integer isValidInteger=-1;
-			boolean isValid=false;
-			try {
-				isValidInteger=Integer.parseInt(isValidString);
-				if(isValidInteger==1)
-					isValid=true;
-			}
-			catch(Exception e) {
-				//lol ez
-			}
+			
 			
 			int numberOfInvalid = isValid ? 0 : 1;
 
@@ -140,7 +144,7 @@ public class BuyOrder extends HttpServlet {
 			}
 
 		} else {
-			boolean isValid = Utility.getInstance().externalService();
+			//boolean isValid = Utility.getInstance().externalService();
 			
 			try {
 				orderService.buyInsolvent(idOrder, idUser, isValid);
