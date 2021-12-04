@@ -33,10 +33,6 @@ public class UserData implements Serializable {
 
 	private String username;
 
-	//bi-directional many-to-one association to Alert
-	@OneToMany(mappedBy="userData")
-	private List<Alert> alerts;
-
 	//bi-directional many-to-one association to OrderData
 	@OneToMany(mappedBy="userData")
 	private List<OrderData> orderData;
@@ -100,28 +96,6 @@ public class UserData implements Serializable {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public List<Alert> getAlerts() {
-		return this.alerts;
-	}
-
-	public void setAlerts(List<Alert> alerts) {
-		this.alerts = alerts;
-	}
-
-	public Alert addAlert(Alert alert) {
-		getAlerts().add(alert);
-		alert.setUserData(this);
-
-		return alert;
-	}
-
-	public Alert removeAlert(Alert alert) {
-		getAlerts().remove(alert);
-		alert.setUserData(null);
-
-		return alert;
 	}
 
 	public List<OrderData> getOrderData() {

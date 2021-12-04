@@ -17,6 +17,8 @@ public class Alert implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	
+	private int idUser;
 
 	private String email;
 
@@ -26,22 +28,18 @@ public class Alert implements Serializable {
 
 	private String username;
 
-	//bi-directional many-to-one association to UserData
-	@ManyToOne
-	@JoinColumn(name="idUser")
-	private UserData userData;
-
+	
 	public Alert() {
 	}
 	
 	
 
-	public Alert(String email, Timestamp lastReject, float totalCost, String username, UserData userData) {
+	public Alert(String email, Timestamp lastReject, float totalCost, String username, int idUser) {
 		this.email = email;
+		this.idUser = idUser;
 		this.lastReject = lastReject;
 		this.totalCost = totalCost;
 		this.username = username;
-		this.userData = userData;
 	}
 
 
@@ -86,12 +84,14 @@ public class Alert implements Serializable {
 		this.username = username;
 	}
 
-	public UserData getUserData() {
-		return this.userData;
+	public int getIdUser() {
+		return idUser;
 	}
 
-	public void setUserData(UserData userData) {
-		this.userData = userData;
+
+
+	public void setIdUser(int idUser) {
+		this.idUser = idUser;
 	}
 
 }

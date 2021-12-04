@@ -20,7 +20,7 @@ public class AlertSrv {
 	
 	public AlertSrv() {}
 	
-	public Alert createAlert(String mail, String username, UserData user, Timestamp lastReject, float totalCost) {
+	public Alert createAlert(String mail, String username, int user, Timestamp lastReject, float totalCost) {
 		Alert alert = new Alert(mail, lastReject, totalCost, username, user);
 		em.persist(alert);
 		return alert;
