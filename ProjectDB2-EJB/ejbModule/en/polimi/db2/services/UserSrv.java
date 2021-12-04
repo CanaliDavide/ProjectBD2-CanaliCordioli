@@ -26,15 +26,6 @@ public class UserSrv {
 		return user;
 	}
 
-	public void removeUser(int id) {
-		UserData user = findUser(id);
-		if (user != null) {
-			em.remove(user);
-		} else {
-			System.out.print("User not found");
-		}
-	}
-
 	public UserData findUser(int id) {
 		return em.find(UserData.class, id);
 	}
@@ -63,10 +54,5 @@ public class UserSrv {
 			return null;
 		else
 			return uList.get(0);
-	}
-
-	public List<UserData> findAllInsolvent() {
-		TypedQuery<UserData> query = em.createNamedQuery("UserData.findAllInsolvent", UserData.class);
-		return query.getResultList();
 	}
 }

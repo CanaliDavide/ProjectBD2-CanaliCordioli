@@ -18,7 +18,6 @@ import org.thymeleaf.context.WebContext;
 import en.polimi.db2.entities.Alert;
 import en.polimi.db2.entities.OrderData;
 import en.polimi.db2.entities.UserData;
-import en.polimi.db2.services.AlertSrv;
 import en.polimi.db2.services.OrderSrv;
 import en.polimi.db2.services.SalesReportSrv;
 import en.polimi.db2.services.UserSrv;

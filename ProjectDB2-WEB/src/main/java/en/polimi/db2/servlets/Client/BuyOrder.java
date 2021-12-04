@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import en.polimi.db2.entities.OrderData;
-import en.polimi.db2.services.AlertSrv;
 import en.polimi.db2.services.OptionalSrv;
 import en.polimi.db2.services.OrderSrv;
 import en.polimi.db2.services.PackageSrv;
@@ -39,8 +38,6 @@ public class BuyOrder extends HttpServlet {
 	UserSrv userService;
 	@EJB
 	PeriodSrv periodService;
-	@EJB
-	AlertSrv alertService;
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
