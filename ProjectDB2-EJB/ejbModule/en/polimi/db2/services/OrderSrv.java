@@ -57,6 +57,7 @@ public class OrderSrv {
 		try {
 			return query.setParameter(1, em.find(UserData.class, idUser)).setParameter(2, idOrder).getSingleResult();
 		} catch (Exception e) {
+			System.out.print("error in find reject");
 			return null;
 		}
 	}
