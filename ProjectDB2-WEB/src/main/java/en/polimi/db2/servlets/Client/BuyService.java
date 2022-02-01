@@ -72,6 +72,9 @@ public class BuyService extends HttpServlet {
 				return;
 			}
 		}
+		
+
+		
 		if (idUser != -1) {
 			isLogged = true;
 			if (userService.isEmployee(idUser)) {
@@ -87,7 +90,13 @@ public class BuyService extends HttpServlet {
 				return;
 			}
 		}
-
+				
+		if(session.getAttribute("isFromInvalid") != null && (Boolean)session.getAttribute("isFromInvalid") == true) {
+			response.sendRedirect("HomePageClient");
+			session.removeAttribute("isFromInvalid");
+		}
+		else {
+		session.removeAttribute("isFromInvalid");
 		List<PackageData> packages = null;
 
 		try {
@@ -154,6 +163,7 @@ public class BuyService extends HttpServlet {
 		ctx.setVariable("optionals", optionals);
 		ctx.setVariable("idSelected", idPack);
 		templateEngine.process(path, ctx, response.getWriter());
+		}
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
