@@ -139,6 +139,9 @@ public class Confirmation extends HttpServlet {
 					for (OptionalData op : order.getOptionalData()) {
 						idOptional.add(op.getId());
 					}
+					
+					session.setAttribute("isFromInvalid", true);
+					
 				}else {
 					idPack = (Integer) session.getAttribute("idPack");
 					idValidity = (Integer) session.getAttribute("idVal");
