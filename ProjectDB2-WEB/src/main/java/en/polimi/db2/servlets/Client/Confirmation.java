@@ -24,7 +24,9 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 
 import en.polimi.db2.entities.OptionalData;
+import en.polimi.db2.entities.OrderData;
 import en.polimi.db2.services.OptionalSrv;
+import en.polimi.db2.services.OrderSrv;
 import en.polimi.db2.services.PackageSrv;
 import en.polimi.db2.services.PeriodSrv;
 import en.polimi.db2.services.UserSrv;
@@ -48,6 +50,8 @@ public class Confirmation extends HttpServlet {
 	private PeriodSrv periodService;
 	@EJB
 	private OptionalSrv optionalService;
+	@EJB
+	private OrderSrv orderService;
 
 	public void init() throws ServletException {
 		ServletContext context = getServletContext();
@@ -98,27 +102,66 @@ public class Confirmation extends HttpServlet {
 		String validity = request.getParameter("ValidityPeriod");
 		String[] options = request.getParameterValues("opt");
 		String activationDate = request.getParameter("activationDate");
+		
+		System.out.print("\n\n");
+		System.out.print("from request.getparameter\n");
+		System.out.print(packSelection);
+		System.out.print("\n");
+		System.out.print(validity);
+		System.out.print("\n");
+		System.out.print(options);
+		System.out.print("\n");
+		System.out.print(activationDate);
+		System.out.print("\n\n");
 
 		Date actDate = null;
 		Integer idPack = -1;
 		Integer idValidity = -1;
 		List<Integer> idOptional = new ArrayList<Integer>();
+		
+		Integer idOrder;
 
 		if (options == null)
 			options = new String[0];
 
 		if (!ins.checkString(packSelection) || !ins.checkString(validity) || !ins.checkString(activationDate)) {
+			System.out.print("\n dovrei esser qui");
 			try {
-				idPack = (Integer) session.getAttribute("idPack");
-				idValidity = (Integer) session.getAttribute("idVal");
-				idOptional = (List<Integer>) session.getAttribute("options");
-				actDate = (Date) session.getAttribute("dateOfActivation");
+
+				
+				idOrder = (Integer) session.getAttribute("idOrder");
+				
+				if (idOrder != null) {
+					OrderData order = orderService.findRejectedOrderOfUser(idOrder, idUser);
+					idPack = order.getPackageData().getId();
+					idValidity = order.getValidityperiod().getId();
+					actDate = order.getDataActivation();
+					for (OptionalData op : order.getOptionalData()) {
+						idOptional.add(op.getId());
+					}
+				}else {
+					idPack = (Integer) session.getAttribute("idPack");
+					idValidity = (Integer) session.getAttribute("idVal");
+					idOptional = (List<Integer>) session.getAttribute("options");
+					actDate = (Date) session.getAttribute("dateOfActivation");
+				}
+				
+				System.out.print("\n");
+				System.out.print(idPack);
+				System.out.print("\n");
+				System.out.print(idValidity);
+				System.out.print("\n");
+				System.out.print(idOptional);
+				System.out.print("\n");
+				System.out.print(actDate);
+				System.out.print("\n");
 			} catch (Exception e) {
 				ErrorManager.instance.setError(HttpServletResponse.SC_BAD_REQUEST,
 						"Some parameters was incorrect, please try again!", response);
 				return;
 			}
 		} else {
+			System.out.print("\n non dovrei essere qui");
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALIAN);
 
 			try {
@@ -153,7 +196,7 @@ public class Confirmation extends HttpServlet {
 			optionalsData = optionalService.findByIds(idOptional);
 		} catch (Exception e) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Error in querying the database", response);
+					"Error in querying the database -- forse è qui", response);
 			return;
 		}
 		

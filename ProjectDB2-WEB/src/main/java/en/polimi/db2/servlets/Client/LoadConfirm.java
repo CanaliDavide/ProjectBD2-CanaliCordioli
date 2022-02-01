@@ -70,14 +70,23 @@ public class LoadConfirm extends HttpServlet {
 		}
 
 		OrderData order = null;
+		System.out.print("\n\narrivato a cercare il rejected");
+		System.out.print(orderId);
+		System.out.print(idUser);
+		System.out.print("\n\n");
+		
 		try {
 			order = orderService.findRejectedOrderOfUser(orderId, idUser);
 		} catch (Exception e) {
 			ErrorManager.instance.setError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-					"Error in querying the database", response);
+					"Error in querying the database - order", response);
 			return;
 		}
+		
+		System.out.print("\n\n dopo aver cercato il rejected\n\n");
+		
 		if (order != null) {
+			System.out.print("metto order in session");
 			session.setAttribute("idOrder", orderId);
 			response.sendRedirect("Confirmation");
 		} else {
