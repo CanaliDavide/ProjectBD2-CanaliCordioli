@@ -48,6 +48,19 @@ public class Login extends HttpServlet {
 		if (session.getAttribute("logInError") != null) {
 			logInError = (boolean) session.getAttribute("logInError");
 		}
+		if(session.getAttribute("isFromConfirm") != null) {
+			boolean test = (boolean)session.getAttribute("isFromConfirm");
+			if(!test){
+				//reset
+				session.invalidate();
+				session = request.getSession(true);
+			}
+		}
+		else {
+			//reset
+			session.invalidate();
+			session = request.getSession(true);
+		}
 		String path = "index.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
