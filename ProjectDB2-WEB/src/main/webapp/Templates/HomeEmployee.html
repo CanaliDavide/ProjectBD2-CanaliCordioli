@@ -26,7 +26,7 @@
 			<fieldset>
 				<legend>services connected</legend>
 				<span th:each="service : ${services}"> <input
-					type="checkbox" name="serv" th:value="${service.getId()}">
+					type="checkbox" class="serviceCheck" name="serv" th:value="${service.getId()}">
 					<label th:text="${service.getType()}">mobile phone</label>
 				</span>
 			</fieldset>
@@ -57,7 +57,7 @@
 			<label>option name</label><br>
 			<input type="text" name="optionName" id="optionName" required><br>
 			<label>fee monthly</label><br>
-			<input type="number" name="feeMonthly" id="feeMonthly" step="0.01" required>
+			<input type="number" name="feeMonthly" id="feeMonthly" step="0.01" min="0" required>
 		</form>
 		<br>
 		<button type="submit" form="CreateOptional" value="Submit">CreateOptional</button>
@@ -69,6 +69,40 @@
 	    const form = document.querySelector('#CreatePackageForm');
 	    //const checkboxes = form.querySelectorAll('input[type=checkbox]');
 		const checkboxes = form.querySelectorAll('.validityCheck');
+		const checkboxLength = checkboxes.length;
+	    const firstCheckbox = checkboxLength > 0 ? checkboxes[0] : null;
+
+	    function init() {
+	        if (firstCheckbox) {
+	            for (let i = 0; i < checkboxLength; i++) {
+	                checkboxes[i].addEventListener('change', checkValidity);
+	            }
+
+	            checkValidity();
+	        }
+	    }
+
+	    function isChecked() {
+	        for (let i = 0; i < checkboxLength; i++) {
+	            if (checkboxes[i].checked) return true;
+	        }
+
+	        return false;
+	    }
+
+	    function checkValidity() {
+	        const errorMessage = !isChecked() ? 'At least one checkbox must be selected.' : '';
+	        firstCheckbox.setCustomValidity(errorMessage);
+	    }
+
+	    init();
+	})();
+	</script>
+		<script type="text/javascript">
+	(function() {
+	    const form = document.querySelector('#CreatePackageForm');
+	    //const checkboxes = form.querySelectorAll('input[type=checkbox]');
+		const checkboxes = form.querySelectorAll('.serviceCheck');
 		const checkboxLength = checkboxes.length;
 	    const firstCheckbox = checkboxLength > 0 ? checkboxes[0] : null;
 

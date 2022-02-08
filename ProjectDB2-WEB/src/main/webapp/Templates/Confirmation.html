@@ -31,8 +31,8 @@
 			<button th:if="${isLogged}">BuyValid</button>
 		</form>
 		<form action="BuyOrder" method="post">
-		<input type="checkbox" value="0" id="isValid" name="isValid" checked hidden>
-			<button th:if="${isLogged}">Buy</button>
+			<input type="checkbox" value="0" id="isValid" name="isValid" checked hidden>
+			<button th:if="${isLogged}">BuyInvalid</button>
 		</form>
 		<form action="Login" method="get">
 			<button th:unless="${isLogged}">You need to be singed in to purchase</button>

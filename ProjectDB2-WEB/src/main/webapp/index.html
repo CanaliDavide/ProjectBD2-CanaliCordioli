@@ -11,7 +11,7 @@
 
 	<section>
 		<section class="boxCenter">
-			<h2>Login<span th:if="${logInError}">Error during login</span></h2>			
+			<h2>Login<span th:if="${logInError}"> Error</span></h2>			
 			<form action="Login" method="post" id="AccessForm">
   				<label for="emailLogIn">email:</label><br>
   				<input type="email" id="emailLogIn" name="emailLogIn" required><br> 
@@ -25,7 +25,7 @@
 		</section>	
 			<br>
 		<section class="boxCenter">
-			<h2>Need a new account?<span th:if="${newUserCreated}">new user created!</span></h2>			
+			<h2>Need a new account?<span th:if="${newUserCreated}"> new user created!</span></h2>			
 			<form action="CreateUser" method="post" id="RegistrationForm">
   				<label for="useremail">email:</label><br>
   				<input type="email" id="useremail" name="useremail" required>	<br>

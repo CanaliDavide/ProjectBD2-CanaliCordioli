@@ -61,6 +61,8 @@ public class Login extends HttpServlet {
 			session.invalidate();
 			session = request.getSession(true);
 		}
+		
+		
 		String path = "index.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
